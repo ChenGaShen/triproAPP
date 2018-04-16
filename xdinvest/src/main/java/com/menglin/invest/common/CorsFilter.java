@@ -17,7 +17,7 @@ public class CorsFilter implements Filter {
 
 
 	    public void init(FilterConfig filterConfig) throws ServletException {
-	        
+	        	System.out.println(111111111);
 	    }
 
 	   
