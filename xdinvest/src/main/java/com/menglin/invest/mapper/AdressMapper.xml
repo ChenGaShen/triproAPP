@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.menglin.tripro.dao.AdressDao">
+  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.Adress">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="received_phone" jdbcType="VARCHAR" property="receivedPhone" />
+    <result column="received_name" jdbcType="VARCHAR" property="receivedName" />
+    <result column="received_province" jdbcType="VARCHAR" property="receivedProvince" />
+    <result column="received_city" jdbcType="VARCHAR" property="receivedCity" />
+    <result column="received_canton" jdbcType="VARCHAR" property="receivedCanton" />
+    <result column="received_detail" jdbcType="VARCHAR" property="receivedDetail" />
+    <result column="is_default" jdbcType="INTEGER" property="isDefault" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uid, received_phone, received_name, received_province, received_city, received_canton, 
+    received_detail, is_default
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_address
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+   <!-- 根据用户UID 查询其所有的地址列表 -->
+  <select id="selectAddressList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_address
+    where uid = #{uid,jdbcType=INTEGER}
+    order by is_default desc
+  </select>
+  
+   <!-- 根据用户UID 查询其默认地址-->
+  <select id="getDefaultByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_address
+    where is_default=1
+    AND uid = #{uid,jdbcType=INTEGER}
+  </select>
+  
+  
+ <!--  去除默认设置 -->
+  <update id="removeDefaultByUid" parameterType="java.lang.Integer">
+	update t_address set is_default =0 WHERE id=(select id from (SELECT id
+	from t_address where is_default=1 AND uid=#{uid} ) as t);
+  </update>
+  
+  <!--  设置默认地址 -->
+  <update id="setDefaultByPrimaryKey" parameterType="java.lang.Integer">
+	update t_address set is_default =1 WHERE id= #{addressId}
+  </update>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_address
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.menglin.tripro.entity.Adress">
+    insert into t_address (id, uid, received_phone, 
+      received_name, received_province, received_city, 
+      received_canton, received_detail, is_default
+      )
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{receivedPhone,jdbcType=VARCHAR}, 
+      #{receivedName,jdbcType=VARCHAR}, #{receivedProvince,jdbcType=VARCHAR}, #{receivedCity,jdbcType=VARCHAR}, 
+      #{receivedCanton,jdbcType=VARCHAR}, #{receivedDetail,jdbcType=VARCHAR}, #{isDefault,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.Adress">
+    insert into t_address
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="receivedPhone != null">
+        received_phone,
+      </if>
+      <if test="receivedName != null">
+        received_name,
+      </if>
+      <if test="receivedProvince != null">
+        received_province,
+      </if>
+      <if test="receivedCity != null">
+        received_city,
+      </if>
+      <if test="receivedCanton != null">
+        received_canton,
+      </if>
+      <if test="receivedDetail != null">
+        received_detail,
+      </if>
+      <if test="isDefault != null">
+        is_default,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null">
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="receivedPhone != null">
+        #{receivedPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedName != null">
+        #{receivedName,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedProvince != null">
+        #{receivedProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedCity != null">
+        #{receivedCity,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedCanton != null">
+        #{receivedCanton,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedDetail != null">
+        #{receivedDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        #{isDefault,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.Adress">
+    update t_address
+    <set>
+      <if test="uid != null">
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="receivedPhone != null">
+        received_phone = #{receivedPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedName != null">
+        received_name = #{receivedName,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedProvince != null">
+        received_province = #{receivedProvince,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedCity != null">
+        received_city = #{receivedCity,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedCanton != null">
+        received_canton = #{receivedCanton,jdbcType=VARCHAR},
+      </if>
+      <if test="receivedDetail != null">
+        received_detail = #{receivedDetail,jdbcType=VARCHAR},
+      </if>
+      <if test="isDefault != null">
+        is_default = #{isDefault,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.Adress">
+    update t_address
+    set uid = #{uid,jdbcType=INTEGER},
+      received_phone = #{receivedPhone,jdbcType=VARCHAR},
+      received_name = #{receivedName,jdbcType=VARCHAR},
+      received_province = #{receivedProvince,jdbcType=VARCHAR},
+      received_city = #{receivedCity,jdbcType=VARCHAR},
+      received_canton = #{receivedCanton,jdbcType=VARCHAR},
+      received_detail = #{receivedDetail,jdbcType=VARCHAR},
+      is_default = #{isDefault,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

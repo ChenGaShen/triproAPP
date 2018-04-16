@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.menglin.tripro.dao.PayWxDao">
+  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.PayWx">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="out_trade_no" jdbcType="VARCHAR" property="outTradeNo" />
+    <result column="transaction_id" jdbcType="VARCHAR" property="transactionId" />
+    <result column="bank_type" jdbcType="VARCHAR" property="bankType" />
+    <result column="cash_fee" jdbcType="DOUBLE" property="cashFee" />
+    <result column="total_fee" jdbcType="INTEGER" property="totalFee" />
+    <result column="time_end" jdbcType="VARCHAR" property="timeEnd" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="userPhone" jdbcType="VARCHAR" property="userPhone" /><!-- 另外加的查询结果 -->
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, uid,out_trade_no AS outTradeNo, transaction_id AS transactionId, bank_type AS bankType, cash_fee AS cashFee, total_fee AS totalFee, time_end AS timeEnd, add_time AS addTime
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_pay_wx
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+   <!-- 查询用户记录总数 -->
+    <select id="selectCount" parameterType="java.util.Map" resultType="int">
+     SELECT
+	count(*)
+	 from t_pay_wx t LEFT JOIN t_user u ON t.uid = u.id  where 1=1
+        <if test="userPhone!=null and userPhone !='' ">
+          AND    u.user_phone like  CONCAT('%',#{userPhone},'%') 
+        </if>
+         <if test="outTradeNo!=null and outTradeNo !='' ">
+          AND   t.out_trade_no =  #{outTradeNo} 
+        </if>
+           <if test="startTime!=null and startTime !='' ">
+          AND   t.add_time <![CDATA[>=]]> #{startTime} 
+        </if>
+           <if test="endTime!=null and endTime !='' ">
+          AND   t.add_time <![CDATA[<=]]> #{endTime} 
+        </if>
+    </select>
+    
+    
+    <!-- 多表联合分页查询start 和size查询数据 -->
+  <select id="findByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+         SELECT
+	t.id,
+	t.uid,
+	t.out_trade_no AS outTradeNo,
+	t.transaction_id AS transactionId,
+	t.bank_type AS bankType,
+	t.cash_fee AS cashFee,
+	t.total_fee AS totalFee,
+	t.time_end AS timeEnd,
+	t.add_time AS addTime,
+	u.user_phone AS userPhone
+        from t_pay_wx t LEFT JOIN t_user u ON t.uid = u.id  where 1=1
+         <if test="userPhone!=null and userPhone !='' ">
+          AND   u.user_phone like  CONCAT('%',#{userPhone},'%') 
+        </if>
+         <if test="outTradeNo!=null and outTradeNo !='' ">
+          AND   t.out_trade_no =  #{outTradeNo} 
+        </if>
+        <if test="startTime!=null and startTime !='' ">
+          AND   t.add_time <![CDATA[>=]]> #{startTime} 
+        </if>
+           <if test="endTime!=null and endTime !='' ">
+          AND   t.add_time <![CDATA[<=]]> #{endTime} 
+        </if>
+        ORDER BY t.add_time desc 
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from t_pay_wx
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.menglin.tripro.entity.PayWx">
+    insert into t_pay_wx (id, uid,out_trade_no, transaction_id, 
+      bank_type, cash_fee, total_fee, 
+      time_end, add_time)
+    values (#{id,jdbcType=INTEGER},  #{uid,jdbcType=INTEGER},#{outTradeNo,jdbcType=VARCHAR}, #{transactionId,jdbcType=VARCHAR}, 
+      #{bankType,jdbcType=VARCHAR}, #{cashFee,jdbcType=DOUBLE}, #{totalFee,jdbcType=INTEGER}, 
+      #{timeEnd,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.PayWx">
+    insert into t_pay_wx
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="uid != null">
+        uid,
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no,
+      </if>
+      <if test="transactionId != null">
+        transaction_id,
+      </if>
+      <if test="bankType != null">
+        bank_type,
+      </if>
+      <if test="cashFee != null">
+        cash_fee,
+      </if>
+      <if test="totalFee != null">
+        total_fee,
+      </if>
+      <if test="timeEnd != null">
+        time_end,
+      </if>
+      <if test="addTime != null">
+        add_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+       <if test="uid != null">
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="outTradeNo != null">
+        #{outTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankType != null">
+        #{bankType,jdbcType=VARCHAR},
+      </if>
+      <if test="cashFee != null">
+        #{cashFee,jdbcType=DOUBLE},
+      </if>
+      <if test="totalFee != null">
+        #{totalFee,jdbcType=INTEGER},
+      </if>
+      <if test="timeEnd != null">
+        #{timeEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.PayWx">
+    update t_pay_wx
+    <set>
+    <if test="uid != null">
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="outTradeNo != null">
+        out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+      </if>
+      <if test="transactionId != null">
+        transaction_id = #{transactionId,jdbcType=VARCHAR},
+      </if>
+      <if test="bankType != null">
+        bank_type = #{bankType,jdbcType=VARCHAR},
+      </if>
+      <if test="cashFee != null">
+        cash_fee = #{cashFee,jdbcType=DOUBLE},
+      </if>
+      <if test="totalFee != null">
+        total_fee = #{totalFee,jdbcType=INTEGER},
+      </if>
+      <if test="timeEnd != null">
+        time_end = #{timeEnd,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.PayWx">
+    update t_pay_wx
+    set uid = #{uid,jdbcType=INTEGER},
+      out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
+      transaction_id = #{transactionId,jdbcType=VARCHAR},
+      bank_type = #{bankType,jdbcType=VARCHAR},
+      cash_fee = #{cashFee,jdbcType=DOUBLE},
+      total_fee = #{totalFee,jdbcType=INTEGER},
+      time_end = #{timeEnd,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

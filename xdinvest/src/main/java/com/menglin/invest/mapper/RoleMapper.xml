@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.menglin.tripro.dao.RoleDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.Role" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="role_name" property="roleName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, role_name
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_common_role
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 根据用户ID ，查询角色信息 -->
+    <select id="selectByAdmin" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select r.id,r.role_name AS roleName from t_common_role r
+	LEFT JOIN t_common_admin_role ar ON ar.role_id =r.id
+	LEFT JOIN t_common_admin a ON ar.admin_id = a.id
+	where a.id= #{adminId,jdbcType=INTEGER}
+  </select>
+ <!-- 查询用户记录总数 -->
+    <select id="selectCount" parameterType="Map" resultType="int">
+        select count(*)  from t_common_role
+    </select>
+  <!-- 分页查询start 和size查询数据 -->
+  <select id="findByPage" parameterType="Map" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List" />
+    	from t_common_role
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_common_role
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.menglin.tripro.entity.Role" >
+    insert into t_common_role (id, role_name)
+    values (#{id,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.Role" >
+    insert into t_common_role
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="roleName != null" >
+        role_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.Role" >
+    update t_common_role
+    <set >
+      <if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.Role" >
+    update t_common_role
+    set role_name = #{roleName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
