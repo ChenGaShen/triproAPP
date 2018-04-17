@@ -1,0 +1,52 @@
+.detail{
+	width: 500px;
+}
+.imgs{
+	width: 300px;
+}
+.fl{
+	float: left;
+}
+.imgs img{
+	width: 300px;
+}
+.fr{
+float: right;
+}
+.clearfix:after {
+  content: '\20';
+  display: block;
+  height: 0;
+  line-height: 0;
+  visibility: hidden;
+  clear: both;
+}
+.kuaidi{
+	margin-top: 10px;
+}
+/*.jieshao{
+	height: 40px;
+	line-height: 40px;
+	overflow: hidden;
+}*/
+.detail{
+	margin-top: 100px;
+}
+.order_item{
+	border: 1px solid #eee;
+	width: 1000px;
+	border-radius: 20px;
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+.order_item img{
+	margin-left: 30px;
+}
+p{
+	height: 40px;
+	line-height: 40px;
+}
+h1{
+	height: 40px;
+	line-height: 40px;
+}

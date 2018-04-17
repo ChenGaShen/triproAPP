@@ -10,8 +10,8 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="Base_Column_List" >
-    question_id, question_classification, question_content, question_answer, question_state, 
-    update_time
+    question_id AS questionId, question_classification AS questionClassification, question_content AS questionContent, 
+    question_answer AS questionAnswer, question_state AS questionState, update_time AS updateTime
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -19,6 +19,47 @@
     from t_questions
     where question_id = #{questionId,jdbcType=INTEGER}
   </select>
+  
+  <!-- 查询用户记录总数 -->
+    <select id="selectCount" parameterType="java.util.Map" resultType="int">
+        select count(*) from t_questions  where 1=1
+        <if test="questionClassification!=null and questionClassification !='' ">
+          AND   question_classification like  CONCAT('%',#{questionClassification},'%') 
+        </if>
+        <if test="questionState!=null  ">
+          AND   question_state   = #{questionState}  
+        </if>
+         <if test="startTime!=null and startTime !='' ">
+          AND   update_time <![CDATA[>=]]> #{startTime} 
+        </if>
+           <if test="endTime!=null and endTime !='' ">
+          AND   update_time <![CDATA[<=]]> #{endTime} 
+        </if>
+    </select>
+    
+  <!-- 分页查询start 和size查询数据 -->
+  <select id="findByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_questions    where 1=1
+           <if test="questionClassification!=null and questionClassification !='' ">
+          AND   question_classification like  CONCAT('%',#{questionClassification},'%') 
+        </if>
+        <if test="questionState!=null  ">
+          AND   question_state   = #{questionState}  
+        </if>
+         <if test="startTime!=null and startTime !='' ">
+          AND   update_time <![CDATA[>=]]> #{startTime} 
+        </if>
+           <if test="endTime!=null and endTime !='' ">
+          AND   update_time <![CDATA[<=]]> #{endTime} 
+        </if>
+        ORDER BY update_time desc 
+        <if test="start!=null and size!=null">
+            limit #{start},#{size} 
+        </if>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_questions
     where question_id = #{questionId,jdbcType=INTEGER}

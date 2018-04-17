@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TRIPRO</title>
+
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-table.css"/>
+<link rel="stylesheet" href="../static/css/jquery.cxcalendar.css"/>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+<script src="../static/js/jquery.cxcalendar.min.js"></script>
+<script src="../static/js/jquery.cxcalendar.languages.js"></script>
+<script type="text/javascript" src="../static/js/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../static/js/util.js"></script>
+<script type="text/javascript" src="../static/js/connoisseurAudit.js"></script>
+</head>
+
+<body>
+	<div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" style="margin-top:15px">
+                    	
+                    	<label class="control-label col-sm-1" for="startTime">注册时间-始</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="startTime"/>
+                        </div>
+                        
+                        <label class="control-label col-sm-1" for="endTime">注册时间-末</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="endTime"/>
+                        </div>
+                        <label class="control-label col-sm-1" for="userPhone">账户手机</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="userPhone"/>
+                        </div>
+                        <div class="col-sm-3" style="text-align:left; float: right;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                             <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-primary">清空</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>       
+
+        <div id="toolbar" class="btn-group">
+             <button id="btn_check" type="button" class="btn btn-default" data-toggle="modal" >
+                <span class="glyphicon glyphicon-check" aria-hidden="true"></span>审核
+            </button>
+             <button id="btn_export" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-export" aria-hidden="true"></span>导出查询数据
+            </button>
+        </div>
+        <table id="t_table" class="table table-hover">
+        	<thead>
+        	
+        	</thead>
+        
+        </table>
+        <!-- 导出数据的table -->
+        <table  class="tb" border="1" cellspacing="0" cellpadding="0" style="visibility: hidden;"  id="exportTable">
+        		<caption style="font-family:sans-serif;font-size: 14px; font-weight: bold;align:center;">表格标题</caption>
+					<thead>
+						<tr id="tr_td" style="font-family:sans-serif;font-size: 14px; font-weight: bold">
+							<td width="66px" >序号</td>
+							<td width="145px" >手机号码</td>
+							<td width="140px" >所在城市(归属地)</td>
+							<td width="140px" >用户身份</td>
+							<td width="145px" >账户状态</td>
+							<td width="140px" >审核状态</td>
+							<td width="140px" >特别备注</td>
+							<td width="220px" >最近登录</td>
+							<td width="220px" >注册时间</td>
+						</tr>
+					</thead>
+					<tbody id="export_body">
+						<!-- js 循环遍历插入数据 -->
+						</tbody>
+        </table>
+<!-- 审核模态框（Modal） -->
+<div class="modal fade" id="auditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    审核认证
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="audit_uid" hidden/>
+            
+            <div class="form-group" style="width: 20%; margin-left: 20px;margin-top: 5px;">
+				<label for="idCard">账户手机</label> <input type="text"
+					class="form-control" id="audit_userPhone"  name="audit_userPhone" disabled  ></input>
+			</div>
+            <div class="form-group clearfix ">
+							<ul class="list-unstyled">
+							<li class="imgLi" class="dl-horizontal"  ><a id="audit_bImg" target="_blank"  ><img id="audit_businessImg"  class="imgAudit" src="../static/img/noimage.png" /></a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<lable>营业执照</lable></li>
+							<li class="imgLi" class="dl-horizontal"><a id="audit_IdImgA" target="_blank"   ><img id="audit_idCardImg" class="imgAudit" src="../static/img/noimage.png" /></a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<lable>身份证A</lable></li>
+							<li class="imgLi" dl-horizontal><a id="audit_IdImgB" target="_blank"  > <img id="audit_idCardImgB" class="imgAudit" src="../static/img/noimage.png"/></a><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<lable>身份证B</lable></li>
+							</ul>
+			</div>
+			<div class="form-group" style="width: 20%; margin-left: 20px;">
+				<label for="audit_idCard">身份证号码</label> <input type="text"
+					class="form-control" id="audit_idCard"  name="audit_idCard" disabled  ></input>
+			</div>
+				<div class="form-group" style="width: 30%; margin-left: 20px;">
+				<label >审核状态</label></br>
+				<label><input type="radio" checked="checked" name="styleshoice1" value="1" />&nbsp;未审核</label> 
+						<label><input type="radio" name="styleshoice1" value="2" />&nbsp;审核中</label> 
+						<label class="lar"><input type="radio" name="styleshoice1" value="3" />&nbsp;已审核</label>
+						<label class="lar"><input type="radio" name="styleshoice1" value="4" />&nbsp;未通过</label>
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button type="button" id="auditButton"  class="btn btn-primary">
+                  	  提交审核
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+</div>   
+</body>
+</html>

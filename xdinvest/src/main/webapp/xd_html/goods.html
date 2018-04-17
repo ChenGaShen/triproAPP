@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TRIPRO</title>
+
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-table.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrapValidator.min.css"/>
+<link rel="stylesheet" href="../static/css/jquery.cxcalendar.css"/>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.cxcalendar.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.cxcalendar.languages.js"></script>
+<script type="text/javascript" src="../static/js/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../static/js/util.js"></script>
+<script type="text/javascript" src="../static/js/goods.js"></script>
+</head>
+<body>
+	<div class="panel-body" style="padding-bottom:0px;">
+        <!-- <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" style="margin-top:15px">
+                    	
+                    	<label class="control-label col-sm-1" for="startTime">注册时间-始</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="startTime"/>
+                        </div>
+                        
+                        <label class="control-label col-sm-1" for="endTime">注册时间-末</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="endTime"/>
+                        </div>
+                        <label class="control-label col-sm-1" for="userPhone">账户手机</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="userPhone"/>
+                        </div>
+                        <label class="control-label col-sm-1" for="auditConent"> 审核状态</label>
+                        <div class="col-sm-3" style="width: 15%;">
+                         <label><input type="radio"  name="auditConent" value="1"/>&nbsp;未审核</label> 
+							<label ><input type="radio" name="auditConent" value="2" />&nbsp;审核中</label>
+							<label ><input type="radio" name="auditConent" value="3"/>&nbsp;已审核</label>
+							<label ><input type="radio" name="auditConent" value="4"/>&nbsp;未通过</label>
+                        </div>
+                        <div class="col-sm-3" style="text-align:left; float: right;margin-top: -30px;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                             <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-primary">清空</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div> -->       
+
+        <div id="toolbar" class="btn-group">
+           <button id="btn_add" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增商品
+            </button>
+            <button id="btn_edit" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>修改商品
+            </button>
+            <button id="btn_delete" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>删除商品
+            </button>
+        </div>
+        <table id="t_table" class="table table-hover">
+        	<thead>
+        	
+        	</thead>
+        
+        </table>
+        
+<!-- 新增模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    商品新增
+                </h4>
+            </div>
+            <form id="form_data" enctype="multipart/form-data">
+						<div class="row" > 
+							<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_commodityName">商品名称</label>
+								<input type="text" class="form-control" id="add_commodityName"  name="add_commodityName" style="width: 105%;"></input>
+								</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_price">普通价格(元)</label>
+								<input type="text" class="form-control" id="add_price"  name="add_price" style="width: 106%;"></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 100px;margin-top: 5px;">
+								<label for="add_discountPrice">供销商价格(元)</label> 
+							<input type="text" class="form-control" id="add_discountPrice"  name="add_discountPrice" style="width: 106%;"></input>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_amount">总数量(件/包)</label> 
+								<input type="text" class="form-control" id="add_amount"  name="add_amount" style="width: 106%;"></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 100px;margin-top: 5px;">
+								<label for="add_allowance">库存(件/包)</label> 
+							<input type="text" class="form-control" id="add_allowance"  name="add_allowance" style="width: 106%;"></input>
+							</div>
+						</div>
+						
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_specification">商品规格</label> 
+								<input type="text" class="form-control" id="add_specification"  name="add_specification" style="width: 106%;" ></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 100px;margin-top: 5px;">
+								<label for="add_description">商品描述</label> 
+							<textarea class="form-control" id="add_description"  name="add_description" rows="6" cols="15" style="width: 110%;"></textarea>
+							</div>
+						</div>
+							<div class="row" ><!-- 横向两个输入框 -->
+								<div class="form-group col-sm-4" style="width: 20%; margin-left: 200px;margin-top: 5px;" id="uploadForm" enctype='multipart/form-data'>
+					                <div class="h4">商品图片预览</div>
+					                <div class="preview">
+			                           		 <img src="../static/img/noimage.png"  id= "imgPre"  alt="" class="productImg" style="display:inline-block; width:200px; height:200px;"/>
+			                       		 </div>
+			                       		 </br>
+					                    <div>
+					                        <span class="btn btn-primary btn-file" style="width: 66%;">
+					                            	选择图片<input type="file" name="file" id="file"  accept="image/gif,image/jpeg,image/x-png"   onchange="javascript:setImagePreview('file','imgPre')"/>
+					                        </span>
+					                    </div>
+					                </div>
+					            </div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button  id="addButton" class="btn btn-primary">
+									确认新增</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+    <!-- 删除商品模态框（Modal） -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   删除商品
+                </h4>
+            </div>
+            <form id="delete_form_data">
+            <input type="text" id="delete_commodityId" hidden/>
+            
+            <div class="modal-body">确认将名称为   <span id="delete_name" style="color: red;"></span>  的商品删除？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button  id="deleteButton" type="button" class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+       <!-- 编辑模态框（Modal） -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    商品编辑
+                </h4>
+            </div>
+            <form id="update_form_data" enctype="multipart/form-data">
+            		<input type="text" id="update_commodityId" name="update_commodityId" hidden/>
+						<div class="row" > 
+							<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_commodityName">商品名称</label>
+								<input type="text" class="form-control" id="update_commodityName"  name="update_commodityName" style="width: 105%;"></input>
+								</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_price">普通价格(元)</label>
+								<input type="text" class="form-control" id="update_price"  name="update_price" style="width: 106%;"></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 100px;margin-top: 5px;">
+								<label for="update_discountPrice">供销商价格(元)</label> 
+							<input type="text" class="form-control" id="update_discountPrice"  name="update_discountPrice" style="width: 105%;"></input>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_amount">总数量(件/包)</label> 
+								<input type="text" class="form-control" id="update_amount"  name="update_amount" style="width: 105%;"></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 100px;margin-top: 5px;">
+								<label for="update_allowance">库存(件/包)</label> 
+							<input type="text" class="form-control" id="update_allowance"  name="update_allowance" style="width: 105%;"></input>
+							</div>
+						</div>
+						
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_specification">商品规格</label> 
+								<input type="text" class="form-control" id="update_specification"  name="update_specification" style="width: 105%;"></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 100px;margin-top: 5px;">
+								<label for="update_description">商品描述</label> 
+							<textarea class="form-control" id="update_description"  name="update_description" rows="6" cols="15" style="width: 110%;"></textarea>
+							</div>
+						</div>
+							<div class="row" ><!-- 横向两个输入框 -->
+								<div class="form-group col-sm-4" style="width: 20%; margin-left: 200px;margin-top: 5px;" id="uploadForm" >
+					                <div class="h4">商品图片预览</div>
+					                <div class="preview">
+			                           		 <img src="../static/img/noimage.png" id="update_imgPre" alt="商品图片"  style="display:inline-block; width:200px; height:200px;"/>
+			                       		 </div>
+			                       		 </br>
+					                    <div>
+					                        <span class="btn btn-primary btn-file" style="width: 66%;">
+					                            	更换图片<input type="file" name="file1" id="file1"  accept="image/gif,image/jpeg,image/x-png" onchange="javascript:setImagePreview('file1','update_imgPre');" />
+					                        </span>
+					                    </div>
+					                </div>
+					            </div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button   id="updateButton" class="btn btn-primary">
+									确认更新</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+</div>  
+<script type="text/javascript">
+//下面用于图片上传预览功能  
+function setImagePreview(img,preview) { 
+var docObj=document.getElementById(img);
+if (!docObj.value.match(/.jpg|.gif|.png|.bmp/i)) {  
+	myToast("您选择的图片格式不正确!");
+    docObj.outerHTML=docObj.outerHTML; 
+    return false;  
+}else{
+	var imgObjPreview=document.getElementById(preview); 
+	if(docObj.files &&docObj.files[0])  
+	{  
+		//火狐下，直接设img属性  
+		imgObjPreview.style.display = 'block';  
+		imgObjPreview.style.width = '200px';  
+		imgObjPreview.style.height = '200px';   
+		//imgObjPreview.src = docObj.files[0].getAsDataURL();  
+		   
+		//火狐7以上版本不能用上面的getAsDataURL()方式获取，需要一下方式  
+		imgObjPreview.src = window.URL.createObjectURL(docObj.files[0]);  
+		
+	}else {  
+		imgObjPreview.style.display = 'none';  
+		document.selection.empty();  
+	} 
+	
+		return true; 
+}
+}  
+</script> 
+</body>
+
+</html>

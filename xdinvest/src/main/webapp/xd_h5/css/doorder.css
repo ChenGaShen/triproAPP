@@ -1,0 +1,51 @@
+.borders{
+	margin-top: 10px;
+	height: 20px;
+	border-top: 1px solid #999;
+	background: #eee;
+	border-bottom: 1px solid #ccc;
+}
+.jiehsao{
+	width: 70%;
+
+}
+.address{
+	background-color: #fff;
+}
+body{
+	background: #eee;	
+}
+.detail{
+	background-color: #fff;
+}
+.guige{
+	color: #aaa;
+}
+.sp1{
+	color: #f00;
+}
+img{
+	margin-left: 20px;
+}
+.footer{
+	background-color: #fff;
+	width: 100%;
+	height: 110px;
+	position: fixed;
+	bottom: 0px;
+}
+.footer p{
+	height: 110px;
+	line-height: 110px;
+
+}
+label{
+	color: #f00;
+}
+.footer span{
+	text-align: center;
+	float: right;
+	width: 30%;
+	background-color: #f00;
+	color: #fff;
+}

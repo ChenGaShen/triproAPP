@@ -1,6 +1,9 @@
 package com.menglin.invest.dao;
 
+import java.util.HashMap;
+import java.util.List;
 import com.menglin.invest.entity.Product;
+
 
 public interface ProductDao {
     int deleteByPrimaryKey(Integer productId);
@@ -14,4 +17,8 @@ public interface ProductDao {
     int updateByPrimaryKeySelective(Product record);
 
     int updateByPrimaryKey(Product record);
+    
+    int selectCount(HashMap<String,Object> map);
+    
+    List<Product> findByPage(HashMap<String,Object> map);
 }

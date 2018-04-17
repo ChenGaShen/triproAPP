@@ -1,0 +1,328 @@
+html,body,h1,h2,h3,h4,ul,li,ol,dl,dt,dd,form,p,input,button,textarea,figure,figcaption {
+    margin: 0;
+    padding: 0;
+}
+body {
+    color: #333;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    /*background-color: #f8f8f8;*/
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+a,input,div,textarea {
+    outline: none;
+}
+a {text-decoration: none;}
+
+i, em {font-style: normal;}
+
+ul,dl,ol {list-style: none;}
+img {
+    border: none;
+    vertical-align: middle;
+}
+input, select, textarea {
+    -webkit-appearance: none;
+    appearance: none;
+    outline: none;
+    vertical-align: middle;
+    background-color: #fff;
+}
+
+div, p, a, label, input, select, textarea {
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+.header-nav .nav-list .nav-item{
+    color: #858383;
+    font-size: 16px;
+}
+
+.lf{
+    float: left;
+}
+.rf{
+    float: right;
+}
+
+/*头部导航栏部分*/
+.site-header{
+    /*width: 1216px;*/
+    width: 100%;
+    height: 188px;
+    /*background-color: aqua;*/
+}
+
+.nav-item{
+    padding: 10px 20px;
+}
+
+.header-nav .nav-list .nav-item a:hover {
+    color: #ea0c17;
+}
+
+a:link,a:visited{color:#858383;text-decoration:none;}
+
+.link-category{
+    font-size: 21px;
+    color: #858383;
+}
+
+.site-header{
+    /*width: 1216px;*/
+    width: 90%;
+    height: 190px;
+    margin: auto;
+    color: #ea0c17;
+    position: relative;
+}
+
+.header-logo{
+    width: 277px;
+    height: 155px;
+    position: absolute;
+    top:18px;
+    /*left: 120px;*/
+    left: 15%;
+}
+
+/*宣传语*/
+.header-slogan{
+    position: absolute;
+    bottom: 66px;
+    /*right: 275px;*/
+    right: 25%;
+}
+
+/*联系电话*/
+.header-phone{
+    position: absolute;
+    /*right: -20px;*/
+    right: -2%;
+    bottom: 66px;
+}
+
+.header-nav{
+    /*background-color: #ea0c17;*/
+    position: absolute;
+    left: 412.5px;
+    padding: 0 25.5px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    bottom: 0px;
+}
+
+
+/*******************************轮播图******************************/
+
+.top{
+    width: 100%;
+    height: 427px;
+    /*background-color: #CCFF33;*/
+}
+
+.banner{
+    z-index: 10;
+    width: 100%;
+    height: 427px;
+    /*border: 1px solid #000;*/
+    /*background-color: #ea0c17;*/
+}
+
+.banner li{
+    width: 100%;
+    height: 427px;
+    /*background-color: blue;*/
+    position: absolute;
+}
+
+/*.banner li img{*/
+    /*width: 100%;*/
+    /*height: 100%;*/
+    /*position: absolute;*/
+/*}*/
+
+.banner li div{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    display: block;
+    background-size: cover;
+    background-position: center center;
+    background-repeat: no-repeat;
+}
+
+.dian{
+    position: relative;
+    bottom: 25px;
+    width: 200px;
+    z-index: 100;
+    /*height: 100px;*/
+    left: 50%;
+    /*background-color: #ea0c17;*/
+}
+
+.dian span{
+    border-radius: 6px;
+    float: left;
+    display: inline-block;
+    margin-right: 4px;
+    margin-left: 4px;
+    width: 12px;
+    height: 12px;
+}
+
+.banner_noisck{
+    background-color:#b5b5b5;
+}
+.banner_isck{
+    background-color:#611014;
+}
+
+/************************************轮播图******************************/
+
+/*品牌中心*/
+/*产品中心图片*/
+/*.brand-product-center{*/
+    /*width: 1014px;*/
+    /*height: 607px;*/
+    /*margin: auto;*/
+    /*padding-top: 24px;*/
+    /*padding-bottom: 27px;*/
+/*}*/
+
+.brand-center{
+    width: 1014px;
+    height: 453px;
+    margin: auto;
+    padding-top: 24px;
+    padding-bottom: 27px;
+}
+.product-center{
+    width: 1014px;
+    height: 139px;
+    margin: auto;
+    padding-top: 24px;
+    padding-bottom: 27px;
+}
+
+/*产品中心*/
+.product-list{
+    width: 792px;
+    margin: auto;
+}
+
+.product-single{
+    position: relative;
+    width: 800px;
+    height: 367px;
+    margin:auto;
+    margin-bottom: 32px;
+}
+
+/*狗粮图片*/
+.product-image{
+    left: 17px;
+    position: absolute;
+}
+
+/*狗粮介绍盒子*/
+.product-description{
+    position: absolute;
+    top: 28px;
+    left: 467px;
+}
+/*狗粮描述标题*/
+.product-span-label{
+    color: #000000;
+    font-size: 22px;
+    font-weight:bold
+}
+/*狗粮描述信息*/
+.product-span-content{
+    color: #464242;
+    font-size: 22px;
+}
+
+
+
+/*联系我们*/
+.contact-center{
+    width: 899px;
+    height: 139px;
+    margin: auto;
+}
+
+/*.product-list .product-image{*/
+    /*position: absolute;*/
+    /*right:10px;*/
+/*}*/
+
+.site-footer{
+    background-color: black;
+    height: 154px;
+    position: relative;//子绝父相
+}
+
+.footer-nav-box{
+    width: 899px;
+    height: 120px;
+    margin: auto;
+    position: relative;//子绝父相
+
+}
+
+.footer-nav{
+    position: absolute;
+    left: 49px;
+    top: 58px;
+}
+
+.footer-nav-item {
+    padding: 0px 28px;
+}
+
+.footer-nav-item .link-category{
+    color: #ffffff;
+    font-size: 14px;
+}
+
+/*公众号二维码*/
+.qrCode-center{
+    width: 320px;
+    height: 86px;
+    position: absolute;
+    right: 90px;
+    top: 19px;
+
+}
+
+/*底部的灰色实线*/
+.footer-line{
+    height: 1px;
+    width: 100%;
+    background-color: #707070;
+    position: absolute;
+    bottom: 34px;
+}
+
+/*版权信息*/
+.copyright{
+    font-size: 10px;
+    color: #ffffff;
+    line-height: 34px;
+    height: 34px;
+    width: 100%;
+    text-align: center;
+    position: absolute;
+    bottom: 0px;
+}
+
+/*回到顶部*/
+.back_to_top{
+    position: fixed;
+    bottom:55px;
+    right: 30px;
+} 

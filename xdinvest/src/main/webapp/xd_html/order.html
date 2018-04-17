@@ -1,0 +1,302 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TRIPRO</title>
+
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-table.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrapValidator.min.css"/>
+<link rel="stylesheet" href="../static/css/jquery.cxcalendar.css"/>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrapValidator.min.js"></script>
+<script src="../static/js/jquery.cxcalendar.min.js"></script>
+<script src="../static/js/jquery.cxcalendar.languages.js"></script>
+<script type="text/javascript" src="../static/js/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../static/js/util.js"></script>
+<script type="text/javascript" src="../static/js/order.js"></script>
+</head>
+<body>
+	<div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" style="margin-top:15px">
+                    	
+                    	<label class="control-label col-sm-1" for="startTime" style="margin-right: -18px; ">下单时间-始</label>
+                        <div class="col-sm-3" style="width: 10%;" class="form-inline">
+						                      
+                            <input type="text" class="form-control" id="startTime"/>
+                        </div>
+                        
+                        <label class="control-label col-sm-1" for="endTime" style="margin-right: -18px; margin-left: -28px;">下单时间-末</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="endTime"/>
+                        </div>
+                        <label class="control-label col-sm-1" for="userPhone" style="margin-right: -18px; margin-left: -35px;">下单账户</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="userPhone"/>
+                        </div>
+                        <label class="control-label col-sm-1" for="search_state" style="margin-right: -18px; margin-left: -35px;"> 支付状态</label> <!-- 状态：0待付款1已付款2取消订单3已失效 -->
+                        <div class="col-sm-3" style="width: 15%;">
+                         <label><input type="radio"  name="search_state" value="0"/>&nbsp;待付款</label> 
+							<label ><input type="radio" name="search_state" value="1" />&nbsp;已付款</label>
+							<label ><input type="radio" name="search_state" value="2"/>&nbsp;取消订单</label>
+							<label ><input type="radio" name="search_state" value="3"/>&nbsp;已失效</label>
+                        </div>
+                        <label class="control-label col-sm-1" for="search_receiveState" style="margin-right: -18px; margin-left: -35px;">货运状态</label> <!-- 状态：0待发货1配送中2已签收-->
+                        <div class="col-sm-3" style="width: 15%;">
+                         <label><input type="radio"  name="search_receiveState" value="0"/>&nbsp;待发货</label> 
+							<label ><input type="radio" name="search_receiveState" value="1" />&nbsp;配送中</label>
+							<label ><input type="radio" name="search_receiveState" value="2"/>&nbsp;已签收</label>
+                        </div>
+                        <div class="col-sm-3" style="text-align:left; float: right;margin-top: -30px; margin-right: -100px;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                             <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-primary">清空</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>       
+
+        <div id="toolbar" class="btn-group">
+            <button id="btn_phyc" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-plane" aria-hidden="true"></span>&nbsp;物流录入
+            </button>
+             <button id="btn_remark" type="button" class="btn btn-default" data-toggle="modal" >
+                <span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span>&nbsp;备注信息
+            </button>
+             <button id="btn_export" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-export" aria-hidden="true"></span>&nbsp;导出查询数据
+            </button>
+        </div>
+        <table id="t_table" class="table table-hover">
+        	<thead>
+        	
+        	</thead>
+        
+        </table>
+        <!-- 导出数据的table -->
+        <table  class="tb" border="1" cellspacing="0" cellpadding="0" style="visibility: hidden;"  id="exportTable">
+        		<caption style="font-family:sans-serif;font-size: 14px; font-weight: bold;align:center;">表格标题</caption>
+					<thead>
+						<tr id="tr_td" style="font-family:sans-serif;font-size: 14px; font-weight: bold">
+							<td width="66px" >序号</td>
+							<td width="145px" >下单账户</td>
+							<td width="140px" >订单号</td>
+							<td width="140px" >商品信息</td>
+							<td width="145px" >订单总额</td>
+							<td width="140px" >支付状态</td>
+							<td width="140px" >货运状态</td>
+							<td width="220px" >收件人姓名</td>
+							<td width="220px" >收件人电话</td>
+							<td width="145px" >收件人地址</td>
+							<td width="140px" >物流公司</td>
+							<td width="140px" >运单号</td>
+							<td width="220px" >备注</td>
+							<td width="220px" >支付时间</td>
+							<td width="220px" >下单时间</td>
+						</tr>
+					</thead>
+					<tbody id="export_body">
+						<!-- js 循环遍历插入数据 -->
+						</tbody>
+        </table>
+    
+           <!-- 物流录入模态框（Modal） -->
+<div class="modal fade" id="phycModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   物流录入
+                </h4>
+            </div>
+            <form id="update_form_data" enctype="multipart/form-data">
+            		<input type="text" id="phyc_orderId" name="phyc_orderId" hidden/>
+						<div class="row" > 
+							<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="phyc_orderId">订单ID</label>
+								<input type="text" class="form-control" id="phyc_orderId"  name="phyc_orderId" style="width: 105%;" readonly="readonly"></input>
+								</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="phyc_userPhone">下单账户 </label>
+								<input type="text" class="form-control" id="phyc_userPhone"  name="phyc_userPhone" style="width: 106%;" readonly="readonly"></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 100px;margin-top: 5px;">
+								<label for="phyc_receiveName">收件人姓名</label> 
+							<input type="text" class="form-control" id="phyc_receiveName"  name="phyc_receiveName" style="width: 105%;" readonly="readonly"></input>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="phyc_receivePhone">收件人电话</label> 
+								<input type="text" class="form-control" id="phyc_receivePhone"  name="phyc_receivePhone" style="width: 105%;" readonly="readonly"></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 100px;margin-top: 5px;">
+								<label for="phyc_receiveAddress">收件人地址</label>
+							<input type="text" class="form-control" id="phyc_receiveAddress"  name="phyc_receiveAddress" style="width: 110%;" readonly="readonly"></input>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width:17%; margin-left:200px; margin-top:5px; ">
+							<label for="phyc_company">物流公司</label> 
+							<select class="form-control" name="phyc_company" id="phyc_company">
+							<option value="">请选择快递公司</option>
+							<option value="sf">顺丰</option>
+							<option value="sto">申通</option>
+							<option value="yt">圆通</option>
+							<option value="yd">韵达</option>
+							<option value="ems">EMS</option>
+							<option value="zto">中通</option>
+							<option value="ht">汇通</option>
+							<option value="qf">全峰</option>
+							<option value="db">德邦</option>
+							<option value="gt">国通</option>
+							<option value="rfd">如风达</option>
+							<option value="jd">京东快递</option>
+							<option value="zjs">宅急送</option>
+							<option value="emsg">EMS国际</option>
+							<option value="fedex">Fedex国际</option>
+							<option value="yzgn">邮政国内（挂号信）</option>
+							<option value="ups">UPS国际快递</option>
+							<option value="ztky">中铁快运</option>
+							<option value="jiaji">佳吉快运</option>
+							<option value="suer">速尔快递</option>
+							<option value="xfwl">信丰物流</option>
+							<option value="yousu">优速快递</option>
+							<option value="zhongyou">中邮物流</option>
+							<option value="tdhy">天地华宇</option>
+							<option value="axd">安信达快递</option>
+							<option value="kuaijie">快捷速递</option>
+							 </select>
+							</div>
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 100px;margin-top: 5px;">
+								<label for="phyc_air">运单号</label> 
+							<input type="text" class="form-control" id="phyc_air"  name="phyc_air" rows="6" cols="15" style="width: 110%;"/>
+							</div>
+						</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button   id="phycButton" class="btn btn-primary">
+									确认</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+                  <!-- 备注模态框（Modal） -->
+<div class="modal fade" id="remarkModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   备注编辑
+                </h4>
+            </div>
+            <form id="remark_form_data" enctype="multipart/form-data">
+						<div class="row" > 
+							<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="remark_orderId">订单ID</label>
+								<input type="text" class="form-control" id="remark_orderId"  name="remark_orderId" style="width: 105%;" readonly="readonly" ></input>
+								</div>
+						</div>
+							<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 33%; margin-left: 200px;margin-top: 5px;" >
+								<label for="remark_state">支付状态&nbsp;</label>
+							<label><input type="radio"  name="remark_state" value="0" disabled="disabled"/>&nbsp;待付款</label> 
+							<label ><input type="radio" name="remark_state" value="1" disabled="disabled"/>&nbsp;已付款</label>
+							<label ><input type="radio" name="remark_state" value="2" disabled="disabled"/>&nbsp;取消订单</label>
+							<label ><input type="radio" name="remark_state" value="3" disabled="disabled"/>&nbsp;已失效</label>
+                        </div>
+							<div class="form-group col-sm-4" style="width: 33%; margin-left: 100px;margin-top: 5px;">
+								<label for="remark_receiveState">货运状态 &nbsp;</label>
+							<label><input type="radio"  name="remark_receiveState" value="" disabled="disabled"/>&nbsp;无</label> 
+							<label><input type="radio"  name="remark_receiveState" value="0" disabled="disabled"/>&nbsp;待发货</label> 
+							<label ><input type="radio" name="remark_receiveState" value="1" disabled="disabled" />&nbsp;配送中</label>
+							<label ><input type="radio" name="remark_receiveState" value="2" disabled="disabled"/>&nbsp;已签收</label>
+							</div>
+						</div>	
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="remark_userPhone">下单账户 </label>
+								<input type="text" class="form-control" id="remark_userPhone"  name="remark_userPhone" style="width: 106%;" readonly="readonly"></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 100px;margin-top: 5px;">
+								<label for="remark_receiveName">收件人姓名</label> 
+							<input type="text" class="form-control" id="remark_receiveName"  name="remark_receiveName" style="width: 105%;" ></input>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 15%; margin-left: 200px;margin-top: 5px;">
+								<label for="remark_receivePhone">收件人电话</label> 
+								<input type="text" class="form-control" id="remark_receivePhone"  name="remark_receivePhone" style="width: 105%;" ></input>
+							</div>
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 100px;margin-top: 5px;">
+								<label for="remark_receiveAddress">收件人地址</label>
+							<input type="text" class="form-control" id="remark_receiveAddress"  name="remark_receiveAddress" style="width: 110%;" ></input>
+							</div>
+						</div>
+						<div class="row" >
+								<div class="form-group col-sm-4" style="width: 30%; margin-left: 198px;margin-top: 5px;">
+								<label for="remark_remark">订单备注</label> 
+							<textarea class="form-control" id="remark_remark"  name="remark_remark" rows="6" cols="15" style="width: 110%;"></textarea>
+							</div>
+						
+						</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button   id="remarkButton" class="btn btn-primary">
+									确认</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+        <!-- 取消黑名单模态框（Modal） -->
+<div class="modal fade" id="outblackModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    取消黑名单
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="out_black_uid" hidden/>
+            
+            <div class="modal-body">确认将账户   <span id="out_black_userPhone" style="color: #ffffff;"></span>  排出黑名单？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button type="button" id="outBlackButton"  class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+</div>   
+</body>
+</html>

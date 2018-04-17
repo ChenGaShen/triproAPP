@@ -1,5 +1,7 @@
 package com.menglin.invest.dao;
 
+import java.util.HashMap;
+import java.util.List;
 import com.menglin.invest.entity.UserFeedback;
 
 public interface UserFeedbackDao {
@@ -14,4 +16,8 @@ public interface UserFeedbackDao {
     int updateByPrimaryKeySelective(UserFeedback record);
 
     int updateByPrimaryKey(UserFeedback record);
+    
+    int selectCount(HashMap<String,Object> map);
+    
+    List<UserFeedback> findByPage(HashMap<String,Object> map);
 }

@@ -1,6 +1,7 @@
 package com.menglin.invest.dao;
 
 import java.util.HashMap;
+import java.util.List;
 
 import com.menglin.invest.entity.User;
 
@@ -21,6 +22,10 @@ public interface UserDao {
     User judgeUser(String userPhone);
     
     User selectByNameAndPass(HashMap<String,Object> map);
+    
+    int selectCount(HashMap<String,Object> map);
+    
+    List<User> findByPage(HashMap<String,Object> map);
     
     
 }

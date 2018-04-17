@@ -12,7 +12,7 @@
     <result column="news_content" property="newsContent" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    news_id, news_name, news_classification, add_time, update_time
+    news_id AS newsId, news_name AS newsName, news_classification AS newsClassification, add_time AS addTime, update_time AS updateTime
   </sql>
   <sql id="Blob_Column_List" >
     news_content
@@ -25,6 +25,42 @@
     from t_information
     where news_id = #{newsId,jdbcType=INTEGER}
   </select>
+  
+  
+  <!-- 查询用户记录总数 -->
+    <select id="selectCount" parameterType="java.util.Map" resultType="int">
+        select count(*) from t_information  where 1=1
+        <if test="newsClassification!=null  ">
+          AND   news_classification   = #{newsClassification}  
+        </if>
+         <if test="startTime!=null and startTime !='' ">
+          AND   update_time <![CDATA[>=]]> #{startTime} 
+        </if>
+           <if test="endTime!=null and endTime !='' ">
+          AND   update_time <![CDATA[<=]]> #{endTime} 
+        </if>
+    </select>
+    
+  <!-- 分页查询start 和size查询数据 -->
+  <select id="findByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from t_information    where 1=1
+        <if test="newsClassification!=null  ">
+          AND   news_classification   = #{newsClassification}  
+        </if>
+         <if test="startTime!=null and startTime !='' ">
+          AND   update_time <![CDATA[>=]]> #{startTime} 
+        </if>
+           <if test="endTime!=null and endTime !='' ">
+          AND   update_time <![CDATA[<=]]> #{endTime} 
+        </if>
+        ORDER BY update_time desc 
+        <if test="start!=null and size!=null">
+            limit #{start},#{size} 
+        </if>
+  </select>
+  
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_information
     where news_id = #{newsId,jdbcType=INTEGER}

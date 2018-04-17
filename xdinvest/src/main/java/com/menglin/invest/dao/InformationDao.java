@@ -1,5 +1,7 @@
 package com.menglin.invest.dao;
 
+import java.util.HashMap;
+import java.util.List;
 import com.menglin.invest.entity.Information;
 
 public interface InformationDao
@@ -17,4 +19,8 @@ public interface InformationDao
     int updateByPrimaryKeyWithBLOBs(Information record);
 
     int updateByPrimaryKey(Information record);
+    
+    int selectCount(HashMap<String,Object> map);
+    
+    List<Information> findByPage(HashMap<String,Object> map);
 }

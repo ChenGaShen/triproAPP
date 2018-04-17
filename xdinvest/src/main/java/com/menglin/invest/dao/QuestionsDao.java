@@ -1,5 +1,7 @@
 package com.menglin.invest.dao;
 
+import java.util.HashMap;
+import java.util.List;
 import com.menglin.invest.entity.Questions;
 
 public interface QuestionsDao {
@@ -14,4 +16,8 @@ public interface QuestionsDao {
     int updateByPrimaryKeySelective(Questions record);
 
     int updateByPrimaryKey(Questions record);
+    
+    int selectCount(HashMap<String,Object> map);
+    
+    List<Questions> findByPage(HashMap<String,Object> map);
 }
