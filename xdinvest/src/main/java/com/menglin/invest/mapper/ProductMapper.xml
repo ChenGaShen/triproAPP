@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.menglin.invest.dao.ProductDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.invest.entity.Product" >
+    <id column="product_id" property="productId" jdbcType="INTEGER" />
+    <result column="product_name" property="productName" jdbcType="VARCHAR" />
+    <result column="serial_number" property="serialNumber" jdbcType="VARCHAR" />
+    <result column="investment_threshold" property="investmentThreshold" jdbcType="VARCHAR" />
+    <result column="time_either" property="timeEither" jdbcType="VARCHAR" />
+    <result column="investment_orientation" property="investmentOrientation" jdbcType="VARCHAR" />
+    <result column="capital_type" property="capitalType" jdbcType="VARCHAR" />
+    <result column="fund_type" property="fundType" jdbcType="VARCHAR" />
+    <result column="organizational_form" property="organizationalForm" jdbcType="VARCHAR" />
+    <result column="target_scale" property="targetScale" jdbcType="VARCHAR" />
+    <result column="management_fee" property="managementFee" jdbcType="VARCHAR" />
+    <result column="fund_manager" property="fundManager" jdbcType="VARCHAR" />
+    <result column="company" property="company" jdbcType="VARCHAR" />
+    <result column="career_backgroud" property="careerBackgroud" jdbcType="VARCHAR" />
+    <result column="onsal_number" property="onsalNumber" jdbcType="INTEGER" />
+    <result column="fund_referred" property="fundReferred" jdbcType="VARCHAR" />
+    <result column="year_income" property="yearIncome" jdbcType="REAL" />
+    <result column="accumulated_income" property="accumulatedIncome" jdbcType="REAL" />
+    <result column="cumulative_value" property="cumulativeValue" jdbcType="DOUBLE" />
+    <result column="trend_img" property="trendImg" jdbcType="VARCHAR" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="product_state" property="productState" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    product_id, product_name, serial_number, investment_threshold, time_either, investment_orientation, 
+    capital_type, fund_type, organizational_form, target_scale, management_fee, fund_manager, 
+    company, career_backgroud, onsal_number, fund_referred, year_income, accumulated_income, 
+    cumulative_value, trend_img, add_time, update_time, product_state
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_product
+    where product_id = #{productId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_product
+    where product_id = #{productId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.menglin.invest.entity.Product" >
+    insert into t_product (product_id, product_name, serial_number, 
+      investment_threshold, time_either, investment_orientation, 
+      capital_type, fund_type, organizational_form, 
+      target_scale, management_fee, fund_manager, 
+      company, career_backgroud, onsal_number, 
+      fund_referred, year_income, accumulated_income, 
+      cumulative_value, trend_img, add_time, 
+      update_time, product_state)
+    values (#{productId,jdbcType=INTEGER}, #{productName,jdbcType=VARCHAR}, #{serialNumber,jdbcType=VARCHAR}, 
+      #{investmentThreshold,jdbcType=VARCHAR}, #{timeEither,jdbcType=VARCHAR}, #{investmentOrientation,jdbcType=VARCHAR}, 
+      #{capitalType,jdbcType=VARCHAR}, #{fundType,jdbcType=VARCHAR}, #{organizationalForm,jdbcType=VARCHAR}, 
+      #{targetScale,jdbcType=VARCHAR}, #{managementFee,jdbcType=VARCHAR}, #{fundManager,jdbcType=VARCHAR}, 
+      #{company,jdbcType=VARCHAR}, #{careerBackgroud,jdbcType=VARCHAR}, #{onsalNumber,jdbcType=INTEGER}, 
+      #{fundReferred,jdbcType=VARCHAR}, #{yearIncome,jdbcType=REAL}, #{accumulatedIncome,jdbcType=REAL}, 
+      #{cumulativeValue,jdbcType=DOUBLE}, #{trendImg,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{productState,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.menglin.invest.entity.Product" >
+    insert into t_product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        product_id,
+      </if>
+      <if test="productName != null" >
+        product_name,
+      </if>
+      <if test="serialNumber != null" >
+        serial_number,
+      </if>
+      <if test="investmentThreshold != null" >
+        investment_threshold,
+      </if>
+      <if test="timeEither != null" >
+        time_either,
+      </if>
+      <if test="investmentOrientation != null" >
+        investment_orientation,
+      </if>
+      <if test="capitalType != null" >
+        capital_type,
+      </if>
+      <if test="fundType != null" >
+        fund_type,
+      </if>
+      <if test="organizationalForm != null" >
+        organizational_form,
+      </if>
+      <if test="targetScale != null" >
+        target_scale,
+      </if>
+      <if test="managementFee != null" >
+        management_fee,
+      </if>
+      <if test="fundManager != null" >
+        fund_manager,
+      </if>
+      <if test="company != null" >
+        company,
+      </if>
+      <if test="careerBackgroud != null" >
+        career_backgroud,
+      </if>
+      <if test="onsalNumber != null" >
+        onsal_number,
+      </if>
+      <if test="fundReferred != null" >
+        fund_referred,
+      </if>
+      <if test="yearIncome != null" >
+        year_income,
+      </if>
+      <if test="accumulatedIncome != null" >
+        accumulated_income,
+      </if>
+      <if test="cumulativeValue != null" >
+        cumulative_value,
+      </if>
+      <if test="trendImg != null" >
+        trend_img,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="productState != null" >
+        product_state,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="productId != null" >
+        #{productId,jdbcType=INTEGER},
+      </if>
+      <if test="productName != null" >
+        #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null" >
+        #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="investmentThreshold != null" >
+        #{investmentThreshold,jdbcType=VARCHAR},
+      </if>
+      <if test="timeEither != null" >
+        #{timeEither,jdbcType=VARCHAR},
+      </if>
+      <if test="investmentOrientation != null" >
+        #{investmentOrientation,jdbcType=VARCHAR},
+      </if>
+      <if test="capitalType != null" >
+        #{capitalType,jdbcType=VARCHAR},
+      </if>
+      <if test="fundType != null" >
+        #{fundType,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationalForm != null" >
+        #{organizationalForm,jdbcType=VARCHAR},
+      </if>
+      <if test="targetScale != null" >
+        #{targetScale,jdbcType=VARCHAR},
+      </if>
+      <if test="managementFee != null" >
+        #{managementFee,jdbcType=VARCHAR},
+      </if>
+      <if test="fundManager != null" >
+        #{fundManager,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="careerBackgroud != null" >
+        #{careerBackgroud,jdbcType=VARCHAR},
+      </if>
+      <if test="onsalNumber != null" >
+        #{onsalNumber,jdbcType=INTEGER},
+      </if>
+      <if test="fundReferred != null" >
+        #{fundReferred,jdbcType=VARCHAR},
+      </if>
+      <if test="yearIncome != null" >
+        #{yearIncome,jdbcType=REAL},
+      </if>
+      <if test="accumulatedIncome != null" >
+        #{accumulatedIncome,jdbcType=REAL},
+      </if>
+      <if test="cumulativeValue != null" >
+        #{cumulativeValue,jdbcType=DOUBLE},
+      </if>
+      <if test="trendImg != null" >
+        #{trendImg,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productState != null" >
+        #{productState,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.invest.entity.Product" >
+    update t_product
+    <set >
+      <if test="productName != null" >
+        product_name = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="serialNumber != null" >
+        serial_number = #{serialNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="investmentThreshold != null" >
+        investment_threshold = #{investmentThreshold,jdbcType=VARCHAR},
+      </if>
+      <if test="timeEither != null" >
+        time_either = #{timeEither,jdbcType=VARCHAR},
+      </if>
+      <if test="investmentOrientation != null" >
+        investment_orientation = #{investmentOrientation,jdbcType=VARCHAR},
+      </if>
+      <if test="capitalType != null" >
+        capital_type = #{capitalType,jdbcType=VARCHAR},
+      </if>
+      <if test="fundType != null" >
+        fund_type = #{fundType,jdbcType=VARCHAR},
+      </if>
+      <if test="organizationalForm != null" >
+        organizational_form = #{organizationalForm,jdbcType=VARCHAR},
+      </if>
+      <if test="targetScale != null" >
+        target_scale = #{targetScale,jdbcType=VARCHAR},
+      </if>
+      <if test="managementFee != null" >
+        management_fee = #{managementFee,jdbcType=VARCHAR},
+      </if>
+      <if test="fundManager != null" >
+        fund_manager = #{fundManager,jdbcType=VARCHAR},
+      </if>
+      <if test="company != null" >
+        company = #{company,jdbcType=VARCHAR},
+      </if>
+      <if test="careerBackgroud != null" >
+        career_backgroud = #{careerBackgroud,jdbcType=VARCHAR},
+      </if>
+      <if test="onsalNumber != null" >
+        onsal_number = #{onsalNumber,jdbcType=INTEGER},
+      </if>
+      <if test="fundReferred != null" >
+        fund_referred = #{fundReferred,jdbcType=VARCHAR},
+      </if>
+      <if test="yearIncome != null" >
+        year_income = #{yearIncome,jdbcType=REAL},
+      </if>
+      <if test="accumulatedIncome != null" >
+        accumulated_income = #{accumulatedIncome,jdbcType=REAL},
+      </if>
+      <if test="cumulativeValue != null" >
+        cumulative_value = #{cumulativeValue,jdbcType=DOUBLE},
+      </if>
+      <if test="trendImg != null" >
+        trend_img = #{trendImg,jdbcType=VARCHAR},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="productState != null" >
+        product_state = #{productState,jdbcType=INTEGER},
+      </if>
+    </set>
+    where product_id = #{productId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.menglin.invest.entity.Product" >
+    update t_product
+    set product_name = #{productName,jdbcType=VARCHAR},
+      serial_number = #{serialNumber,jdbcType=VARCHAR},
+      investment_threshold = #{investmentThreshold,jdbcType=VARCHAR},
+      time_either = #{timeEither,jdbcType=VARCHAR},
+      investment_orientation = #{investmentOrientation,jdbcType=VARCHAR},
+      capital_type = #{capitalType,jdbcType=VARCHAR},
+      fund_type = #{fundType,jdbcType=VARCHAR},
+      organizational_form = #{organizationalForm,jdbcType=VARCHAR},
+      target_scale = #{targetScale,jdbcType=VARCHAR},
+      management_fee = #{managementFee,jdbcType=VARCHAR},
+      fund_manager = #{fundManager,jdbcType=VARCHAR},
+      company = #{company,jdbcType=VARCHAR},
+      career_backgroud = #{careerBackgroud,jdbcType=VARCHAR},
+      onsal_number = #{onsalNumber,jdbcType=INTEGER},
+      fund_referred = #{fundReferred,jdbcType=VARCHAR},
+      year_income = #{yearIncome,jdbcType=REAL},
+      accumulated_income = #{accumulatedIncome,jdbcType=REAL},
+      cumulative_value = #{cumulativeValue,jdbcType=DOUBLE},
+      trend_img = #{trendImg,jdbcType=VARCHAR},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      product_state = #{productState,jdbcType=INTEGER}
+    where product_id = #{productId,jdbcType=INTEGER}
+  </update>
+</mapper>

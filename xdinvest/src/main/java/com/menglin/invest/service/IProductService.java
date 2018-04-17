@@ -1,12 +1,16 @@
 package com.menglin.invest.service;
 
-import java.util.List;
 
 import com.menglin.invest.entity.Product;
+import com.menglin.invest.util.PageBean;
 
 public interface IProductService {
-	public List<Product> findAll();
-    public void saveProduct(Product book);
-    public Product findOne(int id);
-    public void delete(int id);
+	
+    
+    public Product get(int productId);
+   	public void save(Product product);
+   	public void delete(int productId);
+   	public void update(Product product);
+   	PageBean<Product> findByPage(Integer currentPage,Integer pageSize,Product product,String startTime,String endTime);
+   	
 }

@@ -12,31 +12,21 @@ public class UserVO {
 	
 		private Result result;
 		
-		private Integer uid;
+		private Integer userId;
 	 
-	    private String userPhone;
+		private String userName;
 
-	    private Integer state;
+		private String userPhone;
 
-	    private String phoneBelong;
+		private String userPass;
 
-	    private Date loginTime;
+		private String idCard;
 
-	    private Date addTime;
+		private Date addTime;
 
-	    private Integer identity;
+		private Integer onState;
 
-	    private Integer audit;
-
-	    private String idCard;
-
-	    private String idCardImg;
-
-	    private String idCardImgB;
-
-	    private String businessImg;
-	    
-	    private String remark;
+		private Integer identity;
 
 		public Result getResult() {
 			return result;
@@ -46,12 +36,20 @@ public class UserVO {
 			this.result = result;
 		}
 
-		public Integer getUid() {
-			return uid;
+		public Integer getUserId() {
+			return userId;
 		}
 
-		public void setUid(Integer uid) {
-			this.uid = uid;
+		public void setUserId(Integer userId) {
+			this.userId = userId;
+		}
+
+		public String getUserName() {
+			return userName;
+		}
+
+		public void setUserName(String userName) {
+			this.userName = userName;
 		}
 
 		public String getUserPhone() {
@@ -62,54 +60,12 @@ public class UserVO {
 			this.userPhone = userPhone;
 		}
 
-
-		public Integer getState() {
-			return state;
+		public String getUserPass() {
+			return userPass;
 		}
 
-		public void setState(Integer state) {
-			this.state = state;
-		}
-
-		public String getPhoneBelong() {
-			return phoneBelong;
-		}
-
-		public void setPhoneBelong(String phoneBelong) {
-			this.phoneBelong = phoneBelong;
-		}
-
-		public Date getLoginTime() {
-			return loginTime;
-		}
-
-		public void setLoginTime(Date loginTime) {
-			this.loginTime = loginTime;
-		}
-
-		public Date getAddTime() {
-			return addTime;
-		}
-
-		public void setAddTime(Date addTime) {
-			this.addTime = addTime;
-		}
-
-		public Integer getIdentity() {
-			return identity;
-		}
-
-		public void setIdentity(Integer identity) {
-			this.identity = identity;
-		}
-
-
-		public Integer getAudit() {
-			return audit;
-		}
-
-		public void setAudit(Integer audit) {
-			this.audit = audit;
+		public void setUserPass(String userPass) {
+			this.userPass = userPass;
 		}
 
 		public String getIdCard() {
@@ -120,38 +76,33 @@ public class UserVO {
 			this.idCard = idCard;
 		}
 
-		public String getIdCardImg() {
-			return idCardImg;
+		public Date getAddTime() {
+			return addTime;
 		}
 
-		public void setIdCardImg(String idCardImg) {
-			this.idCardImg = idCardImg;
+		public void setAddTime(Date addTime) {
+			this.addTime = addTime;
 		}
 
-		public String getIdCardImgB() {
-			return idCardImgB;
+		public Integer getOnState() {
+			return onState;
 		}
 
-		public void setIdCardImgB(String idCardImgB) {
-			this.idCardImgB = idCardImgB;
+		public void setOnState(Integer onState) {
+			this.onState = onState;
 		}
 
-		public String getBusinessImg() {
-			return businessImg;
+		public Integer getIdentity() {
+			return identity;
 		}
 
-		public void setBusinessImg(String businessImg) {
-			this.businessImg = businessImg;
+		public void setIdentity(Integer identity) {
+			this.identity = identity;
 		}
+		
+		
 
-		public String getRemark() {
-			return remark;
-		}
-
-		public void setRemark(String remark) {
-			this.remark = remark;
-		}
-	    
+		
 	    
 
 }

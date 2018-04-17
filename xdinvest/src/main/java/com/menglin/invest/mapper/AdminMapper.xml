@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.menglin.tripro.dao.AdminDao" >
-  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.Admin" >
+<mapper namespace="com.menglin.invest.dao.AdminDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.invest.entity.Admin" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="admin_name" property="adminName" jdbcType="VARCHAR" />
     <result column="admin_pass" property="adminPass" jdbcType="VARCHAR" />
@@ -54,13 +54,13 @@
     delete from t_common_admin
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.tripro.entity.Admin" >
+  <insert id="insert" parameterType="com.menglin.invest.entity.Admin" >
     insert into t_common_admin (id, admin_name, admin_pass
       )
     values (#{id,jdbcType=INTEGER}, #{adminName,jdbcType=VARCHAR}, #{adminPass,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.Admin" >
+  <insert id="insertSelective" parameterType="com.menglin.invest.entity.Admin" >
     insert into t_common_admin
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -85,7 +85,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.Admin" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.invest.entity.Admin" >
     update t_common_admin
     <set >
       <if test="adminName != null" >
@@ -97,7 +97,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.Admin" >
+  <update id="updateByPrimaryKey" parameterType="com.menglin.invest.entity.Admin" >
     update t_common_admin
     set admin_name = #{adminName,jdbcType=VARCHAR},
       admin_pass = #{adminPass,jdbcType=VARCHAR}

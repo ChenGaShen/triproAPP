@@ -1,17 +1,19 @@
 package com.menglin.invest.service;
 
-import java.util.List;
 
 import com.menglin.invest.entity.User;
 import com.menglin.invest.util.PageBean;
 
 public interface IUserService {
-	public List<User> findAll();
-    public void saveUser(User book);
-    public User findOne(int id);
-    public void delete(int id);
-    public PageBean<User> findPageBycondition(int page,int size, User model);
-    
-      
+	
+	public User get(int userId);
+	public void save(User user);
+	public void delete(int userId);
+	public void update(User user);
+	public boolean unique(String userPhone);
+	public User checkLogin(String userPhone, String userPass);
+	PageBean<User> findByPage(Integer currentPage,Integer pageSize,User model,String startTime,String endTime);
+	
+	
 
 }

@@ -1,308 +1,236 @@
 package com.menglin.invest.entity;
-// default package
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+public class Product {
+	
+    private Integer productId;
 
-@Entity
-@Table(name="t_product")
-public class Product  implements java.io.Serializable {
+    private String productName;
 
-	 private static final long serialVersionUID = 1L;
-    // Fields    
+    private String serialNumber;
 
-     private Integer id;
-     private String productName;
-     private String serialNumber;
-     private String investmentThreshold;
-     private String timeEither;
-     private String investmentOrientation;
-     private String capitalType;
-     private String fundType;
-     private String organizationalForm;
-     private String targetScale;
-     private String managementFee;
-     private String fundManager;
-     private String company;
-     private String careerBackgroud;
-     private Integer onsalNumber;
-     private String fundReferred;
-     private Float yearIncome;
-     private Float accumulatedIncome;
-     private Double cumulativeValue;
-     private String trendImg;
-     private Date addTime;
-     private Date updateTime;
+    private String investmentThreshold;
 
+    private String timeEither;
 
-    // Constructors
+    private String investmentOrientation;
 
-    /** default constructor */
-    public Product() {
+    private String capitalType;
+
+    private String fundType;
+
+    private String organizationalForm;
+
+    private String targetScale;
+
+    private String managementFee;
+
+    private String fundManager;
+
+    private String company;
+
+    private String careerBackgroud;
+
+    private Integer onsalNumber;
+
+    private String fundReferred;
+
+    private Float yearIncome;
+
+    private Float accumulatedIncome;
+
+    private Double cumulativeValue;
+
+    private String trendImg;
+
+    private Date addTime;
+
+    private Date updateTime;
+
+    private Integer productState;
+
+    public Integer getProductId() {
+        return productId;
     }
 
-    
-    /** full constructor */
-    public Product(String productName, String serialNumber, String investmentThreshold, String timeEither, String investmentOrientation, String capitalType, String fundType, String organizationalForm, String targetScale, String managementFee, String fundManager, String company, String careerBackgroud, Integer onsalNumber, String fundReferred, Float yearIncome, Float accumulatedIncome, Double cumulativeValue, String trendImg, Date addTime, Date updateTime) {
-        this.productName = productName;
-        this.serialNumber = serialNumber;
-        this.investmentThreshold = investmentThreshold;
-        this.timeEither = timeEither;
-        this.investmentOrientation = investmentOrientation;
-        this.capitalType = capitalType;
-        this.fundType = fundType;
-        this.organizationalForm = organizationalForm;
-        this.targetScale = targetScale;
-        this.managementFee = managementFee;
-        this.fundManager = fundManager;
-        this.company = company;
-        this.careerBackgroud = careerBackgroud;
-        this.onsalNumber = onsalNumber;
-        this.fundReferred = fundReferred;
-        this.yearIncome = yearIncome;
-        this.accumulatedIncome = accumulatedIncome;
-        this.cumulativeValue = cumulativeValue;
-        this.trendImg = trendImg;
-        this.addTime = addTime;
-        this.updateTime = updateTime;
+    public void setProductId(Integer productId) {
+        this.productId = productId;
     }
-
-   
-    // Property accessors
-    @Id @GeneratedValue(strategy=IDENTITY)
-    
-    @Column(name="id", unique=true, nullable=false)
-
-    public Integer getId() {
-        return this.id;
-    }
-    
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    
-    @Column(name="product_name", length=155)
 
     public String getProductName() {
-        return this.productName;
+        return productName;
     }
-    
+
     public void setProductName(String productName) {
-        this.productName = productName;
+        this.productName = productName == null ? null : productName.trim();
     }
-    
-    @Column(name="serial_number", length=155)
 
     public String getSerialNumber() {
-        return this.serialNumber;
+        return serialNumber;
     }
-    
+
     public void setSerialNumber(String serialNumber) {
-        this.serialNumber = serialNumber;
+        this.serialNumber = serialNumber == null ? null : serialNumber.trim();
     }
-    
-    @Column(name="investment_threshold", length=155)
 
     public String getInvestmentThreshold() {
-        return this.investmentThreshold;
+        return investmentThreshold;
     }
-    
+
     public void setInvestmentThreshold(String investmentThreshold) {
-        this.investmentThreshold = investmentThreshold;
+        this.investmentThreshold = investmentThreshold == null ? null : investmentThreshold.trim();
     }
-    
-    @Column(name="time_either")
 
     public String getTimeEither() {
-        return this.timeEither;
+        return timeEither;
     }
-    
+
     public void setTimeEither(String timeEither) {
-        this.timeEither = timeEither;
+        this.timeEither = timeEither == null ? null : timeEither.trim();
     }
-    
-    @Column(name="investment_orientation", length=155)
 
     public String getInvestmentOrientation() {
-        return this.investmentOrientation;
+        return investmentOrientation;
     }
-    
+
     public void setInvestmentOrientation(String investmentOrientation) {
-        this.investmentOrientation = investmentOrientation;
+        this.investmentOrientation = investmentOrientation == null ? null : investmentOrientation.trim();
     }
-    
-    @Column(name="capital_type", length=155)
 
     public String getCapitalType() {
-        return this.capitalType;
+        return capitalType;
     }
-    
+
     public void setCapitalType(String capitalType) {
-        this.capitalType = capitalType;
+        this.capitalType = capitalType == null ? null : capitalType.trim();
     }
-    
-    @Column(name="fund_type", length=155)
 
     public String getFundType() {
-        return this.fundType;
+        return fundType;
     }
-    
+
     public void setFundType(String fundType) {
-        this.fundType = fundType;
+        this.fundType = fundType == null ? null : fundType.trim();
     }
-    
-    @Column(name="organizational_form")
 
     public String getOrganizationalForm() {
-        return this.organizationalForm;
+        return organizationalForm;
     }
-    
+
     public void setOrganizationalForm(String organizationalForm) {
-        this.organizationalForm = organizationalForm;
+        this.organizationalForm = organizationalForm == null ? null : organizationalForm.trim();
     }
-    
-    @Column(name="target_scale")
 
     public String getTargetScale() {
-        return this.targetScale;
+        return targetScale;
     }
-    
+
     public void setTargetScale(String targetScale) {
-        this.targetScale = targetScale;
+        this.targetScale = targetScale == null ? null : targetScale.trim();
     }
-    
-    @Column(name="management_fee")
 
     public String getManagementFee() {
-        return this.managementFee;
+        return managementFee;
     }
-    
+
     public void setManagementFee(String managementFee) {
-        this.managementFee = managementFee;
+        this.managementFee = managementFee == null ? null : managementFee.trim();
     }
-    
-    @Column(name="fund_manager")
 
     public String getFundManager() {
-        return this.fundManager;
+        return fundManager;
     }
-    
+
     public void setFundManager(String fundManager) {
-        this.fundManager = fundManager;
+        this.fundManager = fundManager == null ? null : fundManager.trim();
     }
-    
-    @Column(name="company")
 
     public String getCompany() {
-        return this.company;
+        return company;
     }
-    
+
     public void setCompany(String company) {
-        this.company = company;
+        this.company = company == null ? null : company.trim();
     }
-    
-    @Column(name="career_backgroud")
 
     public String getCareerBackgroud() {
-        return this.careerBackgroud;
+        return careerBackgroud;
     }
-    
+
     public void setCareerBackgroud(String careerBackgroud) {
-        this.careerBackgroud = careerBackgroud;
+        this.careerBackgroud = careerBackgroud == null ? null : careerBackgroud.trim();
     }
-    
-    @Column(name="onsal_number")
 
     public Integer getOnsalNumber() {
-        return this.onsalNumber;
+        return onsalNumber;
     }
-    
+
     public void setOnsalNumber(Integer onsalNumber) {
         this.onsalNumber = onsalNumber;
     }
-    
-    @Column(name="fund_referred")
 
     public String getFundReferred() {
-        return this.fundReferred;
+        return fundReferred;
     }
-    
+
     public void setFundReferred(String fundReferred) {
-        this.fundReferred = fundReferred;
+        this.fundReferred = fundReferred == null ? null : fundReferred.trim();
     }
-    
-    @Column(name="year_income", precision=11)
 
     public Float getYearIncome() {
-        return this.yearIncome;
+        return yearIncome;
     }
-    
+
     public void setYearIncome(Float yearIncome) {
         this.yearIncome = yearIncome;
     }
-    
-    @Column(name="accumulated_income", precision=11)
 
     public Float getAccumulatedIncome() {
-        return this.accumulatedIncome;
+        return accumulatedIncome;
     }
-    
+
     public void setAccumulatedIncome(Float accumulatedIncome) {
         this.accumulatedIncome = accumulatedIncome;
     }
-    
-    @Column(name="cumulative_value", precision=11, scale=4)
 
     public Double getCumulativeValue() {
-        return this.cumulativeValue;
+        return cumulativeValue;
     }
-    
+
     public void setCumulativeValue(Double cumulativeValue) {
         this.cumulativeValue = cumulativeValue;
     }
-    
-    @Column(name="trend_img")
 
     public String getTrendImg() {
-        return this.trendImg;
+        return trendImg;
     }
-    
+
     public void setTrendImg(String trendImg) {
-        this.trendImg = trendImg;
+        this.trendImg = trendImg == null ? null : trendImg.trim();
     }
-    
-    @Column(name="add_time", length=0)
+
     public Date getAddTime() {
-        return this.addTime;
+        return addTime;
     }
-    
+
     public void setAddTime(Date addTime) {
         this.addTime = addTime;
     }
-    
-    @Column(name="update_time", length=0)
 
     public Date getUpdateTime() {
-        return this.updateTime;
+        return updateTime;
     }
-    
+
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
-   
 
+    public Integer getProductState() {
+        return productState;
+    }
 
-
-
-
-
-
-
+    public void setProductState(Integer productState) {
+        this.productState = productState;
+    }
 }

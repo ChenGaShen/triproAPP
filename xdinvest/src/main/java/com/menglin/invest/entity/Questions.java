@@ -1,112 +1,65 @@
 package com.menglin.invest.entity;
-// default package
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+public class Questions {
+    private Integer questionId;
 
+    private String questionClassification;
 
-/**
- * Questions entity. @author MyEclipse Persistence Tools
- */
-@Entity
-@Table(name="t_questions"
-    ,catalog="xdtz"
-)
+    private String questionContent;
 
-public class Questions  implements java.io.Serializable {
+    private String questionAnswer;
 
-	 private static final long serialVersionUID = 1L;
-    // Fields    
+    private Integer questionState;
 
-     private Integer id;
-     private String questionClassification;
-     private String questionContent;
-     private Integer questionState;
-     private Date updateTime;
+    private Date updateTime;
 
-
-    // Constructors
-
-    /** default constructor */
-    public Questions() {
+    public Integer getQuestionId() {
+        return questionId;
     }
 
-    
-    /** full constructor */
-    public Questions(String questionClassification, String questionContent, Integer questionState, Date updateTime) {
-        this.questionClassification = questionClassification;
-        this.questionContent = questionContent;
-        this.questionState = questionState;
-        this.updateTime = updateTime;
+    public void setQuestionId(Integer questionId) {
+        this.questionId = questionId;
     }
-
-   
-    // Property accessors
-    @Id @GeneratedValue(strategy=IDENTITY)
-    
-    @Column(name="id", unique=true, nullable=false)
-
-    public Integer getId() {
-        return this.id;
-    }
-    
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    
-    @Column(name="question_classification")
 
     public String getQuestionClassification() {
-        return this.questionClassification;
+        return questionClassification;
     }
-    
+
     public void setQuestionClassification(String questionClassification) {
-        this.questionClassification = questionClassification;
+        this.questionClassification = questionClassification == null ? null : questionClassification.trim();
     }
-    
-    @Column(name="question_content")
 
     public String getQuestionContent() {
-        return this.questionContent;
+        return questionContent;
     }
-    
+
     public void setQuestionContent(String questionContent) {
-        this.questionContent = questionContent;
+        this.questionContent = questionContent == null ? null : questionContent.trim();
     }
-    
-    @Column(name="question_state")
+
+    public String getQuestionAnswer() {
+        return questionAnswer;
+    }
+
+    public void setQuestionAnswer(String questionAnswer) {
+        this.questionAnswer = questionAnswer == null ? null : questionAnswer.trim();
+    }
 
     public Integer getQuestionState() {
-        return this.questionState;
+        return questionState;
     }
-    
+
     public void setQuestionState(Integer questionState) {
         this.questionState = questionState;
     }
-    
-    @Column(name="update_time", length=0)
 
     public Date getUpdateTime() {
-        return this.updateTime;
+        return updateTime;
     }
-    
+
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
-   
-
-
-
-
-
-
-
-
 }

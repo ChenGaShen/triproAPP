@@ -1,14 +1,19 @@
 package com.menglin.invest.controller;
 
 
-import org.springframework.context.annotation.ComponentScan;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.menglin.invest.service.impl.InformationService;
 
-@RestController
-@ComponentScan
 
-@RequestMapping("/news")
+@Controller  
+@RequestMapping("/admin/information")
 public class InformationController {
+	
+	@Resource 
+	private InformationService informationService ;
 	
 }

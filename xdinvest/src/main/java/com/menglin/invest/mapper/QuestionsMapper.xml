@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.menglin.invest.dao.QuestionsDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.invest.entity.Questions" >
+    <id column="question_id" property="questionId" jdbcType="INTEGER" />
+    <result column="question_classification" property="questionClassification" jdbcType="VARCHAR" />
+    <result column="question_content" property="questionContent" jdbcType="VARCHAR" />
+    <result column="question_answer" property="questionAnswer" jdbcType="VARCHAR" />
+    <result column="question_state" property="questionState" jdbcType="INTEGER" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    question_id, question_classification, question_content, question_answer, question_state, 
+    update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_questions
+    where question_id = #{questionId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_questions
+    where question_id = #{questionId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.menglin.invest.entity.Questions" >
+    insert into t_questions (question_id, question_classification, 
+      question_content, question_answer, question_state, 
+      update_time)
+    values (#{questionId,jdbcType=INTEGER}, #{questionClassification,jdbcType=VARCHAR}, 
+      #{questionContent,jdbcType=VARCHAR}, #{questionAnswer,jdbcType=VARCHAR}, #{questionState,jdbcType=INTEGER}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.menglin.invest.entity.Questions" >
+    insert into t_questions
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="questionId != null" >
+        question_id,
+      </if>
+      <if test="questionClassification != null" >
+        question_classification,
+      </if>
+      <if test="questionContent != null" >
+        question_content,
+      </if>
+      <if test="questionAnswer != null" >
+        question_answer,
+      </if>
+      <if test="questionState != null" >
+        question_state,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="questionId != null" >
+        #{questionId,jdbcType=INTEGER},
+      </if>
+      <if test="questionClassification != null" >
+        #{questionClassification,jdbcType=VARCHAR},
+      </if>
+      <if test="questionContent != null" >
+        #{questionContent,jdbcType=VARCHAR},
+      </if>
+      <if test="questionAnswer != null" >
+        #{questionAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="questionState != null" >
+        #{questionState,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.invest.entity.Questions" >
+    update t_questions
+    <set >
+      <if test="questionClassification != null" >
+        question_classification = #{questionClassification,jdbcType=VARCHAR},
+      </if>
+      <if test="questionContent != null" >
+        question_content = #{questionContent,jdbcType=VARCHAR},
+      </if>
+      <if test="questionAnswer != null" >
+        question_answer = #{questionAnswer,jdbcType=VARCHAR},
+      </if>
+      <if test="questionState != null" >
+        question_state = #{questionState,jdbcType=INTEGER},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where question_id = #{questionId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.menglin.invest.entity.Questions" >
+    update t_questions
+    set question_classification = #{questionClassification,jdbcType=VARCHAR},
+      question_content = #{questionContent,jdbcType=VARCHAR},
+      question_answer = #{questionAnswer,jdbcType=VARCHAR},
+      question_state = #{questionState,jdbcType=INTEGER},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
+    where question_id = #{questionId,jdbcType=INTEGER}
+  </update>
+</mapper>

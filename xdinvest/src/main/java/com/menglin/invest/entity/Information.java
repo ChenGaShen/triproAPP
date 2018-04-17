@@ -1,49 +1,30 @@
 package com.menglin.invest.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
-@Entity
-@Table(name="t_information")
-public class Information implements Serializable {
-	private static final long serialVersionUID = 1L;
+public class Information {
 	
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	int id;
-	@Column(name = "news_name")
+    private Integer newsId;
+
     private String newsName;
-	
-	@Column(name = "news_content")
-    private String newsContent;
-    
-	
-	@Column(name = "news_classification")// 新闻分类
-    private String newsClassification;
-	
-	@Column(name = "add_time")
+
+    private Integer newsClassification;
+
     private Date addTime;
-	
-	@Column(name = "update_time")
+
     private Date updateTime;
 
-    
+    private String newsContent;
 
-    public int getId() {
-		return id;
-	}
+    public Integer getNewsId() {
+        return newsId;
+    }
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    public void setNewsId(Integer newsId) {
+        this.newsId = newsId;
+    }
 
-	public String getNewsName() {
+    public String getNewsName() {
         return newsName;
     }
 
@@ -51,20 +32,12 @@ public class Information implements Serializable {
         this.newsName = newsName == null ? null : newsName.trim();
     }
 
-    public String getNewsContent() {
-        return newsContent;
-    }
-
-    public void setNewsContent(String newsContent) {
-        this.newsContent = newsContent == null ? null : newsContent.trim();
-    }
-
-    public String getNewsClassification() {
+    public Integer getNewsClassification() {
         return newsClassification;
     }
 
-    public void setNewsClassification(String newsClassification) {
-        this.newsClassification = newsClassification == null ? null : newsClassification.trim();
+    public void setNewsClassification(Integer newsClassification) {
+        this.newsClassification = newsClassification;
     }
 
     public Date getAddTime() {
@@ -81,5 +54,13 @@ public class Information implements Serializable {
 
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    public String getNewsContent() {
+        return newsContent;
+    }
+
+    public void setNewsContent(String newsContent) {
+        this.newsContent = newsContent == null ? null : newsContent.trim();
     }
 }

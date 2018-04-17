@@ -1,125 +1,86 @@
 package com.menglin.invest.entity;
-// default package
 
 import java.util.Date;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
+public class User {
+	
+    private Integer userId;
 
-/**
- * User entity. @author MyEclipse Persistence Tools
- */
-@Entity
-@Table(name="t_user"
-    ,catalog="xdtz"
-)
+    private String userName;
 
-public class User  implements java.io.Serializable {
+    private String userPhone;
 
-	 private static final long serialVersionUID = 1L;
-    // Fields    
+    private String userPass;
 
-     private Integer id;
-     private String userName;
-     private String userPhone;
-     private String idCard;
-     private Date addTime;
-     private Integer onState;
-   
+    private String idCard;
 
+    private Date addTime;
 
-    // Constructors
+    private Integer onState;
 
-    /** default constructor */
-    public User() {
+    private Integer identity;
+
+    public Integer getUserId() {
+        return userId;
     }
 
-    
-    /** full constructor */
-    public User(String userName, String userPhone, String idCard, Date addTime, Integer onState) {
-        this.userName = userName;
-        this.userPhone = userPhone;
-        this.idCard = idCard;
-        this.addTime = addTime;
-        this.onState = onState;
-       
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
-
-   
-    
-    @Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="id", unique=true, nullable=false)
-
-    public Integer getId() {
-        return this.id;
-    }
-    
-    public void setId(Integer id) {
-        this.id = id;
-    }
-    
-    @Column(name="user_name", length=155)
 
     public String getUserName() {
-        return this.userName;
+        return userName;
     }
-    
+
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.userName = userName == null ? null : userName.trim();
     }
-    
-    @Column(name="user_phone", length=155)
 
     public String getUserPhone() {
-        return this.userPhone;
+        return userPhone;
     }
-    
+
     public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
+        this.userPhone = userPhone == null ? null : userPhone.trim();
     }
-    
-    @Column(name="id_card", length=155)
+
+    public String getUserPass() {
+        return userPass;
+    }
+
+    public void setUserPass(String userPass) {
+        this.userPass = userPass == null ? null : userPass.trim();
+    }
 
     public String getIdCard() {
-        return this.idCard;
+        return idCard;
     }
-    
+
     public void setIdCard(String idCard) {
-        this.idCard = idCard;
+        this.idCard = idCard == null ? null : idCard.trim();
     }
-    
-    @Column(name="add_time", length=0)
 
     public Date getAddTime() {
-        return this.addTime;
+        return addTime;
     }
-    
+
     public void setAddTime(Date addTime) {
         this.addTime = addTime;
     }
-    
-    @Column(name="on_state")
 
     public Integer getOnState() {
-        return this.onState;
+        return onState;
     }
-    
+
     public void setOnState(Integer onState) {
         this.onState = onState;
     }
 
-   
+    public Integer getIdentity() {
+        return identity;
+    }
 
-
-
-
-
-
-
-
+    public void setIdentity(Integer identity) {
+        this.identity = identity;
+    }
 }

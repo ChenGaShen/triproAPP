@@ -15,7 +15,7 @@
         </commentGenerator>
          
     <jdbcConnection driverClass="com.mysql.jdbc.Driver"    
-        connectionURL="jdbc:mysql://127.0.0.1:3306/tripro"   
+        connectionURL="jdbc:mysql://127.0.0.1:3306/xdtz"   
         userId="root"  
         password="123456">  
     </jdbcConnection>    
@@ -24,22 +24,22 @@
       <property name="forceBigDecimals" value="false" />    
     </javaTypeResolver>    
     
-    <javaModelGenerator targetPackage="com.menglin.tripro.entity" targetProject="src/main/java">    
+    <javaModelGenerator targetPackage="com.menglin.invest.entity" targetProject="src/main/java">    
       <property name="enableSubPackages" value="true" />    
       <property name="trimStrings" value="true" />    
     </javaModelGenerator>    
     
-    <sqlMapGenerator targetPackage="com.menglin.tripro.mapper"  targetProject="src/main/java">    
+    <sqlMapGenerator targetPackage="com.menglin.invest.mapper"  targetProject="src/main/java">    
       <property name="enableSubPackages" value="true" />    
     </sqlMapGenerator>
     
     
-    <javaClientGenerator type="XMLMAPPER" targetPackage="com.menglin.tripro.dao"  targetProject="src/main/java">    
+    <javaClientGenerator type="XMLMAPPER" targetPackage="com.menglin.invest.dao"  targetProject="src/main/java">    
       <property name="enableSubPackages" value="true" />    
     </javaClientGenerator>
        
 
-   <table schema="tripro" tableName="t_order" domainObjectName="Order" enableCountByExample="false" enableUpdateByExample="false"    
+   <table schema="xdtz" tableName="t_user_feedback" domainObjectName="UserFeedback" enableCountByExample="false" enableUpdateByExample="false"    
        enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">    
    </table>    
 	

@@ -1,12 +1,16 @@
 package com.menglin.invest.service;
 
-import java.util.List;
+
 import com.menglin.invest.entity.Questions;
+import com.menglin.invest.util.PageBean;
 
 
 public interface IQuestionsService {
-	public List<Questions> findAll();
-    public void saveQuestions(Questions book);
-    public Questions findOne(int id);
-    public void delete(int id);
+	
+    public Questions get(int questionId);
+	public void save(Questions questions);
+	public void delete(int questionId);
+	public void update(Questions questions);
+	PageBean<Questions> findByPage(Integer currentPage,Integer pageSize,Questions questions,String startTime,String endTime);
+	
 }
