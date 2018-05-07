@@ -9,6 +9,8 @@ public class Information {
     private String newsName;
 
     private Integer newsClassification;
+    
+    private Integer newsState;
 
     private Date addTime;
 
@@ -39,8 +41,17 @@ public class Information {
     public void setNewsClassification(Integer newsClassification) {
         this.newsClassification = newsClassification;
     }
+    
+    
+    public Integer getNewsState() {
+		return newsState;
+	}
 
-    public Date getAddTime() {
+	public void setNewsState(Integer newsState) {
+		this.newsState = newsState;
+	}
+
+	public Date getAddTime() {
         return addTime;
     }
 

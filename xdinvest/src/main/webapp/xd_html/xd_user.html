@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>XIN DONG</title>
+
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-table.css"/>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../static/js/util.js"></script>
+<script type="text/javascript" src="../static/js/xd_user.js"></script>
+</head>
+<body>
+	<div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" style="margin-top:15px">
+                    	
+                    <!-- 	<label class="control-label col-sm-1" for="startTime">注册时间-始</label>
+                        <div class="col-sm-3" style="width: 10%;" class="form-inline">
+						                      
+                            <input type="text" class="form-control" id="startTime"/>
+                        </div>
+                        
+                        <label class="control-label col-sm-1" for="endTime">注册时间-末</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="endTime"/>
+                        </div> -->
+                        <label class="control-label col-sm-1" for="userName">姓名</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="userName"/>
+                        </div>
+                           <label class="control-label col-sm-1" for="userPhone">账户手机</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="userPhone"/>
+                        </div>
+                         <label class="control-label col-sm-1" for="idCard">身份证号</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="idCard"/>
+                        </div>
+                        <label class="control-label col-sm-1" for="onState"    style="margin-top: -0.4%;"> 账户状态</label> <!-- 使用状态 0使用 1未使用 -->
+                        <div class="col-sm-3" style="width: 15%;">
+                         <label><input type="radio"  name="onState" value="0"/>&nbsp;开启中</label> 
+							<label ><input type="radio" name="onState" value="1" />&nbsp;禁用</label>
+                        </div>
+                        <div class="col-sm-3" style="text-align:left; float: right;margin-top: -30px;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                             <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-primary">清空</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>       
+
+        <div id="toolbar" class="btn-group">
+            <!-- <button id="btn_add" type="button" class="btn btn-default">
+               <a href="testUpdate.html"> <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>新增</a>
+            </button> -->
+            <button id="btn_detail" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-leaf" aria-hidden="true"></span>&nbsp;详情
+            </button>
+              <button id="btn_toBlack" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-eye-close" aria-hidden="true"></span>&nbsp;禁用账户
+            </button>
+            <button id="btn_outBlack" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>&nbsp;开启账户
+            </button>
+        </div>
+        <table id="t_table" class="table table-hover">
+        	<thead>
+        	
+        	</thead>
+        
+        </table>
+<!-- 详情模态框（Modal） -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    账户详情
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="audit_uid" hidden/>
+             <div class="form-group" style="width: 20%; margin-left: 120px;margin-top: 5px;">
+				<label for="detail_userName">姓名</label> <input type="text"
+					class="form-control" id="detail_userName"  name="detail_userName" readonly="readonly"  ></input>
+			</div>
+            <div class="form-group" style="width: 20%; margin-left: 120px;margin-top: 5px;">
+				<label for="detail_userPhone">账户手机</label> <input type="text"
+					class="form-control" id="detail_userPhone"  name="detail_userPhone" readonly="readonly"  ></input>
+			</div>
+			<div class="form-group" style="width: 20%; margin-left: 120px;">
+				<label for="detail_idCard">身份证号码</label> <input type="text"
+					class="form-control" id="detail_idCard"  name="detail_idCard" readonly="readonly"   ></input>
+			</div>
+			<div class="form-group" style="width: 40%; margin-left: 120px;">
+				<label >账户身份</label></br>
+				<label><input type="radio" checked="checked" name="detail_identity" value="0" disabled="disabled"/>&nbsp;新用户注册</label> 
+				<label><input type="radio" name="detail_identity" value="1" disabled="disabled" />&nbsp;个人客户</label> 
+				<label><input type="radio" name="detail_identity" value="2" disabled="disabled"/>&nbsp;机构客户</label> 
+				<label><input type="radio" name="detail_identity" value="3"  disabled="disabled" />&nbsp;客户经理</label> 
+			</div>
+				<div class="form-group" style="width: 30%; margin-left: 120px;">
+				<label >账户状态</label></br>
+				<label><input type="radio" checked="checked" name="detail_onState" value="0" disabled="disabled"/>&nbsp;开启中</label> 
+						<label><input type="radio" name="detail_onState" value="1" disabled="disabled" />&nbsp;禁用</label> 
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+    <!-- 禁用模态框（Modal） -->
+<div class="modal fade" id="blackModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    禁用账户
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="black_userId" hidden/>
+            
+            <div class="modal-body">确认将账户   <span id="black_userPhone" style="color: red;"></span>  禁用？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button type="button" id="toBlackButton"  class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+        <!-- 开启账户模态框（Modal） -->
+<div class="modal fade" id="outblackModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    开启账户
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="out_black_userId" hidden/>
+            
+            <div class="modal-body">确认将账户   <span id="out_black_userPhone" style="color: #337AB7;"></span>  开启？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button type="button" id="outBlackButton"  class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+</div>   
+</body>
+</html>

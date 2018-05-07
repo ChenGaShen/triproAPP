@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.menglin.invest.entity.User;
 import com.menglin.invest.service.impl.UserService;
+import com.menglin.invest.util.CheckData;
 import com.menglin.invest.util.PageBean;
+import com.menglin.invest.util.Result;
 import com.menglin.invest.vo.PageRuslt;
 
 
@@ -39,6 +41,27 @@ public class UserController {
 		PageBean<User> PageUser=userService.findByPage(currentPage, pageSize, model,startTime,endTime);
 		pageRuslt.setPageBean(PageUser);
       return pageRuslt;
+       
+	}
+	
+	/**
+	 * 用户信息状态修改
+	 * @author CGS
+	 * @time 2018年2月7日下午3:46:02
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping(value="/updateUserInfo.json",method={RequestMethod.POST})  
+    public @ResponseBody Result updateUserInfo(User model){
+		User user =userService.get(model.getUserId());
+		if (CheckData.isNotNullOrEmpty(user)) {
+			if (CheckData.isNotNullOrEmpty(model.getOnState())) {
+				user.setOnState(model.getOnState());
+				userService.update(user);
+			    return Result.suc("修改成功!!");
+			}
+		}
+      return Result.fal("修改失败!!");
        
 	}
 	

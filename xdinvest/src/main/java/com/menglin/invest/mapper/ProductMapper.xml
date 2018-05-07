@@ -47,8 +47,11 @@
         <if test="productName!=null and productName !='' ">
           AND   product_name like  CONCAT('%',#{productName},'%') 
         </if>
+         <if test="fundManager!=null and fundManager !='' ">
+          AND   fund_manager like  CONCAT('%',#{fundManager},'%') 
+        </if>
         <if test="productState!=null  ">
-          AND   product_state   = #{audit}  
+          AND   product_state   = #{productState}  
         </if>
          <if test="startTime!=null and startTime !='' ">
           AND   update_time <![CDATA[>=]]> #{startTime} 
@@ -66,8 +69,11 @@
         <if test="productName!=null and productName !='' ">
           AND   product_name like  CONCAT('%',#{productName},'%') 
         </if>
+        <if test="fundManager!=null and fundManager !='' ">
+          AND   fund_manager like  CONCAT('%',#{fundManager},'%') 
+        </if>
         <if test="productState!=null  ">
-          AND   product_state   = #{audit}  
+          AND   product_state   = #{productState}  
         </if>
          <if test="startTime!=null and startTime !='' ">
           AND   update_time <![CDATA[>=]]> #{startTime} 

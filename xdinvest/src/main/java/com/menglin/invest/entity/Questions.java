@@ -5,7 +5,7 @@ import java.util.Date;
 public class Questions {
     private Integer questionId;
 
-    private String questionClassification;
+    private Integer questionClassification;
 
     private String questionContent;
 
@@ -23,15 +23,17 @@ public class Questions {
         this.questionId = questionId;
     }
 
-    public String getQuestionClassification() {
-        return questionClassification;
-    }
+  
 
-    public void setQuestionClassification(String questionClassification) {
-        this.questionClassification = questionClassification == null ? null : questionClassification.trim();
-    }
+    public Integer getQuestionClassification() {
+		return questionClassification;
+	}
 
-    public String getQuestionContent() {
+	public void setQuestionClassification(Integer questionClassification) {
+		this.questionClassification = questionClassification;
+	}
+
+	public String getQuestionContent() {
         return questionContent;
     }
 

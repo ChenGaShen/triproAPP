@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>XIN DONG</title>
+
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-table.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrapValidator.min.css"/>
+<link rel="stylesheet" href="../static/css/jquery.cxcalendar.css"/>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.cxcalendar.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.cxcalendar.languages.js"></script>
+<script type="text/javascript" src="../static/js/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../static/js/util.js"></script>
+<script type="text/javascript" src="../static/js/xd_question.js"></script>
+</head>
+<body>
+	<div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" style="margin-top:15px">
+                    	
+                    	<label class="control-label col-sm-1" for="startTime" style="width: 10%;">更新时间-始&nbsp;<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="startTime"/>
+                        </div>
+                        
+                        <label class="control-label col-sm-1" for="endTime" style="width: 10%;">更新时间-末&nbsp;<span class="glyphicon glyphicon-calendar" aria-hidden="true"></span></label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="endTime"/>
+                        </div>
+                        <label class="control-label col-sm-1" style="margin-top: -7px; width: 8%;" for="questionClassification"> 问题分类</label>
+                        <div class="col-sm-3" style="width: 17%;">
+                            <label><input type="radio"  name="questionClassification" value="0"/>&nbsp;投资问题</label> 
+							<label ><input type="radio" name="questionClassification" value="1" />&nbsp;流转问题</label>
+							<label ><input type="radio" name="questionClassification" value="2"/>&nbsp;收益问题</label>
+							<label ><input type="radio" name="questionClassification" value="3"/>&nbsp;其他问题</label>
+                        </div>
+                         <label class="control-label col-sm-1" style="margin-top: -7px; width: 7%;" for="questionState"> 问题状态</label>
+                        <div class="col-sm-3" style="width: 17%;">
+                         <label><input type="radio"  name="questionState" value="0"/>&nbsp;已发布</label> 
+							<label ><input type="radio" name="questionState" value="1" />&nbsp;保存草稿</label>
+                        </div>
+                        <div class="col-sm-3" style="text-align:left; float: right;margin-top: 5px; margin-right: -6%;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                             <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-primary">清空</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>       
+
+        <div id="toolbar" class="btn-group">
+           <button id="btn_add" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;添加问题
+            </button>
+            <button id="btn_edit" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;编辑问题
+            </button>
+            <button id="btn_delete" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;删除问题
+            </button>
+        </div>
+        <table id="t_table" class="table table-hover">
+        	<thead>
+        	
+        	</thead>
+        
+        </table>
+        
+<!-- 新增模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    常见问题新增
+                </h4>
+            </div>
+            <form id="form_data">
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 19%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_questionClassification">问题类别</label>
+							    <select class="form-control" id="add_questionClassification" name="add_questionClassification" >
+							      <option value="">请选择类别</option>
+							      <option value="0">投资问题</option>
+							      <option value="1">流转问题</option>
+							      <option value="2">收益问题</option>
+							      <option value="3">其他问题</option>
+							    </select>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_questionContent">问题内容</label> 
+							<textarea class="form-control" id="add_questionContent"  name="add_questionContent" rows="6" cols="15" style="width: 192%;"></textarea>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_questionAnswer">问题答案</label> 
+							<textarea class="form-control" id="add_questionAnswer"  name="add_questionAnswer" rows="6" cols="15" style="width: 192%;"></textarea>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_questionState">问题状态 </label> 
+								 <label><input type="radio"  name="add_questionState" checked value="0"/>&nbsp;立即发布</label> 
+								 <label ><input type="radio" name="add_questionState" value="1" />&nbsp;保存草稿</label>
+							</div>
+						</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button  id="addButton" class="btn btn-primary">
+									确认</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+    <!-- 删除咨询模态框（Modal） -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   删除常见问题
+                </h4>
+            </div>
+            <form id="delete_form_data">
+            <input type="text" id="delete_questionId" hidden/>
+            
+            <div class="modal-body">确认将问题为   <span id="delete_questionContent" style="color: red;"></span>  的内容删除？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button  id="deleteButton" type="button" class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+       <!-- 编辑模态框（Modal） -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    常见问题编辑
+                </h4>
+            </div>
+            <form id="update_form_data" >
+            		<input type="text" id="update_questionId" name="update_questionId" hidden/>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 19%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_questionClassification">问题类别</label>
+							    <select class="form-control" id="update_questionClassification" name="update_questionClassification" >
+							      <option value="">请选择类别</option>
+							      <option value="0">投资问题</option>
+							      <option value="1">流转问题</option>
+							      <option value="2">收益问题</option>
+							      <option value="3">其他问题</option>
+							    </select>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_questionContent">问题内容</label> 
+							<textarea class="form-control" id="update_questionContent"  name="update_questionContent" rows="6" cols="15" style="width: 192%;"></textarea>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_questionAnswer">问题答案</label> 
+							<textarea class="form-control" id="update_questionAnswer"  name="update_questionAnswer" rows="6" cols="15" style="width: 192%;"></textarea>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_questionState">问题状态 </label> 
+								 <label><input type="radio"  name="update_questionState" checked value="0"/>&nbsp;立即发布</label> 
+								 <label ><input type="radio" name="update_questionState" value="1" />&nbsp;保存草稿</label>
+							</div>
+						</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button   id="updateButton" class="btn btn-primary">
+									确认</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+</div>  
+</body>
+</html>

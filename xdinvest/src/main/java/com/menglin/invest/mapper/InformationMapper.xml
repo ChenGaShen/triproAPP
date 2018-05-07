@@ -4,7 +4,8 @@
   <resultMap id="BaseResultMap" type="com.menglin.invest.entity.Information" >
     <id column="news_id" property="newsId" jdbcType="INTEGER" />
     <result column="news_name" property="newsName" jdbcType="VARCHAR" />
-    <result column="news_classification" property="newsClassification" jdbcType="INTEGER" />
+     <result column="news_classification" property="newsClassification" jdbcType="INTEGER" />
+     <result column="news_state" property="newsState" jdbcType="INTEGER" />
     <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
   </resultMap>
@@ -12,10 +13,10 @@
     <result column="news_content" property="newsContent" jdbcType="LONGVARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    news_id AS newsId, news_name AS newsName, news_classification AS newsClassification, add_time AS addTime, update_time AS updateTime
+    news_id AS newsId, news_name AS newsName, news_classification AS newsClassification,news_state AS newsState, add_time AS addTime, update_time AS updateTime
   </sql>
   <sql id="Blob_Column_List" >
-    news_content
+    news_content AS newsContent
   </sql>
   <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
     select 
@@ -25,7 +26,6 @@
     from t_information
     where news_id = #{newsId,jdbcType=INTEGER}
   </select>
-  
   
   <!-- 查询用户记录总数 -->
     <select id="selectCount" parameterType="java.util.Map" resultType="int">
@@ -44,7 +44,10 @@
   <!-- 分页查询start 和size查询数据 -->
   <select id="findByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
         select
-        <include refid="Base_Column_List" />
+         <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    
         from t_information    where 1=1
         <if test="newsClassification!=null  ">
           AND   news_classification   = #{newsClassification}  
@@ -66,10 +69,10 @@
     where news_id = #{newsId,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.menglin.invest.entity.Information" >
-    insert into t_information (news_id, news_name, news_classification, 
+    insert into t_information (news_id, news_name, news_classification, news_state,
       add_time, update_time, news_content
       )
-    values (#{newsId,jdbcType=INTEGER}, #{newsName,jdbcType=VARCHAR}, #{newsClassification,jdbcType=INTEGER}, 
+    values (#{newsId,jdbcType=INTEGER}, #{newsName,jdbcType=VARCHAR}, #{newsClassification,jdbcType=INTEGER}, #{newsState,jdbcType=INTEGER}, 
       #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{newsContent,jdbcType=LONGVARCHAR}
       )
   </insert>
@@ -84,6 +87,9 @@
       </if>
       <if test="newsClassification != null" >
         news_classification,
+      </if>
+       <if test="newsState != null" >
+        news_state,
       </if>
       <if test="addTime != null" >
         add_time,
@@ -105,6 +111,9 @@
       <if test="newsClassification != null" >
         #{newsClassification,jdbcType=INTEGER},
       </if>
+       <if test="newsState != null" >
+        #{newsState,jdbcType=INTEGER},
+      </if>
       <if test="addTime != null" >
         #{addTime,jdbcType=TIMESTAMP},
       </if>
@@ -125,6 +134,9 @@
       <if test="newsClassification != null" >
         news_classification = #{newsClassification,jdbcType=INTEGER},
       </if>
+       <if test="newsState != null" >
+        news_state = #{newsState,jdbcType=INTEGER},
+      </if>
       <if test="addTime != null" >
         add_time = #{addTime,jdbcType=TIMESTAMP},
       </if>
@@ -141,6 +153,7 @@
     update t_information
     set news_name = #{newsName,jdbcType=VARCHAR},
       news_classification = #{newsClassification,jdbcType=INTEGER},
+      news_state = #{newsState,jdbcType=INTEGER},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       news_content = #{newsContent,jdbcType=LONGVARCHAR}
@@ -150,6 +163,7 @@
     update t_information
     set news_name = #{newsName,jdbcType=VARCHAR},
       news_classification = #{newsClassification,jdbcType=INTEGER},
+      news_state = #{newsState,jdbcType=INTEGER},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where news_id = #{newsId,jdbcType=INTEGER}

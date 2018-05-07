@@ -1,0 +1,361 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>XIN DONG</title>
+
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-table.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrapValidator.min.css"/>
+<link rel="stylesheet" href="../static/css/jquery.cxcalendar.css"/>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.cxcalendar.min.js"></script>
+<script type="text/javascript" src="../static/js/jquery.cxcalendar.languages.js"></script>
+<script type="text/javascript" src="../static/js/jquery.table2excel.js"></script>
+<script type="text/javascript" src="../static/js/util.js"></script>
+<script type="text/javascript" src="../static/js/xd_product.js"></script>
+</head>
+<body>
+	<div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" style="margin-top:15px">
+                    	
+                    	<label class="control-label col-sm-1" for="startTime" style="width: 10%;">更新时间-始&nbsp;<span class="glyphicon glyphicon-calendar" aria-hidden="true" ></span></label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="startTime"/>
+                        </div>
+                        <label class="control-label col-sm-1" for="endTime" style="width: 10%;">更新时间-末&nbsp;<span class="glyphicon glyphicon-calendar" aria-hidden="true" ></span></label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="endTime"/>
+                        </div>
+                          <label class="control-label col-sm-1" for="productName" style="width: 7%;">产品名称</label>
+                        <div class="col-sm-3" style="width: 11%;">
+                            <input type="text" class="form-control" id="productName"/>
+                        </div>
+                         <label class="control-label col-sm-1" for="fundManager" style="width: 7%;">基金经理</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="fundManager"/>
+                        </div>
+                        <label class="control-label col-sm-1"  for="productState"> 产品状态</label><!-- 0草稿1发布 -->
+                        <div class="col-sm-3" style="width: 17%;margin-left: 8%; margin-top: -1.3%;">
+                            <label><input type="radio"  name="productState" value="0"/>&nbsp;发布</label> 
+							<label ><input type="radio" name="productState" value="1" />&nbsp;保存草稿</label>
+                        </div>
+                        <div class="col-sm-3" style="text-align:left; float: right;margin-top: 19px;margin-right:-7%;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                             <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-primary">清空</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>       
+
+        <div id="toolbar" class="btn-group">
+           <button id="btn_add" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>&nbsp;产品发起
+            </button>
+            <button id="btn_edit" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>&nbsp;编辑产品
+            </button>
+               <button id="btn_toBlack" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-star" aria-hidden="true"></span>&nbsp;发布产品
+            </button>
+            <button id="btn_outBlack" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-star-empty" aria-hidden="true"></span>&nbsp;关闭产品
+            </button>
+              <button id="btn_detail" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>&nbsp;详情
+            </button>
+        </div>
+        <table id="t_table" class="table table-hover">
+        	<thead>
+        	
+        	</thead>
+        
+        </table>
+        
+<!-- 新增模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 80%; " >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    产品新增
+                </h4>
+            </div>
+            <form id="form_data">
+						<div class="row" > 
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_newsName">产品名称</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 105%;"></input>
+								</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_newsName">投资门槛</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">存续期限</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">投资方向</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">资本类型</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">基金类型</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_newsName">组织形式</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">目标规模</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%;  margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">管理费率</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+						</div>
+						<hr/>
+							<div class="row" ><!-- 横向两个输入框 -->
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_newsName">基金经理</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">任职公司</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">职业背景</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">在售产品数</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">基金简称</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_newsName">近一年收益</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%; margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">累计净值</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+								<div class="form-group col-sm-4 " style="width: 21%;  margin-left: -10%;margin-top: 5px;">
+								<label for="add_newsName">净值走势</label>
+								<input type="text" class="form-control" id="add_newsName"  name="add_newsName" style="width: 40%;"></input>
+								</div>
+						</div>
+							<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="add_newsContent">产品状态 </label> 
+								 <label><input type="radio"  name="add_newsState" checked value="0"/>&nbsp;立即发布</label> 
+								 <label ><input type="radio" name="add_newsState" value="1" />&nbsp;暂存草稿</label>
+							</div>
+						</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button  id="addButton" class="btn btn-primary">
+									确认新增</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+     
+       <!-- 编辑模态框（Modal） -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    咨询公告编辑
+                </h4>
+            </div>
+            <form id="update_form_data" enctype="multipart/form-data">
+            		<input type="text" id="update_newsId" name="update_newsId" hidden/>
+						<div class="row" > 
+							<div class="form-group col-sm-4 " style="width: 21%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_newsName">公告标题</label>
+								<input type="text" class="form-control" id="update_newsName"  name="update_newsName" style="width: 105%;"></input>
+								</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 19%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_newsClassification">公告类别</label>
+							    <select class="form-control" id="update_newsClassification" name="update_newsClassification" >
+							      <option value="">请选择类别</option>
+							      <option value="0">行业资讯</option>
+							      <option value="1">公司动态</option>
+							      <option value="2">薪栋观点</option>
+							    </select>
+							</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_newsContent">公告详情</label> 
+							<textarea class="form-control" id="update_newsContent"  name="update_newsContent" rows="6" cols="15" style="width: 192%;"></textarea>
+							</div>
+						</div>
+							<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 30%; margin-left: 200px;margin-top: 5px;">
+								<label for="update_newsState">公告状态</label> 
+								 <label><input type="radio"  name="update_newsState" value="0"/>&nbsp;立即发布</label> 
+								 <label ><input type="radio" name="update_newsState" value="1" />&nbsp;暂存草稿</label>
+							</div>
+						</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button   id="updateButton" class="btn btn-primary">
+									确认更新</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+    <!-- 发布产品模态框（Modal） -->
+<div class="modal fade" id="blackModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    发布产品
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="black_userFedId" hidden/>
+            
+            <div class="modal-body">确认将账户   <span id="black_userPhone" style="color: red;"></span> 的反馈标记？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button type="button" id="toBlackButton"  class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+        <!-- 关闭产品模态框（Modal） -->
+<div class="modal fade" id="outblackModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    关闭产品
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="out_black_userFedId" hidden/>
+            
+            <div class="modal-body">确认取消账户  <span id="out_black_userPhone" style="color: #337AB7;"></span>的反馈标记  ？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button type="button" id="outBlackButton"  class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+   
+    
+    
+    <!-- 详情模态框（Modal） -->
+<div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    账户详情
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="audit_uid" hidden/>
+             <div class="form-group" style="width: 20%; margin-left: 120px;margin-top: 5px;">
+				<label for="detail_userName">姓名</label> <input type="text"
+					class="form-control" id="detail_userName"  name="detail_userName" readonly="readonly"  ></input>
+			</div>
+            <div class="form-group" style="width: 20%; margin-left: 120px;margin-top: 5px;">
+				<label for="detail_userPhone">账户手机</label> <input type="text"
+					class="form-control" id="detail_userPhone"  name="detail_userPhone" readonly="readonly"  ></input>
+			</div>
+			<div class="form-group" style="width: 20%; margin-left: 120px;">
+				<label for="detail_idCard">身份证号码</label> <input type="text"
+					class="form-control" id="detail_idCard"  name="detail_idCard" readonly="readonly"   ></input>
+			</div>
+			<div class="form-group" style="width: 40%; margin-left: 120px;">
+				<label >账户身份</label></br>
+				<label><input type="radio" checked="checked" name="detail_identity" value="0" disabled="disabled"/>&nbsp;新用户注册</label> 
+				<label><input type="radio" name="detail_identity" value="1" disabled="disabled" />&nbsp;个人客户</label> 
+				<label><input type="radio" name="detail_identity" value="2" disabled="disabled"/>&nbsp;机构客户</label> 
+				<label><input type="radio" name="detail_identity" value="3"  disabled="disabled" />&nbsp;客户经理</label> 
+			</div>
+				<div class="form-group" style="width: 30%; margin-left: 120px;">
+				<label >账户状态</label></br>
+				<label><input type="radio" checked="checked" name="detail_onState" value="0" disabled="disabled"/>&nbsp;开启中</label> 
+						<label><input type="radio" name="detail_onState" value="1" disabled="disabled" />&nbsp;禁用</label> 
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+</div>  
+</body>
+</html>

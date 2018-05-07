@@ -27,6 +27,9 @@
         <if test="userPhone!=null and userPhone !='' ">
           AND   user_phone like  CONCAT('%',#{userPhone},'%') 
         </if>
+          <if test="versions!=null and versions !='' ">
+          AND   versions =  #{versions}
+        </if>
          <if test="startTime!=null and startTime !='' ">
           AND   add_time <![CDATA[>=]]> #{startTime} 
         </if>
@@ -43,6 +46,9 @@
          <if test="userPhone!=null and userPhone !='' ">
           AND   user_phone like  CONCAT('%',#{userPhone},'%')  
         </if>
+         <if test="versions!=null and versions !='' ">
+          AND   versions =  #{versions}
+        </if>
         <if test="startTime!=null and startTime !='' ">
           AND   add_time <![CDATA[>=]]> #{startTime} 
         </if>
@@ -54,6 +60,15 @@
             limit #{start},#{size} 
         </if>
   </select>
+  
+    <delete id="deleteBySelective" parameterType="int[]" >
+    delete from t_user_feedback
+    where user_fed_id in 
+		<foreach collection="array" item="userFedIdS" index="no" open="("  
+            separator="," close=")">  
+            #{userFedIdS} 
+        </foreach>
+  </delete>
   
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from t_user_feedback

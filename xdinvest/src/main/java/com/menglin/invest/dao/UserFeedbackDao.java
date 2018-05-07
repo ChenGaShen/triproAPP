@@ -20,4 +20,6 @@ public interface UserFeedbackDao {
     int selectCount(HashMap<String,Object> map);
     
     List<UserFeedback> findByPage(HashMap<String,Object> map);
+    
+    int deleteBySelective(int[] userFedIdS);
 }

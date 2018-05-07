@@ -3,7 +3,7 @@
 <mapper namespace="com.menglin.invest.dao.QuestionsDao" >
   <resultMap id="BaseResultMap" type="com.menglin.invest.entity.Questions" >
     <id column="question_id" property="questionId" jdbcType="INTEGER" />
-    <result column="question_classification" property="questionClassification" jdbcType="VARCHAR" />
+    <result column="question_classification" property="questionClassification" jdbcType="INTEGER" />
     <result column="question_content" property="questionContent" jdbcType="VARCHAR" />
     <result column="question_answer" property="questionAnswer" jdbcType="VARCHAR" />
     <result column="question_state" property="questionState" jdbcType="INTEGER" />
@@ -23,8 +23,8 @@
   <!-- 查询用户记录总数 -->
     <select id="selectCount" parameterType="java.util.Map" resultType="int">
         select count(*) from t_questions  where 1=1
-        <if test="questionClassification!=null and questionClassification !='' ">
-          AND   question_classification like  CONCAT('%',#{questionClassification},'%') 
+        <if test="questionClassification!=null  ">
+          AND   question_classification   = #{questionClassification}
         </if>
         <if test="questionState!=null  ">
           AND   question_state   = #{questionState}  
@@ -42,8 +42,8 @@
         select
         <include refid="Base_Column_List" />
         from t_questions    where 1=1
-           <if test="questionClassification!=null and questionClassification !='' ">
-          AND   question_classification like  CONCAT('%',#{questionClassification},'%') 
+           <if test="questionClassification!=null  ">
+          AND   question_classification   = #{questionClassification}
         </if>
         <if test="questionState!=null  ">
           AND   question_state   = #{questionState}  
@@ -68,7 +68,7 @@
     insert into t_questions (question_id, question_classification, 
       question_content, question_answer, question_state, 
       update_time)
-    values (#{questionId,jdbcType=INTEGER}, #{questionClassification,jdbcType=VARCHAR}, 
+    values (#{questionId,jdbcType=INTEGER}, #{questionClassification,jdbcType=INTEGER}, 
       #{questionContent,jdbcType=VARCHAR}, #{questionAnswer,jdbcType=VARCHAR}, #{questionState,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
@@ -99,7 +99,7 @@
         #{questionId,jdbcType=INTEGER},
       </if>
       <if test="questionClassification != null" >
-        #{questionClassification,jdbcType=VARCHAR},
+        #{questionClassification,jdbcType=INTEGER},
       </if>
       <if test="questionContent != null" >
         #{questionContent,jdbcType=VARCHAR},
@@ -119,7 +119,7 @@
     update t_questions
     <set >
       <if test="questionClassification != null" >
-        question_classification = #{questionClassification,jdbcType=VARCHAR},
+        question_classification = #{questionClassification,jdbcType=INTEGER},
       </if>
       <if test="questionContent != null" >
         question_content = #{questionContent,jdbcType=VARCHAR},
@@ -138,7 +138,7 @@
   </update>
   <update id="updateByPrimaryKey" parameterType="com.menglin.invest.entity.Questions" >
     update t_questions
-    set question_classification = #{questionClassification,jdbcType=VARCHAR},
+    set question_classification = #{questionClassification,jdbcType=INTEGER},
       question_content = #{questionContent,jdbcType=VARCHAR},
       question_answer = #{questionAnswer,jdbcType=VARCHAR},
       question_state = #{questionState,jdbcType=INTEGER},
