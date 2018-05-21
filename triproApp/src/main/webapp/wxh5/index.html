@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/index.js"></script>
+	<meta charset="UTF-8">
+	<title>首页</title>
+	<link rel="stylesheet" href="css/index.css">
+	<link rel="stylesheet" href="css/menu.css">
+	<link rel="stylesheet" href="css/public.css">
+</head>
+<body>
+
+<div class="detail">
+	<p class="detail_xq">商品详情</p>
+	<div class="detail_tu">
+		<img  src="img/tu2.jpg" alt="" id="product_img">
+	</div>
+	<table rules=rows>
+		<tr >
+			<td>商品名称</td>
+			<td>商品规格</td>
+		</tr>
+		<tr>
+			<td class="product_detailname"></td>
+			<td class="product_detailguige"></td>
+		</tr>
+		<tr>
+			<td class="product_detailprice"></td>
+			<td class="addcar"><img src="img/car.png" alt="" onClick="addCar()"></td>
+		</tr>
+	
+	</table>
+	<hr>
+		<p style="text-align: center;color: #00f" onClick="hideDetail()">关闭</p>
+</div>	
+<div class="body">
+	<div class="top clearfix">
+		<ul class="banner clearfix">
+
+			<li><img src="img/1.jpg" alt=""></li>
+			<li><img src="img/2.jpg" alt=""></li>
+			<li><img src="img/3.jpg" alt=""></li>
+			<li><img src="img/4.jpg" alt=""></li>
+		
+		</ul>
+		<div class="dian clearfix">
+				<span class="banner_isck banner_noisck"> </span>
+				<span class="banner_noisck"> </span>
+				<span class="banner_noisck"> </span>
+				<span class="banner_noisck"> </span>
+			
+			
+		</div>
+	</div>
+		<!-- 商品1 -->
+	<div class="shangpin1">
+		<p style="" class="sp1jieshao">商品详情</p>
+		<div class=" clearfix">
+		<div class="img1 fl">
+			
+		</div>
+		<div class="jieshao1 fl">
+			<p style="font-size: 50px" class="product_name1"></p>
+			<p style="color: #666" class="product_detail1"></p>
+			<p>价格<span style="color: #f00;" class="product_price"></span> <img src="img/car.png" alt="" onClick="addCar(0)"></p>
+		</div>
+</div>
+	</div>
+	<!-- 商品23 -->
+	<div class="shangpin23 clearfix">
+	<!-- 	<div class="shangping2 fl">
+				<span class="fr">商品详情<br>规格1.5kg</span>
+				<img src="img/tu2.jpg" alt="">
+					<p style="color: #666">小型犬1231规格12341</p>
+			<p style="color: #f00">$123</p>
+			
+		</div>
+		<div class="shangping3 fr">
+				<span class="fr">商品详情<br>规格1.5kg</span>
+				<img src="img/tu2.jpg" alt="">
+				<p style="color: #666">小型犬1231规格12341</p>
+			<p style="color: #f00">$123 </p>
+			
+			
+		</div> -->
+	</div>
+	</div>
+	<div class="menu">
+		
+		<div class="menu_div">
+			<a href="#">
+			<span class="menu_home_click menu_span"></span>
+			<p><span class="menu_span">首页</span></p></a>
+		</div>
+		<div class="menu_div">
+			<a href="car.html"><span class="car_num">1</span></a>
+			<a href="car.html">
+			<span class="menu_car menu_span"></span>
+			<p><span>购物车</span></p></a>
+		</div>
+		<div class="menu_div">
+			<a href="my.html">
+			<span class="menu_my menu_span"></span>
+			
+			<p><span>我的</span></p></a>
+			
+		</div>
+	</div>
+</body>
+</html>

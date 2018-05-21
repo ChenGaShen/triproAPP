@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TRIPRO</title>
+
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-table.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrapValidator.min.css"/>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrapValidator.min.js"></script>
+<script type="text/javascript" src="../static/js/util.js"></script>
+<script type="text/javascript" src="../static/js/admin.js"></script>
+</head>
+
+<body>
+	<div class="panel-body" style="padding-bottom:0px;">
+
+        <div id="toolbar" class="btn-group">
+             <button id="btn_add" type="button" class="btn btn-default" data-toggle="modal" >
+                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>新增管理员
+            </button>
+              <button id="btn_changePass" type="button" class="btn btn-default" data-toggle="modal" >
+                <span class="glyphicon glyphicon-lock" aria-hidden="true"></span>修改密码
+            </button>
+             <button id="btn_delete" type="button" class="btn btn-default" data-toggle="modal" >
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>删除管理账户
+            </button>
+        </div>
+        <table id="t_table" class="table table-hover">
+        	<thead>
+        	
+        	</thead>
+        
+        </table>
+        
+        <!-- 新增模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 35%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                	新增管理员
+                </h4>
+            </div>
+            <form id="add_form_data">
+            
+                 <div class="form-group" style="width: 30%; margin-left: 40px;margin-top: 5px;">
+				<label for="add_adminName">登录账户</label> <input type="text"
+					class="form-control" id="add_adminName"  name="add_adminName"   ></input>
+			</div>
+			<div class="form-group" style="width: 30%; margin-left: 40px;">
+				<label for="add_adminPass">登录密码</label> <input type="password"
+					class="form-control" id="add_adminPass"  name="add_adminPass"   ></input>
+			</div>
+			<div class="form-group" style="width: 30%; margin-left: 40px;">
+				<label for="add_adminPass">确认密码</label> <input type="password"
+					class="form-control" id="add_adminPass"  name="aff_adminPass"   ></input>
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button  id="addButton"  class="btn btn-primary">
+                  	确认新增
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+           <!-- 修改密码模态框（Modal） -->
+<div class="modal fade" id="changePassModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 35%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                	修改密码
+                </h4>
+            </div>
+            <form id="changePass_form_data">
+            <input type="text" id="adminId" hidden/>
+            
+            <div class="form-group" style="width: 30%; margin-left: 40px;margin-top: 5px;">
+				<label for="update_adminName">登录账户</label> <input type="text"
+					class="form-control" id="update_adminName"  name="update_adminName"  disabled="disabled"  ></input>
+			</div>
+			<div class="form-group" style="width: 30%; margin-left: 40px;">
+				<label for="update_adminName">新密码</label> <input type="text"
+					class="form-control" id="update_adminName"  name="update_adminPass" ></input>
+			</div>
+			<div class="form-group" style="width: 30%; margin-left: 40px;">
+				<label for="update_adminName">确认密码</label> <input type="text"
+					class="form-control" id="update_adminName"  name="update_aff_adminPass" ></input>
+			</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button  id="changePassButton"  class="btn btn-primary">
+                  	确认修改
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+        <!-- 删除模态框（Modal） -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    删除管理员账户
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="delete_adminId" hidden/>
+            
+            <div class="modal-body">确认将账户   <span id="delete_adminName" style="color: red;"></span>  删除？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button  id="deleteButton"  class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+</div>   
+</body>
+</html>

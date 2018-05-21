@@ -1,0 +1,74 @@
+.body{
+	margin: 0 auto;
+	width: 99%;
+}
+.top{
+	padding: 40px;
+	background:#eee;
+}
+.top span{
+	position: absolute;
+	left: 46%;
+	margin: auto;
+	text-align: center;
+}
+
+.top img{
+	margin-left: 5%;
+}
+/**
+ * 线
+ */
+.boder{
+	height: 10px;
+	background:#6c6969;
+}
+.user{
+	background:url("../img/background.png") no-repeat;
+	width: 100%;
+	height: 300px;
+}
+.user b{
+	color: #fff;
+	
+	position: relative;
+	left: 30%;
+	top: 35%;
+}
+.ulli li{
+	margin-top: 30px;
+	text-align: center;
+	width: 25%;
+	float: left;
+	margin-bottom: 20px;
+}
+.ulli{
+	border-bottom: 1px solid #6c6969;
+}
+.qbdd p{
+	
+	height: 180px;
+	line-height: 180px;
+	border-bottom: 1px solid #6c6969;
+}
+.icon_head{
+	margin-left: 20px;
+}
+/*.dfk{
+	position: relative;
+}
+.qbdd{
+	position: relative;
+}*/
+.dfk p{
+	
+	height: 180px;
+	line-height: 180px;
+	border-bottom: 1px solid #6c6969;
+}
+.jiantou{
+	position: relative;
+	
+	left: 60%;
+}
+

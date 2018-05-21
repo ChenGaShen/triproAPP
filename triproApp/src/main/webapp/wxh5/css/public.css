@@ -1,0 +1,17 @@
+.clearfix:after {
+  content: '\20';
+  display: block;
+  height: 0;
+  line-height: 0;
+  visibility: hidden;
+  clear: both;
+}
+body{font: normal 36px/2em "微软雅黑";}
+body,ul,li,p,h1,h2,h3,h4,h5,h6{margin: 0;padding: 0;}
+ul,li{list-style: none;}
+a{text-decoration: none;}
+a img{border: 0;}
+img{vertical-align: middle;}
+.fl{float: left;}
+.fr{float: right;}
+.clear{clear: both;}

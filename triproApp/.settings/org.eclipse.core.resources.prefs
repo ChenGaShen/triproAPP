@@ -1,2 +1,8 @@
 eclipse.preferences.version=1
+encoding//src/main/resources/ehcache.xml=UTF-8
+encoding//src/main/resources/jdbc.properties=UTF-8
+encoding//src/main/resources/log4j.properties=UTF-8
+encoding//src/main/resources/spring-mybatis.xml=UTF-8
+encoding//src/main/resources/system.properties=UTF-8
+encoding//src/main/webapp/WEB-INF/web.xml=UTF-8
 encoding/<project>=UTF-8

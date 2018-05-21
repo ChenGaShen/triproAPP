@@ -1,0 +1,48 @@
+.imgLi{
+    margin-left: 80px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    margin-right: 10px;
+    float:left;
+}
+.imgAudit{
+	width:250px;
+    height: 250px;
+    border: 4px solid gray;
+}    
+.clearfix:after {
+  content: '\20';
+  display: block;
+  height: 0;
+  line-height: 0;
+  visibility: hidden;
+  clear: both;
+}
+/* form 表单居中 */
+#t_div{
+position: absolute;/*绝对定位*/
+width: 300px;
+height: 200px;
+top: 50%;
+left: 50%;
+margin-top: -300px;
+margin-left: -650px;
+}
+/* 去掉a标签的下划线和颜色 */
+a:link,a:visited{
+ text-decoration:none;  /*超链接无下划线*/
+ color:#400040;
+}
+.myToast{
+position: fixed; 
+display: inline-block;
+padding: 5px 10px;
+line-height: 24px;
+font-size: 14px;
+color: #fff;
+background:#000;
+ max-width: 300px;
+ _width: expression(this.offsetWidth >300 ? '300px': 'auto' );
+ *width: expression(this.offsetWidth >300 ? '300px': 'auto' );
+ border-radius: 5px;
+ }

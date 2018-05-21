@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no,email=no,address=no">
+
+    <link href="css/common.css" rel="stylesheet" type="text/css">
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+    <link href="css/userinfo.css" rel="stylesheet" type="text/css">
+
+    <script type="text/javascript" src="js/addressList.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <title>管理收货地址</title>
+</head>
+<body>
+
+
+
+
+    <div class="page-app">
+        <div id="addrList">
+            <!--<div class="addrItem" data-id="2210880770" receiver-id="1397803"><div class="detail"><div class="name_addr_content"><div class="name">笔记&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;15757165753</div><div class="addr">浙江省杭州市西湖区紫金庭园即刻</div></div><div class="btnDiv"><div class="b1 btnSelect"><div class="butSetDefault pic selected"></div><div class="des">设为默认</div></div><div class="b2 btnDel"><div class="pic"></div><div class="des">删除</div></div><div class="b3 btnEdit"><div class="pic"></div><div class="des">编辑</div></div></div></div></div>-->
+        </div>
+        <div style="height:44px;"></div>
+    </div>
+
+    <div id="footer">
+        <div class="btns" style="width:125px"><button type="button" id="addAddr" class="btn1 enable" onclick="addAddressButtonClick(this)">新增收货地址</button></div>
+    </div>
+
+
+    <div class="dialog-wrap confirm-wrap" style="opacity: 0; display: none;"><div class="dialog-panel"><div class="dialog-confirm"><div class="msg">确认是否删除地址？</div><div class="btns"><button class="btn btn-cancel" onclick="btnCancel()">取消</button><button class="btn btn-confirm" onclick="btnConfirm()">确认</button></div></div></div></div>
+
+
+
+    <script>
+
+ var uid=localStorage.getItem("uid");//
+        var addressId = 0;
+
+        $(document).ready(function(){
+             if (uid==null) {
+         window.location.href = 'login.html';
+      return;
+    }
+            getData();
+        });
+
+      
+
+        function getData(data) {
+            $.ajax({
+                url:"http://duoqubao.hzmenglin.com/web/user/addressList.json",
+                data:{
+                    "uid" : uid,
+                },
+                type: "post",
+                dataType:"json",
+                success: function (data) {
+                    addBox(data.resultList);
+//                    console.log(data.resultList);
+                }
+
+            });
+        }
+
+        function addBox(result){
+            //result是一个集合,所以需要先遍历
+            var tmpl = '';
+          
+            $.each(result,function(index,item){
+                console.log(index);
+                console.log(item);
+
+                tmpl += '<div class="addrItem'+'" data-id="'+item.id+'" receiver-id="'+item.id+'">';
+                tmpl +=     '<div class="detail">';
+                tmpl +=         '<div class="name_addr_content">';
+                tmpl +=             '<div class="name">'+item.receivedName+'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'+item.receivedPhone+'</div>';
+                tmpl +=             '<div class="addr">'+ item.receivedProvince + item.receivedCity + item.receivedCanton + item.receivedDetail +'</div>';
+                tmpl +=         '</div>';
+                tmpl +=         '<div class="btnDiv">';
+                tmpl +=             '<div class="b1 btnSelect" onclick="defaultAddressClick(this)" value="'+item.id+'">';
+                tmpl +=                 '<div class="butSetDefault pic '+ (!item.isDefault ? 'no-selected' : 'selected') +'"></div>';
+                tmpl +=                 '<div class="des">设为默认</div>';
+                tmpl +=             '</div>';
+                tmpl +=             '<div class="b2 btnDel" value="'+item.id+'" onclick="deleteButtonClick(this)" ><div class="pic"></div><div class="des">删除</div></div>';
+                tmpl +=             '<div class="b3 btnEdit" btnEdit-id="'+item.id+'" onclick="editAddressButtonClick(this)"><div class="pic"></div><div class="des">编辑</div></div>';
+                tmpl +=         '</div>';
+                tmpl +=     '</div>';
+                tmpl += '</div>';
+
+            });
+            $("#addrList").html(tmpl);
+        }
+
+
+        function deleteButtonClick(obj) {
+            var confirmView = document.getElementsByClassName("dialog-wrap confirm-wrap")[0];
+            confirmView.style = "opacity: 1;"
+            console.log(obj);
+            addressId = obj.getAttribute("value");
+            console.log(addressId);
+        }
+
+        function btnCancel() {
+            var confirmView = document.getElementsByClassName("dialog-wrap confirm-wrap")[0];
+            confirmView.style = "opacity: 0; display: none;"
+        }
+
+        //确定按钮
+        function btnConfirm() {
+            var confirmView = document.getElementsByClassName("dialog-wrap confirm-wrap")[0];
+            confirmView.style = "opacity: 0; display: none;"
+
+
+
+            delAddress();
+        }
+
+        //删除地址
+        function delAddress() {
+            $.ajax({
+                url:"http://duoqubao.hzmenglin.com/web/user/deleteAddress.json",
+                data:{
+                    "addressId" : addressId,
+                },
+                type: "post",
+                dataType:"json",
+                success: function (data) {
+                    console.log(data);
+                    //刷新列表
+                    getData();
+                }
+
+            });
+        }
+
+        function defaultAddressClick(obj) {
+            addressId = obj.getAttribute("value");
+            setDefaultAddress();
+        }
+
+        //设置为默认地址
+        function setDefaultAddress() {
+            $.ajax({
+                url:"http://duoqubao.hzmenglin.com/web/user/defaultAddress.json",
+                data:{
+                    "addressId" : addressId,
+                    "uid" : uid,
+                },
+                type: "post",
+                dataType:"json",
+                success: function (data) {
+                    console.log(data);
+
+                    //刷新数据
+                    getData();
+                }
+
+            });
+        }
+
+        //编辑地址
+        function editAddressButtonClick() {
+            window.location.href="addressEdit.html";
+        }
+
+        //增加地址
+        function addAddressButtonClick() {
+            window.location.href="addressEdit.html";
+        }
+
+
+    </script>
+
+</body>
+</html>

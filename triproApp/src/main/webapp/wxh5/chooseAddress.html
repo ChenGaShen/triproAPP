@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>选择收货地址</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no,email=no,address=no">
+
+    <link href="css/common.css" rel="stylesheet" type="text/css">
+    <link href="css/main.css" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+
+    <style>@media print {#ghostery-purple-box {display:none !important}}</style></head>
+<body>
+<div class="address-list page-app">
+    <div id="addrList">
+        <!--<div class="hd">可配送地址</div>-->
+        <div id="addrListBox">
+
+            <!--<div class="pset">-->
+                <!--<div class="delivery-address addr-item selected default" data-id="2210899918" receiver-id="1414962" provinceid="11" provincename="浙江省" cityid="124" cityname="杭州市" cantonid="1305" cantonname="西湖区" receivername="哈哈哈" receiverphone="123456888">-->
+                    <!--<h4>-->
+                        <!--<span class="name">哈哈哈</span>-->
+                        <!--<span class="phone">123456888</span>-->
+                    <!--</h4>-->
+                    <!--<p class="address">浙江省杭州市西湖区锋尚苑-4幢刚刚好</p>-->
+                <!--</div>-->
+            <!--</div>-->
+
+        </div>
+        <!--<div class="hd">其他配送地址</div>-->
+    </div>
+    <div class="footer">
+        <a id="goEditAddr" class="btn" href="addressList.html">管理收货地址</a>
+    </div>
+</div>
+
+
+<script>
+  var uid=localStorage.getItem("uid");//
+    $(document).ready(function(){
+         var Ohref=window.location.href;
+          var arrhref=Ohref.split("=");
+         cid=arrhref[1];
+   orderid=arrhref[1].split("&")[0];
+        getData(arrhref[1].split("&")[0]);
+    });
+
+  
+
+    function getData(data) {
+        $.ajax({
+            url:"http://duoqubao.hzmenglin.com/web/user/addressList.json",
+            data:{
+                "uid" : uid,
+            },
+            type: "post",
+            dataType:"json",
+            success: function (data) {
+//                console.log(data.resultList);
+                addBox(data.resultList);
+            }
+
+        });
+    }
+
+ //选择收货地址列表
+    function addBox(result){
+        //result是一个集合,所以需要先遍历
+        var tmpl = '';
+        $.each(result,function(index,item){
+            console.log(index);
+            console.log(item);
+            tmpl += '<div class="pset" data-id="'+item.id+'" receiver-id="'+item.id+'" provinceId="'+item.id+'" provinceName="'+item.receivedProvince+'" cityId="'+item.id+'" cityName="'+item.receivedCity+'" cantonId="'+item.id+'" cantonName="'+item.receivedCanton+'" receivedDetail="'+item.receivedDetail+'" receiverName="'+item.receivedName+'" receiverPhone="'+item.receivedPhone+'" onclick="chooseAddressButtonClick(this)"><div class="delivery-address addr-item '+(!item.isDefault ? 'no-selected' : 'selected default')+'" data-id="'+item.id+'" receiver-id="'+item.id+'" provinceId="'+item.id+'" provinceName="'+item.receivedProvince+'" cityId="'+item.id+'" cityName="'+item.receivedCity+'" cantonId="'+item.id+'" cantonName="'+item.receivedCanton+'" receiverName="'+item.receivedName+'" receiverPhone="'+item.receivedPhone+'">';
+            tmpl +=     '<h4>';
+            tmpl +=         '<span class="name">'+ item.receivedName +'</span>';
+            tmpl +=         '<span class="phone">'+ item.receivedPhone +'</span>';
+            tmpl +=     '</h4>';
+            tmpl +=     '<p class="address">'+ item.receivedProvince+item.receivedCity+item.receivedCanton+item.receivedDetail+'</p>';
+            tmpl += '</div></div>';
+        });
+
+        $("#addrListBox").html(tmpl);
+    }
+
+    function chooseAddressButtonClick(obj) {
+        console.log("choose this address!");
+        console.log(obj);
+
+        var provincename = obj.getAttribute("provincename");
+        var cityname = obj.getAttribute("cityname");
+        var cantonname = obj.getAttribute("cantonname");
+        var receivername = obj.getAttribute("receivername");
+        var receiverphone = obj.getAttribute("receiverphone");
+        var receivedDetail = obj.getAttribute("receivedDetail");
+        //receivedDetail
+
+        $.ajax({
+            url:"http://duoqubao.hzmenglin.com/web/order/updateOrderAddress.json",
+            data:{
+                "orderId" : orderid,"receiveName":receivername,"receivePhone" :receiverphone,"receiveAddress":provincename+cityname+cantonname+receivedDetail},
+            type: "post",
+            dataType:"json",
+            success: function (data) {
+//                console.log(data.resultList);
+                if (data.result.status==0) {
+                        window.location.href="doorder.html?orderid="+data.orderId+"&";
+                }
+            }
+
+        });
+    }
+
+
+</script>
+</body>
+</html>
