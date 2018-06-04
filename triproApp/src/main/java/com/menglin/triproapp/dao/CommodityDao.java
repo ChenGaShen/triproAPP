@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.menglin.triproapp.entity.Admin;
 import com.menglin.triproapp.entity.Commodity;
+import com.menglin.triproapp.entity.CommodityDetails;
 
 public interface CommodityDao {
     int deleteByPrimaryKey(Integer id);
@@ -23,8 +24,7 @@ public interface CommodityDao {
     
     int soldOutByIds(Integer [] ids);
     
-    List<Commodity> selectCommodityList();
-    
+    List<Commodity> selectCommodityList(HashMap<String,Object> map);
     
     /**
      * 查询用户记录总数(条件)

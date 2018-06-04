@@ -21,6 +21,8 @@ public class Shopping {
 
     private Date updateTime;
 
+    private Integer selected;
+
     public Integer getId() {
         return id;
     }
@@ -92,19 +94,27 @@ public class Shopping {
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
     }
+
+    public Integer getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Integer selected) {
+        this.selected = selected;
+    }
     
-    // 查询使用
-    private String name; //商品名称
-    private String specification;// 商品规格
-    private String img; // 商品图片
+    //查询使用
+    private String commodityName;
+    private String specification;
+    private String commodityImg;
     private String commodityPrice;
 
-	public String getName() {
-		return name;
+	public String getCommodityName() {
+		return commodityName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setCommodityName(String commodityName) {
+		this.commodityName = commodityName;
 	}
 
 	public String getSpecification() {
@@ -115,12 +125,12 @@ public class Shopping {
 		this.specification = specification;
 	}
 
-	public String getImg() {
-		return img;
+	public String getCommodityImg() {
+		return commodityImg;
 	}
 
-	public void setImg(String img) {
-		this.img = img;
+	public void setCommodityImg(String commodityImg) {
+		this.commodityImg = commodityImg;
 	}
 
 	public String getCommodityPrice() {

@@ -24,5 +24,7 @@ public interface IShoppingService {
     
     void  emptyCart(Integer uid);
     
+    void updateAllselecte(Integer selected,Integer uid);
+    
     List<Shopping> ShoppingListByUid(Integer uid);
 }

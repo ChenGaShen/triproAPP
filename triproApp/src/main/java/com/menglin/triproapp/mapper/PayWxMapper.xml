@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.menglin.tripro.dao.PayWxDao">
-  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.PayWx">
+<mapper namespace="com.menglin.triproapp.dao.PayWxDao">
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.PayWx">
     <id column="id" jdbcType="INTEGER" property="id" />
     <result column="uid" jdbcType="INTEGER" property="uid" />
     <result column="out_trade_no" jdbcType="VARCHAR" property="outTradeNo" />
@@ -79,7 +79,7 @@
     delete from t_pay_wx
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.tripro.entity.PayWx">
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.PayWx">
     insert into t_pay_wx (id, uid,out_trade_no, transaction_id, 
       bank_type, cash_fee, total_fee, 
       time_end, add_time)
@@ -87,7 +87,7 @@
       #{bankType,jdbcType=VARCHAR}, #{cashFee,jdbcType=DOUBLE}, #{totalFee,jdbcType=INTEGER}, 
       #{timeEnd,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.PayWx">
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.PayWx">
     insert into t_pay_wx
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -148,7 +148,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.PayWx">
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.PayWx">
     update t_pay_wx
     <set>
     <if test="uid != null">
@@ -178,7 +178,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.PayWx">
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.PayWx">
     update t_pay_wx
     set uid = #{uid,jdbcType=INTEGER},
       out_trade_no = #{outTradeNo,jdbcType=VARCHAR},

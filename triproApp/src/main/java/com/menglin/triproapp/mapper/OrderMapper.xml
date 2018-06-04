@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.menglin.tripro.dao.OrderDao">
-  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.Order">
+<mapper namespace="com.menglin.triproapp.dao.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.Order">
     <id column="id" jdbcType="VARCHAR" property="id" />
     <result column="uid" jdbcType="INTEGER" property="uid" />
     <result column="order_price" jdbcType="DOUBLE" property="orderPrice" />
     <result column="money" jdbcType="DOUBLE" property="money" />
+    <result column="red_money" jdbcType="DOUBLE" property="redMoney" />
     <result column="pay_time" jdbcType="TIMESTAMP" property="payTime" />
     <result column="state" jdbcType="INTEGER" property="state" />
     <result column="receive_name" jdbcType="VARCHAR" property="receiveName" />
@@ -18,18 +19,19 @@
     <result column="ip" jdbcType="VARCHAR" property="ip" />
     <result column="ip_address" jdbcType="VARCHAR" property="ipAddress" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
-    <result column="userPhone" jdbcType="VARCHAR" property="userPhone" /><!-- 另外加的查询结果 -->
+    <result column="loginName" jdbcType="VARCHAR" property="loginName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, uid, order_price AS orderPrice, money, pay_time AS payTime, state, receive_name AS receiveName, receive_phone AS receivePhone,
+    id, uid, order_price AS orderPrice, money,red_money AS redMoney pay_time AS payTime, state, receive_name AS receiveName, receive_phone AS receivePhone,
      receive_address AS receiveAddress, 
     receive_state AS receiveState, air, company, add_time AS addTime, ip, ip_address AS ipAddress, remark
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+  
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
           SELECT
 	t.id,
 	t.uid,
-	u.user_phone AS userPhone,
+	u.login_name AS loginName,
 	t.order_price AS orderPrice,
 	t.money,
 	t.pay_time AS payTime,
@@ -46,7 +48,7 @@
 	t.remark
 FROM
 	t_order t
-LEFT JOIN t_user u ON t.uid = u.id
+LEFT JOIN t_user u ON t.uid = u.user_id
  where 1=1 
     and t.id = #{id,jdbcType=VARCHAR}
   </select>
@@ -82,13 +84,13 @@ LEFT JOIN t_user u ON t.uid = u.id
 	COUNT(*)
 FROM
 	t_order t
-LEFT JOIN t_user u ON t.uid = u.id
+LEFT JOIN t_user u ON t.uid = u.user_id
   where 1=1 
  		 <if test="orderId!=null and orderId !='' "> <!-- String 类型判断为空或者null -->
           AND   t.id like  CONCAT('%',#{orderId},'%')  
         </if>
-          <if test="userPhone!=null and userPhone!='' ">
-          AND   u.user_phone like  CONCAT('%',#{userPhone},'%')  
+          <if test="loginName!=null and loginName'' ">
+          AND   u.login_name like  CONCAT('%',#{loginName},'%')  
         </if>
            <if test="state!=null "> <!-- int 类型判断为空 或者为null-->
           AND   t.state   = #{state}  
@@ -109,7 +111,7 @@ LEFT JOIN t_user u ON t.uid = u.id
            SELECT
 	t.id,
 	t.uid,
-	u.user_phone AS userPhone,
+	u.login_name AS loginName,
 	t.order_price AS orderPrice,
 	t.money,
 	t.pay_time AS payTime,
@@ -126,13 +128,13 @@ LEFT JOIN t_user u ON t.uid = u.id
 	t.remark
 FROM
 	t_order t
-LEFT JOIN t_user u ON t.uid = u.id
+LEFT JOIN t_user u ON t.uid = u.user_id
 where 1=1 
  		 <if test="orderId!=null and orderId !='' ">
           AND   t.id like  CONCAT('%',#{orderId},'%')  
         </if>
-    	  <if test="userPhone!=null and userPhone!='' ">
-          AND   u.user_phone like  CONCAT('%',#{userPhone},'%')  
+    	  <if test="loginName!=null and loginName!='' ">
+          AND   u.login_name like  CONCAT('%',#{loginName},'%')  
         </if>
            <if test="state!=null ">
           AND   t.state   = #{state}  
@@ -153,25 +155,32 @@ where 1=1
         </if>
    
   </select>
+  
+  <!-- <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order
+    where id = #{id,jdbcType=VARCHAR}
+  </select> -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from t_order
     where id = #{id,jdbcType=VARCHAR}
   </delete>
-  <insert id="insert" parameterType="com.menglin.tripro.entity.Order">
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.Order">
     insert into t_order (id, uid, order_price, 
-      money, pay_time, state, 
-      receive_name, receive_phone, receive_address, 
-      receive_state, air, company, 
-      add_time, ip, ip_address, 
-      remark)
+      money, red_money, pay_time, 
+      state, receive_name, receive_phone, 
+      receive_address, receive_state, air, 
+      company, add_time, ip, 
+      ip_address, remark)
     values (#{id,jdbcType=VARCHAR}, #{uid,jdbcType=INTEGER}, #{orderPrice,jdbcType=DOUBLE}, 
-      #{money,jdbcType=DOUBLE}, #{payTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}, 
-      #{receiveName,jdbcType=VARCHAR}, #{receivePhone,jdbcType=VARCHAR}, #{receiveAddress,jdbcType=VARCHAR}, 
-      #{receiveState,jdbcType=INTEGER}, #{air,jdbcType=VARCHAR}, #{company,jdbcType=VARCHAR}, 
-      #{addTime,jdbcType=TIMESTAMP}, #{ip,jdbcType=VARCHAR}, #{ipAddress,jdbcType=VARCHAR}, 
-      #{remark,jdbcType=VARCHAR})
+      #{money,jdbcType=DOUBLE}, #{redMoney,jdbcType=DOUBLE}, #{payTime,jdbcType=TIMESTAMP}, 
+      #{state,jdbcType=INTEGER}, #{receiveName,jdbcType=VARCHAR}, #{receivePhone,jdbcType=VARCHAR}, 
+      #{receiveAddress,jdbcType=VARCHAR}, #{receiveState,jdbcType=INTEGER}, #{air,jdbcType=VARCHAR}, 
+      #{company,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{ip,jdbcType=VARCHAR}, 
+      #{ipAddress,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.Order">
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.Order">
     insert into t_order
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -185,6 +194,9 @@ where 1=1
       </if>
       <if test="money != null">
         money,
+      </if>
+      <if test="redMoney != null">
+        red_money,
       </if>
       <if test="payTime != null">
         pay_time,
@@ -236,6 +248,9 @@ where 1=1
       <if test="money != null">
         #{money,jdbcType=DOUBLE},
       </if>
+      <if test="redMoney != null">
+        #{redMoney,jdbcType=DOUBLE},
+      </if>
       <if test="payTime != null">
         #{payTime,jdbcType=TIMESTAMP},
       </if>
@@ -274,7 +289,7 @@ where 1=1
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.Order">
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.Order">
     update t_order
     <set>
       <if test="uid != null">
@@ -285,6 +300,9 @@ where 1=1
       </if>
       <if test="money != null">
         money = #{money,jdbcType=DOUBLE},
+      </if>
+      <if test="redMoney != null">
+        red_money = #{redMoney,jdbcType=DOUBLE},
       </if>
       <if test="payTime != null">
         pay_time = #{payTime,jdbcType=TIMESTAMP},
@@ -325,11 +343,12 @@ where 1=1
     </set>
     where id = #{id,jdbcType=VARCHAR}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.Order">
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.Order">
     update t_order
     set uid = #{uid,jdbcType=INTEGER},
       order_price = #{orderPrice,jdbcType=DOUBLE},
       money = #{money,jdbcType=DOUBLE},
+      red_money = #{redMoney,jdbcType=DOUBLE},
       pay_time = #{payTime,jdbcType=TIMESTAMP},
       state = #{state,jdbcType=INTEGER},
       receive_name = #{receiveName,jdbcType=VARCHAR},
@@ -344,4 +363,5 @@ where 1=1
       remark = #{remark,jdbcType=VARCHAR}
     where id = #{id,jdbcType=VARCHAR}
   </update>
+ 
 </mapper>

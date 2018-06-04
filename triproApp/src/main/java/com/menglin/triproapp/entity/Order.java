@@ -11,6 +11,8 @@ public class Order {
 
     private Double money;
 
+    private Double redMoney;
+
     private Date payTime;
 
     private Integer state;
@@ -34,6 +36,10 @@ public class Order {
     private String ipAddress;
 
     private String remark;
+    
+    //查询使用
+    private String loginName;
+    
 
     public String getId() {
         return id;
@@ -65,6 +71,14 @@ public class Order {
 
     public void setMoney(Double money) {
         this.money = money;
+    }
+
+    public Double getRedMoney() {
+        return redMoney;
+    }
+
+    public void setRedMoney(Double redMoney) {
+        this.redMoney = redMoney;
     }
 
     public Date getPayTime() {
@@ -162,15 +176,14 @@ public class Order {
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
     }
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
     
-    //查询条件
-    private String userPhone;
-
-	public String getUserPhone() {
-		return userPhone;
-	}
-
-	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone;
-	}
+    
 }

@@ -39,7 +39,7 @@
     </javaClientGenerator>
        
 
-   <table schema="triproapp" tableName="t_user" domainObjectName="User" enableCountByExample="false" enableUpdateByExample="false"    
+   <table schema="triproapp" tableName="t_order" domainObjectName="Order" enableCountByExample="false" enableUpdateByExample="false"    
        enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false">    
    </table>    
 	

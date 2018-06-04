@@ -14,7 +14,7 @@ public class UserVO {
 		
 		private Integer uid;
 	 
-	    private String userPhone;
+	    private String loginName;
 
 	    private Integer state;
 
@@ -24,9 +24,6 @@ public class UserVO {
 
 	    private Date addTime;
 
-	    private Integer identity;
-
-	    private Integer audit;
 
 	    private String idCard;
 
@@ -54,14 +51,16 @@ public class UserVO {
 			this.uid = uid;
 		}
 
-		public String getUserPhone() {
-			return userPhone;
+		
+
+
+		public String getLoginName() {
+			return loginName;
 		}
 
-		public void setUserPhone(String userPhone) {
-			this.userPhone = userPhone;
+		public void setLoginName(String loginName) {
+			this.loginName = loginName;
 		}
-
 
 		public Integer getState() {
 			return state;
@@ -95,22 +94,6 @@ public class UserVO {
 			this.addTime = addTime;
 		}
 
-		public Integer getIdentity() {
-			return identity;
-		}
-
-		public void setIdentity(Integer identity) {
-			this.identity = identity;
-		}
-
-
-		public Integer getAudit() {
-			return audit;
-		}
-
-		public void setAudit(Integer audit) {
-			this.audit = audit;
-		}
 
 		public String getIdCard() {
 			return idCard;

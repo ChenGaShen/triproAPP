@@ -18,6 +18,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.menglin.triproapp.entity.Admin;
 import com.menglin.triproapp.entity.Commodity;
+import com.menglin.triproapp.entity.CommodityDetails;
+import com.menglin.triproapp.service.ICommodityDetailImgService;
 import com.menglin.triproapp.service.ICommodityService;
 import com.menglin.triproapp.util.CheckData;
 import com.menglin.triproapp.util.Format;
@@ -41,6 +43,11 @@ public class CommodityController {
 	
 	@Resource  
     private ICommodityService commodityService;
+	
+	@Resource  
+    private ICommodityDetailImgService  commodityDetailImgService;
+	
+	
 	
 	
 	/**
@@ -74,17 +81,18 @@ public class CommodityController {
 		CommodityDetailVO vo=new CommodityDetailVO();
 		if (null!=commodity) {
 			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			vo.setCommodityId(commodity.getId());
-			vo.setName(commodity.getName());
+			vo.setCommodityId(commodity.getCommodityid());
+			vo.setCommodityName(commodity.getCommodityName());
 			vo.setPrice(Format.keepTwoMoney(commodity.getPrice()));
 			vo.setDiscountPrice(Format.keepTwoMoney(commodity.getDiscountPrice()));
 			vo.setAmount(commodity.getAmount());
 			vo.setAllowance(commodity.getAllowance());
-			if (null!=commodity.getImg()) {
-				vo.setImg(SystemParam.DOMAIN_NAME+commodity.getImg());
+			if (null!=commodity.getCommodityImg()) {
+				vo.setCommodityImg(SystemParam.DOMAIN_NAME+commodity.getCommodityImg());
 			}
 			vo.setSpecification(commodity.getSpecification());
-			vo.setSales(commodity.getSales());
+			vo.setRealSale(commodity.getRealSale());
+			vo.setVirtualSales(commodity.getVirtualSales());
 			vo.setState(commodity.getState());
 			vo.setAddTime(sdf.format(commodity.getAddTime()));
 			vo.setUpdateTime(sdf.format(commodity.getUpdateTime()));
@@ -128,7 +136,7 @@ public class CommodityController {
 								SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 								String timestamp = sdf.format(date);
 //								String basePath = request.getSession().getServletContext().getRealPath("/");
-								String basePath = "E:\\images\\upload\\";
+								String basePath = "E:\\images\\uploadApp\\";
 								fileName=fileName.substring(fileName.lastIndexOf("."));
 								String path =timestamp+"_ml"+fileName;// 文件保存路径
 								File localFile = new File(basePath + path);
@@ -136,8 +144,8 @@ public class CommodityController {
 //								Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
 								new ImgPressThread(localFile).start();//多线程压缩图片
 								lis.add(path);
-								model.setImg("/img/"+path);
-								System.out.println(SystemParam.DOMAIN_NAME+model.getImg());
+								model.setCommodityImg("/imgApp/"+path);
+								System.out.println(SystemParam.DOMAIN_NAME+model.getCommodityImg());
 							
 								long  endTime=System.currentTimeMillis();
 								System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
@@ -203,7 +211,7 @@ public class CommodityController {
 			}
 		}	*/
 					
-	 }			model.setName(model.getName());//商品名称
+	 }			model.setCommodityName(model.getCommodityName());//商品名称
 				model.setPrice(Format.formatMoney(model.getPrice()));//商品普通价格
 				model.setDiscountPrice(Format.formatMoney(model.getDiscountPrice()));//商品供销商价格
 				model.setAllowance(model.getAmount());//库存
@@ -211,17 +219,511 @@ public class CommodityController {
 				model.setDescription(model.getDescription());//描述
 				model.setSpecification(model.getSpecification());// 规格
 				model.setState(1);//商品状态1上架0下架
-				model.setSales(0);//销量
+				model.setRealSale(0);//实际销量
+				model.setVirtualSales(model.getVirtualSales());//虚拟销量
+				model.setClassify(model.getClassify());
 				model.setAddTime(new Date());
 				model.setUpdateTime(new Date());
 				commodityService.save(model);
 				vn.setResult(Result.suc("商品添加成功!!"));
-				System.out.println("添加名称："+model.getName());
+				System.out.println("添加名称："+model.getCommodityName());
 				System.out.println("添加规格："+model.getSpecification());
 				System.out.println("添加描述："+model.getDescription());
 				
 				return vn;
   }
+	
+	
+	/**
+	 * 商品详情图新增/更新
+	 * @author CGS
+	 * @time 2018年5月22日下午2:55:02
+	 * @param model
+	 * @param request
+	 * @param f
+	 * @return
+	 * @throws IOException
+	 */
+	@RequestMapping(value="/addCommodityDetailImg.json",method={RequestMethod.POST})
+	public @ResponseBody ResultVN addCommodityDetailImg(CommodityDetails model, MultipartHttpServletRequest request,file f) throws IOException {
+			ResultVN vn =new ResultVN();
+			Commodity commodity =commodityService.get(model.getCommodityId());
+			if (CheckData.isNotNullOrEmpty(commodity)) {
+				List<String> lis=new ArrayList<String>();
+				Date date = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+				String timestamp = sdf.format(date);
+				//区分新增还是更新？
+				CommodityDetails commodityDetails =commodityDetailImgService.get(model.getDetailsId());
+				if (CheckData.isNotNullOrEmpty(commodityDetails)) {
+					//更新路径
+					Iterator<String> iter = request.getFileNames();
+					while (iter.hasNext()) {
+						MultipartFile file = request.getFile(iter.next());
+						if (file != null) {
+							if (file.getName().equals("file01")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml01"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails01("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails01());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file02")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml02"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails02("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails02());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file03")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml03"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails03("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails03());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file04")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml04"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails04("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails04());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file05")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml05"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails05("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails05());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file06")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml06"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails06("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails06());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file07")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml07"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails07("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails07());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file08")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml08"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails08("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails08());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file09")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml09"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails09("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails09());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file10")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml10"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									commodityDetails.setDetails10("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+commodityDetails.getDetails10());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							
+					    }
+				    }
+					commodityDetailImgService.update(commodityDetails);
+					vn.setResult(Result.suc("商品详情图已更新!!"));
+					// 详情图更新 完毕
+				}else{
+					//新增路径
+					Iterator<String> iter = request.getFileNames();
+					while (iter.hasNext()) {
+						MultipartFile file = request.getFile(iter.next());
+						if (file != null) {
+							if (file.getName().equals("file01")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml01"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails01("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails01());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file02")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml02"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails02("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails02());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file03")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml03"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails03("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails03());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file04")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml04"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails04("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails04());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file05")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml05"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails05("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails05());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file06")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml06"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails06("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails06());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file07")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml07"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails07("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails07());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file08")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml08"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails08("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails08());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file09")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml09"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails09("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails09());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							if (file.getName().equals("file10")) {
+								String fileName = file.getOriginalFilename();
+								if (fileName.trim() != "") {
+									long  startTime=System.currentTimeMillis();
+									
+//									String basePath = request.getSession().getServletContext().getRealPath("/");
+									String basePath = "E:\\images\\uploadApp\\";
+									fileName=fileName.substring(fileName.lastIndexOf("."));
+									String path =timestamp+"_ml10"+fileName;// 文件保存路径
+									File localFile = new File(basePath + path);
+									file.transferTo(localFile);
+//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
+									new ImgPressThread(localFile).start();//多线程压缩图片
+									lis.add(path);
+									model.setDetails10("/imgApp/"+path);
+									System.out.println(SystemParam.DOMAIN_NAME+model.getDetails10());
+								
+									long  endTime=System.currentTimeMillis();
+									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								   
+								}
+							}
+							
+					    }
+				    }
+					commodityDetailImgService.save(model);
+					vn.setResult(Result.suc("商品详情图已添加!!"));
+					// 详情图新增完毕
+				}
+					
+			}else{
+				vn.setResult(Result.fal("商品不存在!!"));
+			}
+			return vn;
+	}
 	/**
 	 * 商品编辑
 	 * @author CGS
@@ -237,7 +739,7 @@ public class CommodityController {
 	public @ResponseBody ResultVN updateCommodity(Commodity model, MultipartHttpServletRequest request,file f) throws IOException {
 		ResultVN vn =new ResultVN();
 		
-		Commodity commodity =commodityService.get(model.getId());
+		Commodity commodity =commodityService.get(model.getCommodityid());
 		if (null!=commodity) {
 		//本地
 		List<String> lis=new ArrayList<String>();
@@ -253,7 +755,7 @@ public class CommodityController {
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 						String timestamp = sdf.format(date);
 //						String basePath = request.getSession().getServletContext().getRealPath("/");
-						String basePath = "E:\\images\\upload\\";
+						String basePath = "E:\\images\\uploadApp\\";
 						fileName=fileName.substring(fileName.lastIndexOf("."));
 						String path =timestamp+"_ml"+fileName;// 文件保存路径
 						File localFile = new File(basePath + path);
@@ -261,8 +763,8 @@ public class CommodityController {
 //						Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
 						new ImgPressThread(localFile).start();//多线程压缩图片
 						lis.add(path);
-						commodity.setImg("/img/"+path);
-						System.out.println(SystemParam.DOMAIN_NAME+commodity.getImg());
+						commodity.setCommodityImg("/imgApp/"+path);
+						System.out.println(SystemParam.DOMAIN_NAME+commodity.getCommodityImg());
 					
 						long  endTime=System.currentTimeMillis();
 						System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
@@ -273,7 +775,7 @@ public class CommodityController {
 		}
 	}
 	
-		commodity.setName(model.getName());//商品名称
+		commodity.setCommodityName(model.getCommodityName());//商品名称
 		commodity.setPrice(Format.formatMoney(model.getPrice()));//商品普通价格
 		commodity.setDiscountPrice(Format.formatMoney(model.getDiscountPrice()));//商品供销商价格
 		commodity.setAllowance(model.getAmount());//库存
@@ -281,11 +783,12 @@ public class CommodityController {
 		commodity.setDescription(model.getDescription());//描述
 		commodity.setSpecification(model.getSpecification());// 规格
 		commodity.setState(1);//商品状态1上架0下架
-		commodity.setSales(commodity.getSales());//销量
+		commodity.setClassify(model.getClassify());
+		commodity.setVirtualSales(model.getVirtualSales());//虚拟销量
 		commodity.setUpdateTime(new Date());
 		commodityService.update(commodity);
 		vn.setResult(Result.suc("商品修改成功!!"));
-		System.out.println("修改名称："+model.getName());
+		System.out.println("修改名称："+model.getCommodityName());
 		System.out.println("修改规格："+model.getSpecification());
 		System.out.println("修改描述："+model.getDescription());
 		return vn;

@@ -3,9 +3,9 @@ package com.menglin.triproapp.entity;
 import java.util.Date;
 
 public class Commodity {
-    private Integer id;
+    private Integer commodityid;
 
-    private String name;
+    private String commodityName;
 
     private Double price;
 
@@ -15,13 +15,17 @@ public class Commodity {
 
     private Integer allowance;
 
-    private String img;
+    private String commodityImg;
 
     private String specification;
 
-    private Integer sales;
+    private Integer realSale;
+
+    private Integer virtualSales;
 
     private Integer state;
+
+    private Integer classify;
 
     private Date addTime;
 
@@ -29,20 +33,20 @@ public class Commodity {
 
     private String description;
 
-    public Integer getId() {
-        return id;
+    public Integer getCommodityid() {
+        return commodityid;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setCommodityid(Integer commodityid) {
+        this.commodityid = commodityid;
     }
 
-    public String getName() {
-        return name;
+    public String getCommodityName() {
+        return commodityName;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setCommodityName(String commodityName) {
+        this.commodityName = commodityName == null ? null : commodityName.trim();
     }
 
     public Double getPrice() {
@@ -77,12 +81,12 @@ public class Commodity {
         this.allowance = allowance;
     }
 
-    public String getImg() {
-        return img;
+    public String getCommodityImg() {
+        return commodityImg;
     }
 
-    public void setImg(String img) {
-        this.img = img == null ? null : img.trim();
+    public void setCommodityImg(String commodityImg) {
+        this.commodityImg = commodityImg == null ? null : commodityImg.trim();
     }
 
     public String getSpecification() {
@@ -93,12 +97,20 @@ public class Commodity {
         this.specification = specification == null ? null : specification.trim();
     }
 
-    public Integer getSales() {
-        return sales;
+    public Integer getRealSale() {
+        return realSale;
     }
 
-    public void setSales(Integer sales) {
-        this.sales = sales;
+    public void setRealSale(Integer realSale) {
+        this.realSale = realSale;
+    }
+
+    public Integer getVirtualSales() {
+        return virtualSales;
+    }
+
+    public void setVirtualSales(Integer virtualSales) {
+        this.virtualSales = virtualSales;
     }
 
     public Integer getState() {
@@ -107,6 +119,14 @@ public class Commodity {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+
+    public Integer getClassify() {
+        return classify;
+    }
+
+    public void setClassify(Integer classify) {
+        this.classify = classify;
     }
 
     public Date getAddTime() {

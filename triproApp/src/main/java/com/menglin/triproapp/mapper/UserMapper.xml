@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.menglin.triproapp.dao.UserDao">
-  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.User">
-    <id column="id" jdbcType="INTEGER" property="id" />
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.User">
+    <id column="user_id" jdbcType="INTEGER" property="userId" />
     <result column="user_phone" jdbcType="VARCHAR" property="userPhone" />
     <result column="head_img" jdbcType="VARCHAR" property="headImg" />
     <result column="token" jdbcType="VARCHAR" property="token" />
@@ -10,18 +10,14 @@
     <result column="phone_belong" jdbcType="VARCHAR" property="phoneBelong" />
     <result column="login_time" jdbcType="TIMESTAMP" property="loginTime" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
-    <result column="identity" jdbcType="INTEGER" property="identity" />
     <result column="login_name" jdbcType="VARCHAR" property="loginName" />
-    <result column="audit" jdbcType="INTEGER" property="audit" />
-    <result column="id_card" jdbcType="VARCHAR" property="idCard" />
-    <result column="id_card_img" jdbcType="VARCHAR" property="idCardImg" />
-    <result column="id_card_img_b" jdbcType="VARCHAR" property="idCardImgB" />
-    <result column="business_img" jdbcType="VARCHAR" property="businessImg" />
+    <result column="openId" jdbcType="VARCHAR" property="openid" />
+    <result column="session_key" jdbcType="VARCHAR" property="sessionKey" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, user_phone AS userPhone, head_img AS headImg, token, state, phone_belong AS phoneBelong, login_time AS loginTime, add_time AS addTime, identity, 
-    login_name AS loginName, audit, id_card AS idCard, id_card_img AS idCardImg, id_card_img_b AS idCardImgB, business_img AS businessImg,remark
+    user_id, user_phone, head_img, token, state, phone_belong, login_time, add_time, 
+     login_name, openId, session_key, remark
   </sql>
   
   
@@ -44,14 +40,6 @@
 Insert  update  delete   flushCache="false"
 
 Select  useCache="false" -->
-    
-  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_user
-    where id = #{id,jdbcType=INTEGER}
-  </select>
-  
   
   <!-- 分页查询start 和size查询数据 -->
   <select id="findByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
@@ -60,9 +48,6 @@ Select  useCache="false" -->
         from t_user    where 1=1
          <if test="userPhone!=null and userPhone !='' ">
           AND   user_phone like  CONCAT('%',#{userPhone},'%')  
-        </if>
-         <if test="audit!=null  ">
-          AND   audit   = #{audit}  
         </if>
         <if test="startTime!=null and startTime !='' ">
           AND   add_time <![CDATA[>=]]> #{startTime} 
@@ -82,9 +67,6 @@ Select  useCache="false" -->
         <if test="userPhone!=null and userPhone !='' ">
           AND   user_phone like  CONCAT('%',#{userPhone},'%') 
         </if>
-        <if test="audit!=null  ">
-          AND   audit   = #{audit}  
-        </if>
          <if test="startTime!=null and startTime !='' ">
           AND   add_time <![CDATA[>=]]> #{startTime} 
         </if>
@@ -94,7 +76,7 @@ Select  useCache="false" -->
     </select>
   
    <!--查询所有用户数据 -->
-    <select id="selectUserList" parameterType="java.lang.String" resultType="com.menglin.tripro.entity.User">
+    <select id="selectUserList" parameterType="java.lang.String" resultType="com.menglin.triproapp.entity.User">
         select
         <include refid="Base_Column_List" />
         from t_user
@@ -109,30 +91,41 @@ Select  useCache="false" -->
    where user_phone = #{userPhone}
   </select>
   
-  <!--根据主键删除一条用户数据 -->
+      <!--根据OpenId查询一条用户数据 -->
+  <select id="findUserByOpenId" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+   where openId = #{openId}
+  </select>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_user
+    where user_id = #{userId,jdbcType=INTEGER}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_user
-    where id = #{id,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.tripro.entity.User">
-    insert into t_user (id, user_phone, head_img, 
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.User">
+    insert into t_user (user_id, user_phone, head_img, 
       token, state, phone_belong, 
-      login_time, add_time, identity, 
-      login_name, audit, id_card, 
-      id_card_img, id_card_img_b, business_img,remark
-      )
-    values (#{id,jdbcType=INTEGER}, #{userPhone,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR}, 
+      login_time, add_time,
+      login_name,openId, 
+      session_key, remark)
+    values (#{userId,jdbcType=INTEGER}, #{userPhone,jdbcType=VARCHAR}, #{headImg,jdbcType=VARCHAR}, 
       #{token,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{phoneBelong,jdbcType=VARCHAR}, 
-      #{loginTime,jdbcType=TIMESTAMP}, #{addTime,jdbcType=TIMESTAMP}, #{identity,jdbcType=INTEGER}, 
-      #{loginName,jdbcType=VARCHAR}, #{audit,jdbcType=INTEGER}, #{idCard,jdbcType=VARCHAR}, 
-      #{idCardImg,jdbcType=VARCHAR}, #{idCardImgB,jdbcType=VARCHAR}, #{businessImg,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR}
-      )
+      #{loginTime,jdbcType=TIMESTAMP}, #{addTime,jdbcType=TIMESTAMP},
+      #{loginName,jdbcType=VARCHAR},  #{openid,jdbcType=VARCHAR}, 
+      #{sessionKey,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.User">
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.User">
     insert into t_user
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
+      <if test="userId != null">
+        user_id,
       </if>
       <if test="userPhone != null">
         user_phone,
@@ -155,34 +148,23 @@ Select  useCache="false" -->
       <if test="addTime != null">
         add_time,
       </if>
-      <if test="identity != null">
-        identity,
-      </if>
+      
       <if test="loginName != null">
         login_name,
       </if>
-      <if test="audit != null">
-        audit,
+      <if test="openid != null">
+        openId,
       </if>
-      <if test="idCard != null">
-        id_card,
-      </if>
-      <if test="idCardImg != null">
-        id_card_img,
-      </if>
-      <if test="idCardImgB != null">
-        id_card_img_b,
-      </if>
-      <if test="businessImg != null">
-        business_img,
+      <if test="sessionKey != null">
+        session_key,
       </if>
       <if test="remark != null">
         remark,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=INTEGER},
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
       </if>
       <if test="userPhone != null">
         #{userPhone,jdbcType=VARCHAR},
@@ -205,33 +187,21 @@ Select  useCache="false" -->
       <if test="addTime != null">
         #{addTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="identity != null">
-        #{identity,jdbcType=INTEGER},
-      </if>
       <if test="loginName != null">
         #{loginName,jdbcType=VARCHAR},
       </if>
-      <if test="audit != null">
-        #{audit,jdbcType=INTEGER},
+      <if test="openid != null">
+        #{openid,jdbcType=VARCHAR},
       </if>
-      <if test="idCard != null">
-        #{idCard,jdbcType=VARCHAR},
+      <if test="sessionKey != null">
+        #{sessionKey,jdbcType=VARCHAR},
       </if>
-      <if test="idCardImg != null">
-        #{idCardImg,jdbcType=VARCHAR},
-      </if>
-      <if test="idCardImgB != null">
-        #{idCardImgB,jdbcType=VARCHAR},
-      </if>
-      <if test="businessImg != null">
-        #{businessImg,jdbcType=VARCHAR},
-      </if>
-       <if test="remark != null">
+      <if test="remark != null">
         #{remark,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.User">
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.User">
     update t_user
     <set>
       <if test="userPhone != null">
@@ -255,34 +225,22 @@ Select  useCache="false" -->
       <if test="addTime != null">
         add_time = #{addTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="identity != null">
-        identity = #{identity,jdbcType=INTEGER},
-      </if>
       <if test="loginName != null">
         login_name = #{loginName,jdbcType=VARCHAR},
       </if>
-      <if test="audit != null">
-        audit = #{audit,jdbcType=INTEGER},
+      <if test="openid != null">
+        openId = #{openid,jdbcType=VARCHAR},
       </if>
-      <if test="idCard != null">
-        id_card = #{idCard,jdbcType=VARCHAR},
-      </if>
-      <if test="idCardImg != null">
-        id_card_img = #{idCardImg,jdbcType=VARCHAR},
-      </if>
-      <if test="idCardImgB != null">
-        id_card_img_b = #{idCardImgB,jdbcType=VARCHAR},
-      </if>
-      <if test="businessImg != null">
-        business_img = #{businessImg,jdbcType=VARCHAR},
+      <if test="sessionKey != null">
+        session_key = #{sessionKey,jdbcType=VARCHAR},
       </if>
       <if test="remark != null">
         remark = #{remark,jdbcType=VARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where user_id = #{userId,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.User">
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.User">
     update t_user
     set user_phone = #{userPhone,jdbcType=VARCHAR},
       head_img = #{headImg,jdbcType=VARCHAR},
@@ -291,15 +249,10 @@ Select  useCache="false" -->
       phone_belong = #{phoneBelong,jdbcType=VARCHAR},
       login_time = #{loginTime,jdbcType=TIMESTAMP},
       add_time = #{addTime,jdbcType=TIMESTAMP},
-      identity = #{identity,jdbcType=INTEGER},
       login_name = #{loginName,jdbcType=VARCHAR},
-      audit = #{audit,jdbcType=INTEGER},
-      id_card = #{idCard,jdbcType=VARCHAR},
-      id_card_img = #{idCardImg,jdbcType=VARCHAR},
-      id_card_img_b = #{idCardImgB,jdbcType=VARCHAR},
-      business_img = #{businessImg,jdbcType=VARCHAR},
-       remark = #{remark,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+      openId = #{openid,jdbcType=VARCHAR},
+      session_key = #{sessionKey,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR}
+    where user_id = #{userId,jdbcType=INTEGER}
   </update>
-  
 </mapper>

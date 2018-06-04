@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.menglin.tripro.dao.RoleDao" >
-  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.Role" >
+<mapper namespace="com.menglin.triproapp.dao.RoleDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.Role" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="role_name" property="roleName" jdbcType="VARCHAR" />
   </resultMap>
@@ -38,11 +38,11 @@
     delete from t_common_role
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.tripro.entity.Role" >
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.Role" >
     insert into t_common_role (id, role_name)
     values (#{id,jdbcType=INTEGER}, #{roleName,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.Role" >
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.Role" >
     insert into t_common_role
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -61,7 +61,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.Role" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.Role" >
     update t_common_role
     <set >
       <if test="roleName != null" >
@@ -70,7 +70,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.Role" >
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.Role" >
     update t_common_role
     set role_name = #{roleName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}

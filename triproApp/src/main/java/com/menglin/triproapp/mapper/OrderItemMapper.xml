@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.menglin.tripro.dao.OrderItemDao" >
-  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.OrderItem" >
+<mapper namespace="com.menglin.triproapp.dao.OrderItemDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.OrderItem" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="order_id" property="orderId" jdbcType="VARCHAR" />
     <result column="img" property="img" jdbcType="VARCHAR" />
@@ -22,7 +22,7 @@
   </select>
   
   <!--根据订单orderId，查询商品信息归属 -->
-    <select id="selectListByOrderId" resultType="com.menglin.tripro.entity.OrderItem" parameterType="java.lang.String" >
+    <select id="selectListByOrderId" resultType="com.menglin.triproapp.entity.OrderItem" parameterType="java.lang.String" >
         select
         <include refid="Base_Column_List" />
         from t_order_item
@@ -33,7 +33,7 @@
     delete from t_order_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.tripro.entity.OrderItem" >
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.OrderItem" >
     insert into t_order_item (id, order_id, img, 
       commodity_name, amount, price, 
       commodity_id, specification)
@@ -41,7 +41,7 @@
       #{commodityName,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, 
       #{commodityId,jdbcType=INTEGER}, #{specification,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.OrderItem" >
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.OrderItem" >
     insert into t_order_item
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -96,7 +96,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.OrderItem" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.OrderItem" >
     update t_order_item
     <set >
       <if test="orderId != null" >
@@ -123,7 +123,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.OrderItem" >
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.OrderItem" >
     update t_order_item
     set order_id = #{orderId,jdbcType=VARCHAR},
       img = #{img,jdbcType=VARCHAR},

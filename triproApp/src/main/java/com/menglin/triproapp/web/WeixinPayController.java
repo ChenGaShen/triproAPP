@@ -21,6 +21,7 @@ import org.jdom.input.SAXBuilder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.xml.sax.InputSource;
@@ -52,7 +53,7 @@ import com.menglin.triproapp.vo.WexinPayInfo;
  */
 
 @Controller
-@RequestMapping("/web/pay")
+@RequestMapping("/web/wxpay")
 @SuppressWarnings("rawtypes")
 public class WeixinPayController {
 	
@@ -76,27 +77,14 @@ public class WeixinPayController {
     private IMessageService messageService;
 	
 	
-	@RequestMapping("/toPay")
-	public @ResponseBody WexinPayInfo toPay(HttpServletRequest request, HttpServletResponse response){
+	@RequestMapping(value="/toWeiXinAppPay.json",method = {RequestMethod.POST})
+	public @ResponseBody WexinPayInfo toWeiXinAppPay(HttpServletRequest request, HttpServletResponse response){
 		WexinPayInfo wxInfo=new WexinPayInfo();
 		try {
 			String orderId = request.getParameter("orderId");
-			System.out.println("in toPay,orderId:" + orderId);
-			String state = request.getParameter("state");
-			System.out.println("in toPay,state:" + state);
-			String code = request.getParameter("code");
-			System.out.println("code:"+code);
-			
-			//获取统一下单需要的openid
-			String openId ="";
-			String URL = "https://api.weixin.qq.com/sns/oauth2/access_token?appid="
-					+ SystemParam.WX_APPID + "&secret=" + SystemParam.WX_AppSecret + "&code=" + code + "&grant_type=authorization_code";
-			System.out.println("URL:"+URL);
-			JSONObject jsonObject = CommonUtil.httpsRequest(URL, "GET", null);
-			if (null != jsonObject) {
-				openId = jsonObject.getString("openid");
-				System.out.println("openId:" + openId);
-			}
+			//得到openid
+	        String openId = request.getParameter("openId");
+			System.out.println("openId:"+openId);
 			
 			//获取openId后调用统一支付接口https://api.mch.weixin.qq.com/pay/unifiedorder
 			//随机数 
@@ -104,13 +92,13 @@ public class WeixinPayController {
 			String nonce_str = UUID.randomUUID().toString().replaceAll("-", "");
 			//商品标题
 			Order  order=orderService.get(orderId);
-			String body = "TRIPRO订单";
+			String body = "多趣宝订单";
 			System.out.println("订单金额:"+WeixinPayUtil.getMoney(order.getOrderPrice().toString()));
 			String totalFeeStr = order.getOrderPrice().toString();//订单支付金额
 			String total_fee = WeixinPayUtil.getMoney(totalFeeStr);//元转为分
 			System.out.println("in toPay,total_fee:" + total_fee);
 //			测试使用
-//			total_fee="0.01"; 
+			total_fee="0.01"; 
 			//商户订单号
 			String out_trade_no = orderId;
 			//订单生成的机器 IP

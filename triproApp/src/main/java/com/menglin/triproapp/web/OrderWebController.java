@@ -10,18 +10,22 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.google.gson.Gson;
 import com.menglin.triproapp.common.Recruitment;
+import com.menglin.triproapp.entity.ActiveRed;
 import com.menglin.triproapp.entity.Adress;
 import com.menglin.triproapp.entity.Commodity;
 import com.menglin.triproapp.entity.Order;
 import com.menglin.triproapp.entity.OrderItem;
 import com.menglin.triproapp.entity.Shopping;
 import com.menglin.triproapp.entity.User;
+import com.menglin.triproapp.service.IActiveRedService;
 import com.menglin.triproapp.service.IAdressService;
 import com.menglin.triproapp.service.ICommodityService;
 import com.menglin.triproapp.service.IMessageService;
@@ -54,7 +58,7 @@ import net.sf.json.util.NewBeanInstanceStrategy;
  * @date 2018年2月6日 上午9:58:52 
  */
 @Controller  
-@RequestMapping("/web/order")
+@RequestMapping("/web/wxorder")
 public class OrderWebController {
 	
 
@@ -83,6 +87,9 @@ public class OrderWebController {
 	@Resource
 	private  IPayWxService payWxService;
 	
+	@Resource
+	private IActiveRedService activeRedService;
+	
 	/**
 	 * 购物车下单
 	 * @author CGS
@@ -92,8 +99,8 @@ public class OrderWebController {
 	 * @param request
 	 * @return
 	 */
-	@RequestMapping(value="/doCartOrder",method = {RequestMethod.POST})
-	public @ResponseBody ResultOrderVN doCartOrder(Order model, String json,HttpServletRequest request){
+	@RequestMapping(value="/doCartOrder.json",method = {RequestMethod.POST})
+	public @ResponseBody ResultOrderVN doCartOrder(Order model, Integer activeid ,Integer addressId,String json,HttpServletRequest request,HttpServletResponse response){
 		ResultOrderVN vn=new ResultOrderVN();
 		
 		User user=userService.get(model.getUid());
@@ -104,7 +111,6 @@ public class OrderWebController {
 			JSONObject object=JSONObject.fromObject(json);
 			ShoppingListVO shoppingListVO =new ShoppingListVO();
 			shoppingListVO=gson.fromJson(object.toString(), ShoppingListVO.class);
-	//		List<OrderItem> ls = form.getOrderItems();//所有订单商品的集合
 			if (null!=shoppingListVO) {
 				List<ResultListBean> ls =new ArrayList<ResultListBean>();
 				ls=shoppingListVO.getResultList();
@@ -115,12 +121,13 @@ public class OrderWebController {
 				if (null!=commodity) {
 					
 					if ((commodity.getAllowance() - ls.get(i).getNum()) < 0) {
-						vn.setResult(Result.fal("您的购买的"+commodity.getName()+"商品库存不足!!"));
+						vn.setResult(Result.fal("您的购买的"+commodity.getCommodityName()+"商品库存不足!!"));
 						return vn;
 					}else{
 						
 						commodity.setAllowance(commodity.getAllowance()- ls.get(i).getNum());
-						commodity.setSales(commodity.getSales()+ls.get(i).getNum());//销量改变
+						commodity.setVirtualSales(commodity.getVirtualSales()+ls.get(i).getNum());//虚拟销量改变
+						commodity.setRealSale(commodity.getRealSale()+ls.get(i).getNum());//真是销量改变
 						commodity.setUpdateTime(new Date());
 						commodityService.update(commodity);
 						
@@ -130,15 +137,11 @@ public class OrderWebController {
 						OrderItem orderItem =new OrderItem();
 						
 						orderItem.setCommodityId(ls.get(i).getCommodityId());
-						orderItem.setCommodityName(commodity.getName());
+						orderItem.setCommodityName(commodity.getCommodityName());
 						orderItem.setAmount(ls.get(i).getNum());
-						orderItem.setImg(commodity.getImg());
+						orderItem.setImg(commodity.getCommodityImg());
 						orderItem.setSpecification(commodity.getSpecification());
-						if (user.getIdentity()==2) { //用户身份：1个人用户2供销商 价格取值不同
-							orderItem.setPrice(commodity.getDiscountPrice());
-						}else{
-							orderItem.setPrice(commodity.getPrice());
-						}
+						orderItem.setPrice(commodity.getDiscountPrice());
 						OrderPrice+=orderItem.getPrice()*ls.get(i).getNum();
 						orderItem.setOrderId(autOrderId);
 						orderItemService.save(orderItem);	
@@ -148,7 +151,7 @@ public class OrderWebController {
 				  }	
 				}
 				//总订单生成
-				Adress adress =adressService.getDefault(user.getId());
+				Adress adress =adressService.get(addressId);
 				//填入默认地址
 				if (null!=adress) {
 					model.setReceiveName(adress.getReceivedName());
@@ -157,11 +160,19 @@ public class OrderWebController {
 				}
 				model.setId(autOrderId);
 				model.setUid(model.getUid());
-				model.setOrderPrice(OrderPrice);//订单总价
+				ActiveRed  activeRed=activeRedService.get(activeid);
+				if (CheckData.isNotNullOrEmpty(activeRed.getActiveid())) {
+					model.setOrderPrice(OrderPrice-activeRed.getRedMoney());//使用红包 金额减少
+					model.setMoney(activeRed.getRedMoney());//订单中的红包金额
+				}else{
+					model.setOrderPrice(OrderPrice);//订单总价
+				}
 	//			model.setMoney(OrderPrice);//实际支付金额
 				model.setState(0);//状态：0待付款1已付款2取消订单3已失效
 	//			model.setReceiveState(0);//订单状态0待发货1配送中2已签收
-				
+				if (CheckData.isNotNullOrEmpty(model.getRemark())) {
+					model.setRemark(model.getRemark());//订单备注
+				}
 				model.setAddTime(new Date());
 				
 				// 订单IP信息
@@ -196,6 +207,7 @@ public class OrderWebController {
 				orderService.save(model);			
 				vn.setResult(Result.suc("购物车下单成功，跳转付款页面..."));
 				vn.setOrderId(autOrderId);
+//				new WeixinPayController().toWeiXinAppPay(request,response);
 				return vn;
 			}else{
 				vn.setResult(Result.fal("空空如也,快去逛逛吧~"));
@@ -247,7 +259,7 @@ public class OrderWebController {
 	 * @param receiveAddress
 	 * @return
 	 */
-	@RequestMapping(value="/updateOrderAddress",method = {RequestMethod.POST})
+	@RequestMapping(value="/updateOrderAddress.json",method = {RequestMethod.POST})
 	public @ResponseBody OrederDetailVO updateOrderAddress(String orderId, String receiveName,String receivePhone,String receiveAddress){
 		Order order =orderService.get(orderId);
 		OrederDetailVO orederDetailVO=new OrederDetailVO();
@@ -274,7 +286,7 @@ public class OrderWebController {
 	 * @param orderId
 	 * @return
 	 */
-	@RequestMapping(value="/toOrderDetail",method = {RequestMethod.POST})
+	@RequestMapping(value="/toOrderDetail.json",method = {RequestMethod.POST})
 	public @ResponseBody OrederDetailVO toOrderDetail(String orderId){
 		OrederDetailVO orederDetailVO=new OrederDetailVO();
 		orederDetailVO=orderService.findByOrederId(orderId);
@@ -289,11 +301,10 @@ public class OrderWebController {
 	 * @param uid
 	 * @return
 	 */
-	@RequestMapping(value="/toOrderList",method = {RequestMethod.POST})
+	@RequestMapping(value="/toOrderList.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultOrderList toOrderList(Integer uid ){
 		ResultOrderList orderList=new ResultOrderList();
 		orderList=orderService.selectOrderListByUid(uid);
-		
 		return orderList;
 	}
 	
@@ -306,7 +317,7 @@ public class OrderWebController {
 	 * @param receiveState
 	 * @return
 	 */
-	@RequestMapping(value="/toOrderStatus",method = {RequestMethod.POST})
+	@RequestMapping(value="/toOrderStatus.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultOrderList toOrderStatus(Integer uid,Integer state ,Integer receiveState ){
 		 
 		ResultOrderList	orderList=orderService.selectOrderListByUidAndStatus(uid, state, receiveState);
@@ -321,7 +332,7 @@ public class OrderWebController {
 	 * @param orderId
 	 * @return
 	 */
-	@RequestMapping(value="/doExpressCheck",method = {RequestMethod.POST})
+	@RequestMapping(value="/doExpressCheck.json",method = {RequestMethod.POST})
 	public @ResponseBody LogisticsVO doExpressCheck(String orderId){
 		Order order =orderService.get(orderId);
 		LogisticsVO logisticsVO=new LogisticsVO();
@@ -363,7 +374,7 @@ public class OrderWebController {
 	 * @param orderId
 	 * @return
 	 */
-	@RequestMapping(value="/doConfirmReceipt",method = {RequestMethod.POST})
+	@RequestMapping(value="/doConfirmReceipt.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultVN doConfirmReceipt(Integer uid,String  orderId ){
 		
 		ResultVN vn = new ResultVN();
@@ -394,7 +405,7 @@ public class OrderWebController {
 	 * @param orderId
 	 * @return
 	 */
-	@RequestMapping(value="/doCancellOrder",method = {RequestMethod.POST})
+	@RequestMapping(value="/doCancellOrder.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultVN doCancellOrder(Integer uid,String  orderId ){
 		
 		ResultVN vn = new ResultVN();

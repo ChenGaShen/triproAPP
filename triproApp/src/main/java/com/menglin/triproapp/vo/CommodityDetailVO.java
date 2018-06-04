@@ -3,9 +3,10 @@ package com.menglin.triproapp.vo;
 
 
 public class CommodityDetailVO {
+	
     private Integer commodityId;
 
-    private String name;
+    private String commodityName;
 
     private String price;
 
@@ -15,13 +16,17 @@ public class CommodityDetailVO {
 
     private Integer allowance;
 
-    private String img;
+    private String commodityImg;
 
     private String specification;
 
-    private Integer sales;
+    private Integer realSale;
+
+    private Integer virtualSales;
 
     private Integer state;
+    
+    private Integer classify;
 
     private String addTime;
 
@@ -37,13 +42,7 @@ public class CommodityDetailVO {
 		this.commodityId = commodityId;
 	}
 
-	public String getName() {
-		return name;
-	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
 
 	public String getPrice() {
 		return price;
@@ -77,13 +76,7 @@ public class CommodityDetailVO {
 		this.allowance = allowance;
 	}
 
-	public String getImg() {
-		return img;
-	}
 
-	public void setImg(String img) {
-		this.img = img;
-	}
 
 	public String getSpecification() {
 		return specification;
@@ -93,12 +86,22 @@ public class CommodityDetailVO {
 		this.specification = specification;
 	}
 
-	public Integer getSales() {
-		return sales;
+	
+
+	public Integer getRealSale() {
+		return realSale;
 	}
 
-	public void setSales(Integer sales) {
-		this.sales = sales;
+	public void setRealSale(Integer realSale) {
+		this.realSale = realSale;
+	}
+
+	public Integer getVirtualSales() {
+		return virtualSales;
+	}
+
+	public void setVirtualSales(Integer virtualSales) {
+		this.virtualSales = virtualSales;
 	}
 
 	public Integer getState() {
@@ -131,6 +134,30 @@ public class CommodityDetailVO {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getCommodityName() {
+		return commodityName;
+	}
+
+	public void setCommodityName(String commodityName) {
+		this.commodityName = commodityName;
+	}
+
+	public String getCommodityImg() {
+		return commodityImg;
+	}
+
+	public void setCommodityImg(String commodityImg) {
+		this.commodityImg = commodityImg;
+	}
+
+	public Integer getClassify() {
+		return classify;
+	}
+
+	public void setClassify(Integer classify) {
+		this.classify = classify;
 	}
 
    

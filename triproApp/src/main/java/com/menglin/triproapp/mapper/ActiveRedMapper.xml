@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.menglin.triproapp.dao.ActiveRedDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.ActiveRed" >
+    <id column="activeId" property="activeid" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="red_money" property="redMoney" jdbcType="DOUBLE" />
+    <result column="red_state" property="redState" jdbcType="INTEGER" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="loginName" jdbcType="VARCHAR" property="loginName" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    activeId, uid, red_money AS redMoney , red_state AS redState , add_time AS addTime 
+  </sql>
+  
+   <!-- 根据用户UID 查询其所有的红包列表 -->
+  <select id="selectActiveRedList" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_active_red
+    where uid = #{uid,jdbcType=INTEGER}
+    order by add_time desc 
+  </select>
+  
+  <!-- 查询用户记录总数 -->
+    <select id="selectCount" parameterType="java.util.Map" resultType="int">
+        select count(*)  from t_active_red t
+        left join t_user u on t.uid =u.user_id where 1=1
+       <if test="loginName!=null and loginName !='' ">
+          AND  u.login_name like  CONCAT('%',#{loginName},'%')  
+        </if>
+    </select>
+  
+    <!-- 分页查询start 和size查询数据 -->
+  <select id="findByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+        select
+        t.activeId,
+		t.uid,
+		t.red_money AS redMoney,
+		t.red_state,
+		t.add_time,
+        u.login_name AS loginName
+        from t_active_red t
+        left join t_user u on  t.uid =u.user_id  where 1=1
+        <if test="loginName!=null and loginName !='' ">
+          AND  u.login_name like  CONCAT('%',#{loginName},'%')  
+        </if>
+        ORDER BY t.add_time desc 
+        <if test="start!=null and size!=null">
+            limit #{start},#{size} 
+        </if>
+  </select>
+  
+   
+  
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_active_red
+    where activeId = #{activeid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_active_red
+    where activeId = #{activeid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.ActiveRed" >
+    insert into t_active_red (activeId, uid, red_money, 
+      red_state, add_time)
+    values (#{activeid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{redMoney,jdbcType=DOUBLE}, 
+      #{redState,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP})
+   </insert>
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.ActiveRed" >
+    insert into t_active_red
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="activeid != null" >
+        activeId,
+      </if>
+      <if test="uid != null" >
+        uid,
+      </if>
+      <if test="redMoney != null" >
+        red_money,
+      </if>
+      <if test="redState != null" >
+        red_state,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="activeid != null" >
+        #{activeid,jdbcType=INTEGER},
+      </if>
+      <if test="uid != null" >
+        #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="redMoney != null" >
+        #{redMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="redState != null" >
+        #{redState,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.ActiveRed" >
+    update t_active_red
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="redMoney != null" >
+        red_money = #{redMoney,jdbcType=DOUBLE},
+      </if>
+      <if test="redState != null" >
+        red_state = #{redState,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where activeId = #{activeid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.ActiveRed" >
+    update t_active_red
+    set uid = #{uid,jdbcType=INTEGER},
+      red_money = #{redMoney,jdbcType=DOUBLE},
+      red_state = #{redState,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP}
+    where activeId = #{activeid,jdbcType=INTEGER}
+  </update>
+</mapper>

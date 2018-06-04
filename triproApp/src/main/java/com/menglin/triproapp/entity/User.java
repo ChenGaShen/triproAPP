@@ -3,7 +3,7 @@ package com.menglin.triproapp.entity;
 import java.util.Date;
 
 public class User {
-    private Integer id;
+    private Integer userId;
 
     private String userPhone;
 
@@ -19,28 +19,20 @@ public class User {
 
     private Date addTime;
 
-    private Integer identity;
-
     private String loginName;
 
-    private Integer audit;
+    private String openid;
 
-    private String idCard;
-
-    private String idCardImg;
-
-    private String idCardImgB;
-
-    private String businessImg;
+    private String sessionKey;
 
     private String remark;
 
-    public Integer getId() {
-        return id;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public String getUserPhone() {
@@ -99,13 +91,7 @@ public class User {
         this.addTime = addTime;
     }
 
-    public Integer getIdentity() {
-        return identity;
-    }
-
-    public void setIdentity(Integer identity) {
-        this.identity = identity;
-    }
+   
 
     public String getLoginName() {
         return loginName;
@@ -115,44 +101,21 @@ public class User {
         this.loginName = loginName == null ? null : loginName.trim();
     }
 
-    public Integer getAudit() {
-        return audit;
+   
+    public String getOpenid() {
+        return openid;
     }
 
-    public void setAudit(Integer audit) {
-        this.audit = audit;
+    public void setOpenid(String openid) {
+        this.openid = openid == null ? null : openid.trim();
     }
 
-    public String getIdCard() {
-        return idCard;
+    public String getSessionKey() {
+        return sessionKey;
     }
 
-    public void setIdCard(String idCard) {
-        this.idCard = idCard == null ? null : idCard.trim();
-    }
-
-    public String getIdCardImg() {
-        return idCardImg;
-    }
-
-    public void setIdCardImg(String idCardImg) {
-        this.idCardImg = idCardImg == null ? null : idCardImg.trim();
-    }
-
-    public String getIdCardImgB() {
-        return idCardImgB;
-    }
-
-    public void setIdCardImgB(String idCardImgB) {
-        this.idCardImgB = idCardImgB == null ? null : idCardImgB.trim();
-    }
-
-    public String getBusinessImg() {
-        return businessImg;
-    }
-
-    public void setBusinessImg(String businessImg) {
-        this.businessImg = businessImg == null ? null : businessImg.trim();
+    public void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey == null ? null : sessionKey.trim();
     }
 
     public String getRemark() {

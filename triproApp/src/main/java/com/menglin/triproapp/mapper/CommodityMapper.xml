@@ -1,65 +1,93 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.menglin.tripro.dao.CommodityDao" >
-  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.Commodity" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="price" property="price" jdbcType="DOUBLE" />
-    <result column="discount_price" property="discountPrice" jdbcType="DOUBLE" />
-    <result column="amount" property="amount" jdbcType="INTEGER" />
-    <result column="allowance" property="allowance" jdbcType="INTEGER" />
-    <result column="img" property="img" jdbcType="VARCHAR" />
-    <result column="specification" property="specification" jdbcType="VARCHAR" />
-    <result column="sales" property="sales" jdbcType="INTEGER" />
-    <result column="state" property="state" jdbcType="INTEGER" />
-    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.menglin.triproapp.dao.CommodityDao">
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.Commodity">
+    <id column="commodityId" jdbcType="INTEGER" property="commodityid" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="discount_price" jdbcType="DOUBLE" property="discountPrice" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="allowance" jdbcType="INTEGER" property="allowance" />
+    <result column="commodity_img" jdbcType="VARCHAR" property="commodityImg" />
+    <result column="specification" jdbcType="VARCHAR" property="specification" />
+    <result column="real_sale" jdbcType="INTEGER" property="realSale" />
+    <result column="virtual_sales" jdbcType="INTEGER" property="virtualSales" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="classify" jdbcType="INTEGER" property="classify" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
-  <resultMap id="ResultMapWithBLOBs" type="com.menglin.tripro.entity.Commodity" extends="BaseResultMap" >
-    <result column="description" property="description" jdbcType="LONGVARCHAR" />
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.menglin.triproapp.entity.Commodity">
+    <result column="description" jdbcType="LONGVARCHAR" property="description" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, name, price, discount_price, amount, allowance, img, specification, sales, state, 
-    add_time, update_time
+  <sql id="Base_Column_List">
+      commodityId, commodity_name AS  commodityName, price, discount_price AS discountPrice, amount, allowance, commodity_img AS commodityImg, 
+    specification, real_sale AS realSale,virtual_sales AS virtualSales, state, classify, add_time AS addTime, update_time AS updateTime
   </sql>
-  <sql id="Blob_Column_List" >
+  <sql id="Blob_Column_List">
     description
   </sql>
   
+  
    <!--在mapper文件中的头部引入缓存策略-->
     <!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 -->  
-    <cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
-    <cache type="org.mybatis.caches.ehcache.EhcacheCache" >
-			 <property name="timeToIdleSeconds" value="3600"/>
-			 <property name="timeToLiveSeconds" value="3600"/>
+    <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+    <cache type="org.mybatis.caches.ehcache.EhcacheCache">
+			 <property name="timeToIdleSeconds" value="3600" />
+			 <property name="timeToLiveSeconds" value="3600" />
 			 <!-- 同ehcache参数maxElementsInMemory -->
-			 <property name="maxEntriesLocalHeap" value="1000"/>
+			 <property name="maxEntriesLocalHeap" value="1000" />
 			 <!-- 同ehcache参数maxElementsOnDisk -->
-			 <property name="maxEntriesLocalDisk" value="10000000"/>
-			 <property name="memoryStoreEvictionPolicy" value="LRU"/>
+			 <property name="maxEntriesLocalDisk" value="10000000" />
+			 <property name="memoryStoreEvictionPolicy" value="LRU" />
 		</cache>
     <!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> --> 
   
   <!-- 批量下架上商品 -->
-  <update id="soldOutByIds" parameterType="java.util.List" >
+  <update id="soldOutByIds" parameterType="java.util.List">
     update t_commodity
     set state = 0 <!-- 商品状态1上架0下架 -->
     where id in 
-	 <foreach collection="array" item="commodityIds" index="index"  
-            open="(" close=")" separator=",">  
+	 <foreach close=")" collection="array" index="index" item="commodityIds" open="(" separator=",">  
             #{commodityIds}  
         </foreach>  
   </update>
   
   <!-- 商品列表 -->
-  <select id="selectCommodityList" resultMap="ResultMapWithBLOBs"  >
+  <select id="selectCommodityList" parameterType="java.util.Map" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from t_commodity
     where 1=1 
-    AND state=1
+    AND state=1 
+    
+     <if test="commodityName!=null and commodityName !='' ">
+          AND   commodity_name like  CONCAT('%',#{commodityName},'%')  
+        </if>
+     <if test="classify!=null"> <!--种类 0宠粮1营养保健2日常用品3清洁美容4健康零食 -->
+            AND classify = #{classify}  
+    </if>
+    <if test="condition!=null and condition==0 "> <!-- 0首页 1综合 2销量 3最新 4价格升 5价格降 -->
+            order by concat(commodity_name ,price) desc  ;
+    </if>
+    <if test="condition!=null and condition==1 "> <!-- 0首页 1综合 2销量 3最新 4价格升 5价格降 -->
+            order by  concat(discount_price +price) desc ;
+    </if>
+    <if test="condition!=null and condition==2 "> <!-- 0首页 1综合 2销量 3最新 4价格 升 5价格降-->
+            order by sales desc ;
+    </if>
+   <if test="condition!=null and condition==3 "> <!-- 0首页 1综合 2销量 3最新 4价格 升 5价格降-->
+            order by add_time desc ;
+    </if>
+    <if test="condition!=null and condition==4 "> <!-- 0首页 1综合 2销量 3最新 4价格升 5价格降 -->
+            order by  discount_price ;
+    </if>
+    <if test="condition!=null and condition==5 "> <!-- 0首页 1综合 2销量 3最新 4价格升 5价格降 -->
+            order by  discount_price desc ;
+    </if>
+    
   </select>
   
     <!-- 查询用户记录总数 -->
@@ -75,186 +103,211 @@
         </if>
   </select>
   
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
     ,
     <include refid="Blob_Column_List" />
     from t_commodity
-    where id = #{id,jdbcType=INTEGER}
+    where commodityId = #{commodityid,jdbcType=INTEGER}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_commodity
-    where id = #{id,jdbcType=INTEGER}
+    where commodityId = #{commodityid,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.tripro.entity.Commodity" >
-    insert into t_commodity (id, name, price, 
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.Commodity">
+    insert into t_commodity (commodityId, commodity_name, price, 
       discount_price, amount, allowance, 
-      img, specification, sales, 
-      state, add_time, update_time, 
-      description)
-    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, 
+      commodity_img, specification, real_sale, 
+      virtual_sales, state, classify, 
+      add_time, update_time, description
+      )
+    values (#{commodityid,jdbcType=INTEGER}, #{commodityName,jdbcType=VARCHAR}, #{price,jdbcType=DOUBLE}, 
       #{discountPrice,jdbcType=DOUBLE}, #{amount,jdbcType=INTEGER}, #{allowance,jdbcType=INTEGER}, 
-      #{img,jdbcType=VARCHAR}, #{specification,jdbcType=VARCHAR}, #{sales,jdbcType=INTEGER}, 
-      #{state,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{description,jdbcType=LONGVARCHAR})
+      #{commodityImg,jdbcType=VARCHAR}, #{specification,jdbcType=VARCHAR}, #{realSale,jdbcType=INTEGER}, 
+      #{virtualSales,jdbcType=INTEGER}, #{state,jdbcType=INTEGER}, #{classify,jdbcType=INTEGER}, 
+      #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{description,jdbcType=LONGVARCHAR}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.Commodity" >
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.Commodity">
     insert into t_commodity
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        id,
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="commodityid != null">
+        commodityId,
       </if>
-      <if test="name != null" >
-        name,
+      <if test="commodityName != null">
+        commodity_name,
       </if>
-      <if test="price != null" >
+      <if test="price != null">
         price,
       </if>
-      <if test="discountPrice != null" >
+      <if test="discountPrice != null">
         discount_price,
       </if>
-      <if test="amount != null" >
+      <if test="amount != null">
         amount,
       </if>
-      <if test="allowance != null" >
+      <if test="allowance != null">
         allowance,
       </if>
-      <if test="img != null" >
-        img,
+      <if test="commodityImg != null">
+        commodity_img,
       </if>
-      <if test="specification != null" >
+      <if test="specification != null">
         specification,
       </if>
-      <if test="sales != null" >
-        sales,
+      <if test="realSale != null">
+        real_sale,
       </if>
-      <if test="state != null" >
+      <if test="virtualSales != null">
+        virtual_sales,
+      </if>
+      <if test="state != null">
         state,
       </if>
-      <if test="addTime != null" >
+      <if test="classify != null">
+        classify,
+      </if>
+      <if test="addTime != null">
         add_time,
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         update_time,
       </if>
-      <if test="description != null" >
+      <if test="description != null">
         description,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
-        #{id,jdbcType=INTEGER},
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="commodityid != null">
+        #{commodityid,jdbcType=INTEGER},
       </if>
-      <if test="name != null" >
-        #{name,jdbcType=VARCHAR},
+      <if test="commodityName != null">
+        #{commodityName,jdbcType=VARCHAR},
       </if>
-      <if test="price != null" >
+      <if test="price != null">
         #{price,jdbcType=DOUBLE},
       </if>
-      <if test="discountPrice != null" >
+      <if test="discountPrice != null">
         #{discountPrice,jdbcType=DOUBLE},
       </if>
-      <if test="amount != null" >
+      <if test="amount != null">
         #{amount,jdbcType=INTEGER},
       </if>
-      <if test="allowance != null" >
+      <if test="allowance != null">
         #{allowance,jdbcType=INTEGER},
       </if>
-      <if test="img != null" >
-        #{img,jdbcType=VARCHAR},
+      <if test="commodityImg != null">
+        #{commodityImg,jdbcType=VARCHAR},
       </if>
-      <if test="specification != null" >
+      <if test="specification != null">
         #{specification,jdbcType=VARCHAR},
       </if>
-      <if test="sales != null" >
-        #{sales,jdbcType=INTEGER},
+      <if test="realSale != null">
+        #{realSale,jdbcType=INTEGER},
       </if>
-      <if test="state != null" >
+      <if test="virtualSales != null">
+        #{virtualSales,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
         #{state,jdbcType=INTEGER},
       </if>
-      <if test="addTime != null" >
+      <if test="classify != null">
+        #{classify,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null">
         #{addTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="description != null" >
+      <if test="description != null">
         #{description,jdbcType=LONGVARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.Commodity" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.Commodity">
     update t_commodity
-    <set >
-      <if test="name != null" >
-        name = #{name,jdbcType=VARCHAR},
+    <set>
+      <if test="commodityName != null">
+        commodity_name = #{commodityName,jdbcType=VARCHAR},
       </if>
-      <if test="price != null" >
+      <if test="price != null">
         price = #{price,jdbcType=DOUBLE},
       </if>
-      <if test="discountPrice != null" >
+      <if test="discountPrice != null">
         discount_price = #{discountPrice,jdbcType=DOUBLE},
       </if>
-      <if test="amount != null" >
+      <if test="amount != null">
         amount = #{amount,jdbcType=INTEGER},
       </if>
-      <if test="allowance != null" >
+      <if test="allowance != null">
         allowance = #{allowance,jdbcType=INTEGER},
       </if>
-      <if test="img != null" >
-        img = #{img,jdbcType=VARCHAR},
+      <if test="commodityImg != null">
+        commodity_img = #{commodityImg,jdbcType=VARCHAR},
       </if>
-      <if test="specification != null" >
+      <if test="specification != null">
         specification = #{specification,jdbcType=VARCHAR},
       </if>
-      <if test="sales != null" >
-        sales = #{sales,jdbcType=INTEGER},
+      <if test="realSale != null">
+        real_sale = #{realSale,jdbcType=INTEGER},
       </if>
-      <if test="state != null" >
+      <if test="virtualSales != null">
+        virtual_sales = #{virtualSales,jdbcType=INTEGER},
+      </if>
+      <if test="state != null">
         state = #{state,jdbcType=INTEGER},
       </if>
-      <if test="addTime != null" >
+      <if test="classify != null">
+        classify = #{classify,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null">
         add_time = #{addTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateTime != null" >
+      <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="description != null" >
+      <if test="description != null">
         description = #{description,jdbcType=LONGVARCHAR},
       </if>
     </set>
-    where id = #{id,jdbcType=INTEGER}
+    where commodityId = #{commodityid,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.menglin.tripro.entity.Commodity" >
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.menglin.triproapp.entity.Commodity">
     update t_commodity
-    set name = #{name,jdbcType=VARCHAR},
+    set commodity_name = #{commodityName,jdbcType=VARCHAR},
       price = #{price,jdbcType=DOUBLE},
       discount_price = #{discountPrice,jdbcType=DOUBLE},
       amount = #{amount,jdbcType=INTEGER},
       allowance = #{allowance,jdbcType=INTEGER},
-      img = #{img,jdbcType=VARCHAR},
+      commodity_img = #{commodityImg,jdbcType=VARCHAR},
       specification = #{specification,jdbcType=VARCHAR},
-      sales = #{sales,jdbcType=INTEGER},
+      real_sale = #{realSale,jdbcType=INTEGER},
+      virtual_sales = #{virtualSales,jdbcType=INTEGER},
       state = #{state,jdbcType=INTEGER},
+      classify = #{classify,jdbcType=INTEGER},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       description = #{description,jdbcType=LONGVARCHAR}
-    where id = #{id,jdbcType=INTEGER}
+    where commodityId = #{commodityid,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.Commodity" >
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.Commodity">
     update t_commodity
-    set name = #{name,jdbcType=VARCHAR},
+    set commodity_name = #{commodityName,jdbcType=VARCHAR},
       price = #{price,jdbcType=DOUBLE},
       discount_price = #{discountPrice,jdbcType=DOUBLE},
       amount = #{amount,jdbcType=INTEGER},
       allowance = #{allowance,jdbcType=INTEGER},
-      img = #{img,jdbcType=VARCHAR},
+      commodity_img = #{commodityImg,jdbcType=VARCHAR},
       specification = #{specification,jdbcType=VARCHAR},
-      sales = #{sales,jdbcType=INTEGER},
+      real_sale = #{realSale,jdbcType=INTEGER},
+      virtual_sales = #{virtualSales,jdbcType=INTEGER},
       state = #{state,jdbcType=INTEGER},
+      classify = #{classify,jdbcType=INTEGER},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=INTEGER}
+    where commodityId = #{commodityid,jdbcType=INTEGER}
   </update>
+
 </mapper>

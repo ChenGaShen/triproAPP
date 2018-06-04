@@ -42,22 +42,11 @@ var TableInit = function() {
 			clickToSelect : true, // 是否启用点击选中行
 			height : 500, // 行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
 			undefinedText : '---', //未定义时显示
-			uniqueId : "id", // 每一行的唯一标识，一般为主键列
+			uniqueId : "userId", // 每一行的唯一标识，一般为主键列
 			showToggle : true, // 是否显示详细视图和列表视图的切换按钮
 			cardView : false, // 是否显示详细视图
 			detailView : false, // 是否显示父子表
-			singleSelect: true, //开启单选
-			/*showExport: true,  //是否显示导出按钮  
-			exportTypes:['excel'],  //导出文件类型
-			exportDataType : "all", //basic'导出当前页, 'all'导出全部, 'selected'导出选中项.
-			exportOptions:{  
-		           ignoreColumn: [0,1],  //忽略某一列的索引  
-		           fileName: '用户列表',  //文件名称设置  
-		           worksheetName: 'sheet1',  //表格工作区名称  
-		           tableName: '用户列表',  
-		           excelstyles: ['background-color', 'color', 'font-size', 'font-weight'],  
-		          
-		     }, */
+			singleSelect: false, //开启单选
 			columns : [ {
 				 checkbox: true, // 显示一个勾选框
 	             align: 'center' // 居中显示
@@ -74,7 +63,7 @@ var TableInit = function() {
 	                return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
 	            }
 	        },{
-				  field: 'id', // 返回json数据中的name
+				  field: 'userId', // 返回json数据中的name
 	              title: 'ID', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
@@ -84,10 +73,11 @@ var TableInit = function() {
 	              title: '账户手机', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
+	              visible: false //不可见，隐藏
 	            	  
 			},  {
 				  field: 'loginName', // 返回json数据中的name
-	              title: '账户名称', // 表格表头显示文字
+	              title: '账户昵称', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	            	  
@@ -96,20 +86,6 @@ var TableInit = function() {
 	              title: '归属地', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle' // 上下居中
-			}, {
-				  field: 'identity', // 返回json数据中的name
-	              title: '用户身份', // 表格表头显示文字
-	              align: 'center', // 左右居中
-	              valign: 'middle' ,// 上下居中
-	              formatter : function(value, row, index) { 
-//            		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
-                      if (value == 1) {
-                          return "个人用户";
-                      } 
-                      if (value == 2) {
-                          return "供销商";
-                      } 
-                  }
 			}, {
 				  field: 'state', // 返回json数据中的name
 	              title: '账户状态', // 表格表头显示文字
@@ -124,48 +100,6 @@ var TableInit = function() {
                           return "禁用";
                       } 
                   }
-			}, {
-				  field: 'audit', // 返回json数据中的name
-	              title: '审核状态', // 表格表头显示文字
-	              align: 'center', // 左右居中
-	              valign: 'middle', // 上下居中
-	              formatter : function(value, row, index) { 
-//            		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
-	            	  if (row.audit == 1) {
-	                        return "未审核";
-	                    } else if (row.audit == 2) {
-	                        return "审核中";
-	                    } else if (row.audit == 3) {
-	                        return "已审核";
-	                    } else if (row.audit == 4) {
-	                        return "未通过";
-	                    }
-                  }
-			},{
-				  field: 'idCard', // 返回json数据中的name
-	              title: '身份证', // 表格表头显示文字
-	              align: 'center', // 左右居中
-	              valign: 'middle', // 上下居中
-	              visible: false //不可见，隐藏
-			},{
-				  field: 'idCardImg', // 返回json数据中的name
-	              title: '身份证A', // 表格表头显示文字
-	              align: 'center', // 左右居中
-	              valign: 'middle', // 上下居中
-	              visible: false //不可见，隐藏
-	            	  
-			}, {
-				  field: 'idCardImgB', // 返回json数据中的name
-	              title: '身份证A', // 表格表头显示文字
-	              align: 'center', // 左右居中
-	              valign: 'middle', // 上下居中
-	              visible: false //不可见，隐藏
-			}, {
-				  field: 'businessImg', // 返回json数据中的name
-	              title: '营业执照', // 表格表头显示文字
-	              align: 'center', // 左右居中
-	              valign: 'middle', // 上下居中
-	              visible: false //不可见，隐藏
 			}, {
 				  field: 'remark', // 返回json数据中的name
 	              title: '备注', // 表格表头显示文字
@@ -187,7 +121,7 @@ var TableInit = function() {
 			},
 			 {
 				  field: 'addTime', // 返回json数据中的name
-	              title: '注册时间', // 表格表头显示文字
+	              title: '注入时间', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	              formatter : function(value, row, index) { 
@@ -216,10 +150,9 @@ var TableInit = function() {
 			currentPage : params.pageNumber, // //页码  
 */			pageSize: params.pageSize, // 页面大小 多少条记录
 			currentPage : params.pageNumber, // //页码  
-			userPhone : $("#userPhone").val(),
+			loginName : $("#loginName").val(),
 			startTime : $("#startTime").val(),
 			endTime : $("#endTime").val(),
-			audit : $("input[name='auditConent']:checked").val(),
 			search:params.search //服务端分页需要加上此参数
 		};
 		return temp;
@@ -240,203 +173,50 @@ var TableInit = function() {
 $("#btn_reset").off().on("click",function(){ 
 	$("#startTime").val("");  
     $("#endTime").val("");  
-    $("#userPhone").val("");  
-    $('input:radio[name=auditConent]').attr('checked',false);
+    $("#loginName").val("");  
     $('#t_table').bootstrapTable('refresh', {url: '../admin/user/findByPage.json'});
    
 });
 
-
-//新增按钮事件
-$('#btn_add').click(function(){
-	$("#addModal").modal("show");//js 控制显示模态框
-	//表单验证
-	$('#add_form_data').bootstrapValidator({
-        message: '输入值不合法',
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-        /**
-         * 生效规则（三选一）
-         * enabled 字段值有变化就触发验证
-         * disabled,submitted 当点击提交时验证并展示错误信息
-         */
-         live: 'enabled',
-         /**
-          * 指定提交的按钮，例如：'.submitBtn' '#submitBtn'
-          * 当表单验证不通过时，该按钮为disabled
-          */
-        submitButtons: 'button[type="submit"]',
-        fields: {
-        	   add_userPhone: {
-               	  message:'手机号输入有误',
-                     validators: {
-                         notEmpty: {
-                             message: '手机号不能为空'
-                         },
-                         regexp: {
-                             regexp: /^0?(13[0-9]|15[0-9]|18[0-9]|14[57]|17[0-9]|19[89]|16[6])[0-9]{8}$/,
-                             message: '请输入 正确的手机号'
-                         },
-                     }
-               }, 
-        	 add_loginName: {
-                message: '名称不合法',
-                validators: {
-                    notEmpty: {
-                        message: '名称不能为空'
-                    },
-                    stringLength: {
-                        max: 15,
-                        message: '请输入小于10个字符'
-                    },
-                    regexp: {
-                        regexp: /^[A-Za-z0-9\u4e00-\u9fa5]+$/,
-                        message: '名称只能由字母、数字和汉字组成 '
-                    }
-                }
-            }, 
-            add_idCard: {
-             	  message:'身份证输入有误',
-                   validators: {
-                       regexp: {
-                           regexp: /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/,
-                           message: '请输入 正确的身份证'
-                       },
-                   }
-             }, 
-            //备注
-             add_remark: {
-                validators: {
-                	  stringLength: {
-                          max: 100,
-                          message: '请输入小于100个字符'
-                      }
-                }
-            },
-        }
-    });
-	//表单验证结束
+//红包按钮事件
+$("#btn_redMoney").click(function(){
+    var rowData= $("#t_table").bootstrapTable('getSelections'); 
+    if(rowData.length<=0){
+    	myToast("请至少选中一条数据");
+    }else{
+    	$("#activeModal").modal("show");//js 控制显示模态框
+    }
    });
 
 
 
-
-
-//新增确认按钮绑定 商品新增
-$("#addButton").click(function () {
-		var bootstrapValidator = $("#add_form_data").data('bootstrapValidator');
-	    bootstrapValidator.validate();
-	  if ($("#add_form_data").data('bootstrapValidator').isValid()) {//获取验证结果，如果成功，执行下面代码 
-    	   var formData=new FormData();//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
-    	   formData.append('userPhone', $("input[name='add_userPhone']").val());
-           formData.append('loginName', $("input[name='add_loginName']").val());
-           formData.append('idCard', $("input[name='add_idCard']").val());
-           formData.append('remark', $("textarea[name='add_remark']").val());
+//批量红包确认按钮绑定 
+$("#activeButton").click(function () {
+			
+	 		var Data= $("#t_table").bootstrapTable('getData'); 
+			var strIds = "";
+			for (var i = 0; i < Data.length; i++) {
+				strIds += Data[i].userId + ",";
+			}
+			strIds = strIds.substr(0, strIds.length - 1);
+			alert(strIds);
+    	    var formData = new FormData();
+    		formData.append("ids", strIds);
+    		formData.append("redMoney", $('input[name="active_redMoney"]').val());//审核状态
     		$.ajax({
     		      type: "post",
     		      dataType: "json",
-    		      url : "../admin/user/addUserInfo.json",
+    		      url : "../admin/activeRed/batchRedEnvelope.json",//批量发送红包
     		      data:formData,
     		      processData: false,//必须有
     	          contentType: false,//必须有
     		      success: function (data) {
     		    	  if(data.result.status==0){
-    		    		  $('#add_form_data').bootstrapValidator('resetForm', true);//重置表单
-    		    		  $("#addModal").modal("hide");//js 控制隐藏模态框
+    		    		  $("#activeModal").modal("hide");//js 控制隐藏模态框
     		    		  setTimeout(myToast(data.result.msg),10000);
-    		    		  setTimeout($('#t_table').bootstrapTable('refresh', {url: '../admin/user/findByPage.json'}),10000);//数据刷新
-    		    	  }else{
-    		    		  $('#add_form_data').bootstrapValidator('resetForm', true);//重置表单
-    		    		  $("#addModal").modal("hide");//js 控制隐藏模态框
-    		    		  setTimeout(myToast(data.result.msg),10000);
-    		    		  setTimeout($('#t_table').bootstrapTable('refresh', {url: '../admin/user/findByPage.json'}),10000);//数据刷新
-    		    	  }
-    		      },
-    		       error : function() {  
-    		    	   console.log("数据加载失败");
-    	}  
-    		});
-	  }		
-        
-  }); 
-
-//编辑按钮事件
-$('#btn_edit').click(function(){
-    var rowData= $("#t_table").bootstrapTable('getSelections'); 
-    if(rowData.length<=0){
-    	myToast("请选中一条数据");
-    }else{
-		window.location.href="connoisseurUpdate.html?uid="+rowData[0].id;
-    	/*for (var i = 0; i < rowData.length; i++) {  
-    		alert(rowData[i].id);
-    		alert(rowData[i].userPhone); 
-    		alert(rowData[i].phoneBelong); 
-    		alert(rowData[i].identity); 
-        }*/ 
-    }
-   });
-
-//审核按钮事件
-$('#btn_check').click(function(){
-    var rowData= $("#t_table").bootstrapTable('getSelections'); 
-    if(rowData.length<=0){
-    	myToast("请选中一条数据");
-    }else{
-    	
-    	$("#audit_userPhone").val(rowData[0].userPhone);
-    	$("#audit_idCard").val(rowData[0].idCard);
-    	$("#audit_uid").val(rowData[0].id);
-    	//审核状态
-    	switch(rowData[0].audit){
-           case 1:
-	            $("input[name='styleshoice1'][value=1]").attr("checked",true); 
-	           	break;
-           case 2:
-	           	$("input[name='styleshoice1'][value=2]").attr("checked",true); 
-	           	break;
-           case 3:
-                $("input[name='styleshoice1'][value=3]").attr("checked",true); 
-                break;
-           case 4:
-                $("input[name='styleshoice1'][value=4]").attr("checked",true); 
-                break;
-           }
-    	//资料照片
-    	$("#audit_businessImg").attr('src',rowData[0].businessImg); 
-    	$("#audit_idCardImg").attr('src',rowData[0].idCardImg); 
-    	$("#audit_idCardImgB").attr('src',rowData[0].idCardImgB); 
-    	//打开
-    	$("#audit_bImg").attr("href",rowData[0].businessImg);
-    	$("#audit_IdImgA").attr("href",rowData[0].idCardImg);
-    	$("#audit_IdImgB").attr("href",rowData[0].idCardImgB);
-    	$("#auditModal").modal("show");//js 控制显示模态框
-    }
-   });
-
-
-
-//审核提交按钮绑定 信息修改
-$("#auditButton").click(function () {
-    	   var formData = new FormData();
-    		formData.append("uid", $("#audit_uid").val());
-    		formData.append("audit", $('input[name="styleshoice1"]:checked').val());//审核状态
-    		$.ajax({
-    		      type: "post",
-    		      dataType: "json",
-    		      url : "../admin/user/updateUserInfo.json",
-    		      data:formData,
-    		      processData: false,//必须有
-    	          contentType: false,//必须有
-    		      success: function (data) {
-    		    	  if(data.status==0){
-    		    		  $("#auditModal").modal("hide");//js 控制隐藏模态框
-    		    		  setTimeout(myToast("处理成功!"),10000);
     		    		  $('#t_table').bootstrapTable('refresh', {url: '../admin/user/findByPage.json'});//数据刷新
     		    	  }else{
-    		    		  setTimeout(myToast("处理失败!"),10000);
+    		    		  setTimeout(myToast(data.result.msg),10000);
     		    	  }
     		      },
     		       error : function() {  
@@ -449,13 +229,14 @@ $("#auditButton").click(function () {
 //加入黑名单按钮事件
 $('#btn_toBlack').click(function(){
     var rowData= $("#t_table").bootstrapTable('getSelections'); 
-    if(rowData.length<=0){
+    alert(rowData.length);
+    if(rowData.length<=0 || rowData.length>1){
     	myToast("请选中一条数据");
     }else if (rowData[0].state==2){
     	myToast("此账户已在黑名单中");
     }else{
-    	$("#black_uid").val(rowData[0].id);
-    	$("#black_userPhone").html(rowData[0].userPhone);
+    	$("#black_uid").val(rowData[0].userId);
+    	$("#black_loginName").html(rowData[0].loginName);
     	$("#blackModal").modal("show");//js 控制显示模态框}
     }
 	
@@ -493,13 +274,13 @@ $("#toBlackButton").click(function () {
 //取消黑名单按钮事件
 $('#btn_outBlack').click(function(){
     var rowData= $("#t_table").bootstrapTable('getSelections'); 
-    if(rowData.length<=0){
+    if(rowData.length<=0 || rowData.length>1){
     	myToast("请选中一条数据");
     }else if (rowData[0].state==1){
     	myToast("此账户不在黑名单中，无法取消");
     }else{
-    	$("#out_black_uid").val(rowData[0].id);
-    	$("#out_black_userPhone").html(rowData[0].userPhone);
+    	$("#out_black_uid").val(rowData[0].userId);
+    	$("#out_black_loginName").html(rowData[0].loginName);
     	$("#outblackModal").modal("show");//js 控制显示模态框}
     }
 	
@@ -533,33 +314,23 @@ $("#outBlackButton").click(function () {
    }); 
 //导出查询内容为excel
 $("#btn_export").click(function(){
-	var userPhone=$("#userPhone").val();
+	var loginName=$("#loginName").val();
 	var startTime=$("#startTime").val();
 	var endTime=$("#endTime").val();
-	var auditConent = $("input[name='auditConent']:checked").val();
 	var pageNumber=$('#t_table').bootstrapTable('getOptions').pageNumber;//通过表的#id 可以得到当前第几页
 			var str="";
         	$.ajax({
         	      type: "post",
         	      dataType: "json",
         	      url : "../admin/user/outExport.json",
-        	      data:{"userPhone":userPhone,"startTime":startTime,"endTime":endTime,"audit":auditConent},
+        	      data:{"loginName":loginName,"startTime":startTime,"endTime":endTime},
         	     
         	      success: function (data) {
         	    	// 循环
         	          $.each(data,function(i){
-        	        	  	var ex_userPhone = data[i].userPhone;
-        	                var ex_phoneBelong = data[i].phoneBelong;
-        	                var identity1 = data[i].identity;
-        	                var ex_identity="";
-        	                switch(identity1){
-        	                case 1:
-        	                	ex_identity="个人用户"
-        	                	break;
-        	                case 2:
-        	                	ex_identity="供销商"
-        	                	break;
-        	                }
+        	        	  	var ex_loginName = data[i].loginName;
+        	                
+        	               
         	                var state1 = data[i].state;
         	                var ex_state="";
         	                switch(state1){
@@ -570,32 +341,13 @@ $("#btn_export").click(function(){
         	                	ex_state="禁用"
         	                	break;
         	                }
-        	                var audit1 = data[i].audit;
-        	                var ex_audit="";
-        	                switch(audit1){
-        	                case 1:
-        	                	ex_audit="未审核"
-        	                	break;
-        	                case 2:
-        	                	ex_audit="审核中"
-        	                	break;
-        	                case 3:
-        	                	ex_audit="已审核"
-        	                	break;
-        	                case 4:
-        	                	ex_audit="未通过"
-        	                	break;
-        	                }
         	                var ex_remark= isNull(data[i].remark);
         	                var ex_addTime = data[i].addTime;
         	                var ex_loginTime =data[i].loginTime;
         	                	  str+="<tr>+"
         	        					+"<td>"+[i+1+(pageNumber-1)*10]+"</td>"
-        	        					+"<td>"+ex_userPhone+"&nbsp;</td>"
-        	        					+"<td>"+ex_phoneBelong+"</td>"
-        	        					+"<td>"+ex_identity+"</td>"
+        	        					+"<td>"+ex_loginName+"&nbsp;</td>"
         	        					+"<td>"+ex_state+"</td>"
-        	        					+"<td>"+ex_audit+"</td>"
         	        					+"<td>"+ex_remark+"</td>"
         	        					+"<td>"+formatDateTime(ex_loginTime)+"&nbsp;</td>" //&nbsp;解决导出excel科学计数法的问题，格式改变等问题
         	        					+"<td>"+formatDateTime(ex_addTime)+"&nbsp;</td>"

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.menglin.triproapp.dao.CommodityDetailsDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.CommodityDetails" >
+    <id column="detailsId" property="detailsId" jdbcType="INTEGER" />
+    <result column="commodity_Id" property="commodityId" jdbcType="INTEGER" />
+    <result column="details_01" property="details01" jdbcType="VARCHAR" />
+    <result column="details_02" property="details02" jdbcType="VARCHAR" />
+    <result column="details_03" property="details03" jdbcType="VARCHAR" />
+    <result column="details_04" property="details04" jdbcType="VARCHAR" />
+    <result column="details_05" property="details05" jdbcType="VARCHAR" />
+    <result column="details_06" property="details06" jdbcType="VARCHAR" />
+    <result column="details_07" property="details07" jdbcType="VARCHAR" />
+    <result column="details_08" property="details08" jdbcType="VARCHAR" />
+    <result column="details_09" property="details09" jdbcType="VARCHAR" />
+    <result column="details_10" property="details10" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    detailsId, commodity_Id AS commodityId, details_01 AS details01, details_02 AS details02 , details_03 AS details03, details_04 AS details04,
+    details_05 AS details05 , details_06 AS details06, details_07 AS details07, details_08 AS details08 , details_09 AS details09,
+    details_10 AS details10
+  </sql>
+ 
+  
+  <!-- 通过商品ID查询详情图 -->
+  <select id="findByCommodityId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_commodity_details
+    where commodity_Id = #{commodityId,jdbcType=INTEGER}
+  </select>
+  
+   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_commodity_details
+    where detailsId = #{detailsId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_commodity_details
+    where detailsId = #{detailsId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.CommodityDetails" >
+    insert into t_commodity_details (detailsId, commodity_Id, details_01, 
+      details_02, details_03, details_04, 
+      details_05, details_06, details_07, 
+      details_08, details_09, details_10
+      )
+    values (#{detailsId,jdbcType=INTEGER}, #{commodityId,jdbcType=INTEGER}, #{details01,jdbcType=VARCHAR}, 
+      #{details02,jdbcType=VARCHAR}, #{details03,jdbcType=VARCHAR}, #{details04,jdbcType=VARCHAR}, 
+      #{details05,jdbcType=VARCHAR}, #{details06,jdbcType=VARCHAR}, #{details07,jdbcType=VARCHAR}, 
+      #{details08,jdbcType=VARCHAR}, #{details09,jdbcType=VARCHAR}, #{details10,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.CommodityDetails" >
+    insert into t_commodity_details
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="detailsId != null" >
+        detailsId,
+      </if>
+      <if test="commodityId != null" >
+        commodity_Id,
+      </if>
+      <if test="details01 != null" >
+        details_01,
+      </if>
+      <if test="details02 != null" >
+        details_02,
+      </if>
+      <if test="details03 != null" >
+        details_03,
+      </if>
+      <if test="details04 != null" >
+        details_04,
+      </if>
+      <if test="details05 != null" >
+        details_05,
+      </if>
+      <if test="details06 != null" >
+        details_06,
+      </if>
+      <if test="details07 != null" >
+        details_07,
+      </if>
+      <if test="details08 != null" >
+        details_08,
+      </if>
+      <if test="details09 != null" >
+        details_09,
+      </if>
+      <if test="details10 != null" >
+        details_10,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="detailsId != null" >
+        #{detailsId,jdbcType=INTEGER},
+      </if>
+      <if test="commodityId != null" >
+        #{commodityId,jdbcType=INTEGER},
+      </if>
+      <if test="details01 != null" >
+        #{details01,jdbcType=VARCHAR},
+      </if>
+      <if test="details02 != null" >
+        #{details02,jdbcType=VARCHAR},
+      </if>
+      <if test="details03 != null" >
+        #{details03,jdbcType=VARCHAR},
+      </if>
+      <if test="details04 != null" >
+        #{details04,jdbcType=VARCHAR},
+      </if>
+      <if test="details05 != null" >
+        #{details05,jdbcType=VARCHAR},
+      </if>
+      <if test="details06 != null" >
+        #{details06,jdbcType=VARCHAR},
+      </if>
+      <if test="details07 != null" >
+        #{details07,jdbcType=VARCHAR},
+      </if>
+      <if test="details08 != null" >
+        #{details08,jdbcType=VARCHAR},
+      </if>
+      <if test="details09 != null" >
+        #{details09,jdbcType=VARCHAR},
+      </if>
+      <if test="details10 != null" >
+        #{details10,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.CommodityDetails" >
+    update t_commodity_details
+    <set >
+      <if test="commodityId != null" >
+        commodity_Id = #{commodityId,jdbcType=INTEGER},
+      </if>
+      <if test="details01 != null" >
+        details_01 = #{details01,jdbcType=VARCHAR},
+      </if>
+      <if test="details02 != null" >
+        details_02 = #{details02,jdbcType=VARCHAR},
+      </if>
+      <if test="details03 != null" >
+        details_03 = #{details03,jdbcType=VARCHAR},
+      </if>
+      <if test="details04 != null" >
+        details_04 = #{details04,jdbcType=VARCHAR},
+      </if>
+      <if test="details05 != null" >
+        details_05 = #{details05,jdbcType=VARCHAR},
+      </if>
+      <if test="details06 != null" >
+        details_06 = #{details06,jdbcType=VARCHAR},
+      </if>
+      <if test="details07 != null" >
+        details_07 = #{details07,jdbcType=VARCHAR},
+      </if>
+      <if test="details08 != null" >
+        details_08 = #{details08,jdbcType=VARCHAR},
+      </if>
+      <if test="details09 != null" >
+        details_09 = #{details09,jdbcType=VARCHAR},
+      </if>
+      <if test="details10 != null" >
+        details_10 = #{details10,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where detailsId = #{detailsId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.CommodityDetails" >
+    update t_commodity_details
+    set commodity_Id = #{commodityId,jdbcType=INTEGER},
+      details_01 = #{details01,jdbcType=VARCHAR},
+      details_02 = #{details02,jdbcType=VARCHAR},
+      details_03 = #{details03,jdbcType=VARCHAR},
+      details_04 = #{details04,jdbcType=VARCHAR},
+      details_05 = #{details05,jdbcType=VARCHAR},
+      details_06 = #{details06,jdbcType=VARCHAR},
+      details_07 = #{details07,jdbcType=VARCHAR},
+      details_08 = #{details08,jdbcType=VARCHAR},
+      details_09 = #{details09,jdbcType=VARCHAR},
+      details_10 = #{details10,jdbcType=VARCHAR}
+    where detailsId = #{detailsId,jdbcType=INTEGER}
+  </update>
+</mapper>

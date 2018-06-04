@@ -39,15 +39,19 @@ public class OrederDetailVO {
 	
 	private String orderPrice; //实付金额
 	
-    private String userPhone; //下单人手机号
+	private String redMoney; //红包金额
+	
+    private String loginName; //下单人昵称
 
-		public String getUserPhone() {
-			return userPhone;
-		}
+		
 
-		public void setUserPhone(String userPhone) {
-			this.userPhone = userPhone;
-		}
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
 
 	public Result getResult() {
 		return result;
@@ -165,6 +169,16 @@ public class OrederDetailVO {
 	public void setRemark(String remark) {
 		this.remark = remark;
 	}
+
+	public String getRedMoney() {
+		return redMoney;
+	}
+
+	public void setRedMoney(String redMoney) {
+		this.redMoney = redMoney;
+	}
+
+	
 	
 	
 }

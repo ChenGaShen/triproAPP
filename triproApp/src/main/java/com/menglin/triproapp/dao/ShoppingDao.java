@@ -48,5 +48,8 @@ public interface ShoppingDao {
     int  emptyCart(Integer uid);
     
     
+    int updateAllselecte(HashMap<String,Object> map);
+    
+    
     List<Shopping> selectListByUid(Integer uid);
 }

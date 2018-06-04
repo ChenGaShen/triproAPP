@@ -11,7 +11,7 @@
     <context-param>   
 	<param-name>webAppRootKey</param-name>   
 	<param-value>triproApp.root</param-value>   
-	</context-param> 
+	</context-param>
 	 
     <context-param>  
         <param-name>contextConfigLocation</param-name>  
@@ -89,7 +89,7 @@
 	<!-- 跨域请求 -->
 		<filter>  
 	      <filter-name>corsFilter</filter-name>  
-	      <filter-class>com.menglin.tripro.common.CorsFilter</filter-class>  
+	      <filter-class>com.menglin.triproapp.common.CorsFilter</filter-class>  
 	    </filter>  
 	    <filter-mapping>  
 	      <filter-name>corsFilter</filter-name>  

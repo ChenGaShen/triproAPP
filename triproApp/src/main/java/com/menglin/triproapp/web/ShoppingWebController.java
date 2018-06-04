@@ -27,7 +27,7 @@ import net.sf.json.JSONObject;
  * @date 2018年2月5日 上午11:04:04 
  */
 @Controller  
-@RequestMapping("/web/shopping")
+@RequestMapping("/web/wxshopping")
 public class ShoppingWebController {
 	
 	
@@ -44,7 +44,7 @@ public class ShoppingWebController {
 	 * @param uid
 	 * @return
 	 */
-	@RequestMapping(value="/toShoppingCart",method = {RequestMethod.POST})
+	@RequestMapping(value="/toShoppingCart.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultVN toShoppingCart(Integer commodityId, Integer num,Integer uid){
 		
 		ResultVN vn=new ResultVN();
@@ -63,6 +63,7 @@ public class ShoppingWebController {
 			shopping.setAddTime(new Date());
 			shopping.setUpdateTime(new Date());
 			shopping.setNum(num);
+			shopping.setSelected(1);//0未选中 1选中
 			shoppingService.save(shopping);// 新增购物车商品
 		}
 		vn.setResult(Result.suc("添加成功!!"));
@@ -72,13 +73,84 @@ public class ShoppingWebController {
 	}
 	
 	/**
+	 * 购物车列表更新商品数目
+	 * @author CGS
+	 * @time 2018年5月29日上午10:57:25
+	 * @param commodityId
+	 * @param num
+	 * @param uid
+	 * @return
+	 */
+	@RequestMapping(value="/updateShoppingNum.json",method = {RequestMethod.POST})
+	public @ResponseBody ResultVN updateShoppingNum(Integer commodityId, Integer updateNum,Integer uid){
+		
+		ResultVN vn=new ResultVN();
+		Shopping shopCommodity=shoppingService.isExitCommodity(commodityId, uid);
+		if (null!=shopCommodity) {
+			shopCommodity.setUpdateTime(new Date());
+			shopCommodity.setNum(updateNum);
+			shoppingService.update(shopCommodity);//更新购物车商品
+			vn.setResult(Result.suc("更新成功!!"));
+		}else{
+			vn.setResult(Result.fal("更新失败!!"));
+		}
+		
+		
+		return vn;
+	
+	}
+	/**
+	 * 修改购物车选中状态
+	 * @author CGS
+	 * @time 2018年5月29日上午11:20:51
+	 * @param commodityId
+	 * @param selected
+	 * @param uid
+	 * @return
+	 */
+	@RequestMapping(value="/updateShoppingSelected.json",method = {RequestMethod.POST})
+	public @ResponseBody ResultVN updateShoppingSelected(Integer commodityId, Integer selected,Integer uid){
+		ResultVN vn=new ResultVN();
+		Shopping shopCommodity=shoppingService.isExitCommodity(commodityId, uid);
+		if (null!=shopCommodity) {
+			shopCommodity.setUpdateTime(new Date());
+			shopCommodity.setSelected(selected);
+			shoppingService.update(shopCommodity);//更新购物车商品
+			vn.setResult(Result.suc("修改成功!!"));
+		}else{
+			vn.setResult(Result.fal("修改失败!!"));
+		}
+		return vn;
+	}
+	
+	/**
+	 * 购物车批量 选中/取消
+	 * @author CGS
+	 * @time 2018年5月30日下午3:37:30
+	 * @param selected
+	 * @param uid
+	 * @return
+	 */
+	@RequestMapping(value="/updateShoppingAllSelected.json",method = {RequestMethod.POST})
+	public @ResponseBody ResultVN updateShoppingAllSelected(Integer selected,Integer uid){
+		ResultVN vn=new ResultVN();
+		if (CheckData.isNotNullOrEmpty(selected) && CheckData.isNotNullOrEmpty(uid)) {
+			shoppingService.updateAllselecte(selected,uid);//更新购物车商品
+			vn.setResult(Result.suc("修改成功!!"));
+		}else{
+			vn.setResult(Result.suc("修改失败!!"));
+		}
+		return vn;
+	}
+	
+	/**
 	 * 购物车列表
 	 * @author CGS
 	 * @time 2018年2月6日下午1:43:55
 	 * @param uid
 	 * @return
 	 */
-	@RequestMapping(value="/cartList",method = {RequestMethod.POST})
+	@RequestMapping(value="/cartList.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultListVN<Shopping> cartList(Integer uid){
 		ResultListVN<Shopping> rs=new ResultListVN<Shopping>();
 		List<Shopping> shoppingList=shoppingService.ShoppingListByUid(uid);
@@ -86,7 +158,7 @@ public class ShoppingWebController {
 			List<Shopping> shoppings =new ArrayList<Shopping>();
 			for (int i = 0; i < shoppingList.size(); i++) {
 				Shopping shop=shoppingList.get(i);
-				shop.setImg(SystemParam.DOMAIN_NAME+shop.getImg());
+				shop.setCommodityImg(SystemParam.DOMAIN_NAME+shop.getCommodityImg());
 				shoppings.add(shop);
 			}
 			rs.setResultList(shoppings);
@@ -105,7 +177,7 @@ public class ShoppingWebController {
 	 * @param uid
 	 * @return
 	 */
-	@RequestMapping(value="/delShoppingCommodity",method = {RequestMethod.POST})
+	@RequestMapping(value="/delShoppingCommodity.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultVN delShoppingCommodity(Integer commodityId,Integer uid){
 		ResultVN vn=new ResultVN();
 		shoppingService.deleteCommodity(commodityId,uid);
@@ -121,7 +193,7 @@ public class ShoppingWebController {
 	 * @param uid
 	 * @return
 	 */
-	@RequestMapping(value="/doAgainToCart",method = {RequestMethod.POST})
+	@RequestMapping(value="/doAgainToCart.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultVN doAgainToCart(String json ,Integer uid){
 		  Gson gson =new Gson();
 		  ResultVN vn=new ResultVN();

@@ -77,4 +77,12 @@ public class ShoppingService implements IShoppingService {
 		return shoppingDao.selectListByUid(uid);
 	}
 
+	@Override
+	public void updateAllselecte(Integer selected, Integer uid) {
+		 HashMap<String,Object> map = new HashMap<String,Object>();
+		 map.put("selected", selected);
+		 map.put("uid", uid);
+		 shoppingDao.updateAllselecte(map);
+	}
+
 }

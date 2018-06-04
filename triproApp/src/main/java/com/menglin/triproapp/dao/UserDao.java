@@ -43,6 +43,8 @@ public interface UserDao  {
      * @return
      */
     public User findUserByPhone(String userPhone);
+    
+    public User findUserByOpenId(String openId);
     /**
      * 根据主键更新一条用户数据，可以不完整 -
      * @param record

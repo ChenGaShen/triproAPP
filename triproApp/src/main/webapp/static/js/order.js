@@ -109,6 +109,11 @@ var TableInit = function() {
 	              align: 'center', // 左右居中
 	              valign: 'middle' // 上下居中
 			}, {
+				  field: 'redMoney', // 返回json数据中的name
+	              title: '使用红包金额', // 表格表头显示文字
+	              align: 'center', // 左右居中
+	              valign: 'middle' // 上下居中
+			},{
 				  field: 'state', // 返回json数据中的name
 	              title: '支付状态', // 表格表头显示文字  
 	              align: 'center', // 左右居中
@@ -506,6 +511,7 @@ $("#btn_export").click(function(){
         	                var ex_payTime =isNull(data[i].payTime);
         	                var ex_remark = isNull(data[i].remark);
         	                var ex_orderPrice =isNull(data[i].orderPrice);
+        	                var ex_redMoney =isNull(data[i].redMoney);
         	            	var ex_userPhone = data[i].userPhone;
         	                	  str+="<tr>+"
         	        					+"<td>"+[i+1+(pageNumber-1)*10]+"</td>"
@@ -513,6 +519,7 @@ $("#btn_export").click(function(){
         	        					+"<td>"+ex_orderId+"&nbsp;</td>"
         	        					+"<td>"+ex_detail_name+"</td>"
         	        					+"<td>"+ex_orderPrice+"&nbsp;</td>"
+        	        					+"<td>"+ex_redMoney+"&nbsp;</td>"
         	        					+"<td>"+ex_state+"</td>"
         	        					+"<td>"+ex_receiveState+"</td>"
         	        					+"<td>"+ex_receiveName+"</td>"

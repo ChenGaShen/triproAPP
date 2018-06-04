@@ -119,6 +119,7 @@ public class OrderService implements IOrderService {
 				detailVO.setCompany(orders.get(i).getCompany());
 			}//物流公司
 			detailVO.setOrderPrice(Format.keepTwoMoney(orders.get(i).getOrderPrice()));
+			detailVO.setRedMoney(Format.keepTwoMoney(orders.get(i).getRedMoney()));
 			detailVO.setReceiveName(orders.get(i).getReceiveName());
 			detailVO.setReceivePhone(orders.get(i).getReceivePhone());
 			detailVO.setReceiveAddress(orders.get(i).getReceiveAddress());
@@ -182,9 +183,10 @@ public class OrderService implements IOrderService {
 		if (CheckData.isNotNullOrEmpty(order.getCompany())) {
 			detailVO.setCompany(order.getCompany());
 		}//物流公司
-		detailVO.setUserPhone(order.getUserPhone());//下单人手机号
+		detailVO.setLoginName(order.getLoginName());//下单人手机号
 		detailVO.setRemark(order.getRemark());//订单备注
 		detailVO.setOrderPrice(Format.keepTwoMoney(order.getOrderPrice()));
+		detailVO.setRedMoney(Format.keepTwoMoney(order.getRedMoney()));
 		detailVO.setReceiveName(order.getReceiveName());
 		detailVO.setReceivePhone(order.getReceivePhone());
 		detailVO.setReceiveAddress(order.getReceiveAddress());
@@ -250,6 +252,7 @@ public class OrderService implements IOrderService {
 				detailVO.setCompany(orders.get(i).getCompany());
 			}//物流公司
 			detailVO.setOrderPrice(Format.keepTwoMoney(orders.get(i).getOrderPrice()));
+			detailVO.setRedMoney(Format.keepTwoMoney(orders.get(i).getRedMoney()));
 			detailVO.setReceiveName(orders.get(i).getReceiveName());
 			detailVO.setReceivePhone(orders.get(i).getReceivePhone());
 			detailVO.setReceiveAddress(orders.get(i).getReceiveAddress());
@@ -285,7 +288,7 @@ public class OrderService implements IOrderService {
         map1.put("state", model.getState());
         map1.put("receiveState", model.getReceiveState());
         map1.put("orderId", orderId);
-        map1.put("userPhone", model.getUserPhone());
+        map1.put("loginName", model.getLoginName());
         map1.put("startTime", startTime);
         map1.put("endTime", endTime);
         //总记录数
@@ -306,7 +309,7 @@ public class OrderService implements IOrderService {
     	map.put("state", model.getState());
         map.put("receiveState", model.getReceiveState());
         map.put("orderId", orderId);
-        map.put("userPhone", model.getUserPhone());
+        map.put("loginName", model.getLoginName());
         map.put("startTime", startTime);
         map.put("endTime", endTime);
         map.put("start",(currentPage-1)*pageSize);
@@ -359,9 +362,10 @@ public class OrderService implements IOrderService {
     			if (CheckData.isNotNullOrEmpty(lists.get(i).getCompany())) {
     				detailVO.setCompany(lists.get(i).getCompany());
     			}//物流公司
-    			detailVO.setUserPhone(lists.get(i).getUserPhone());//下单人手机号
+    			detailVO.setLoginName(lists.get(i).getLoginName());//下单人微信昵称
     			detailVO.setRemark(lists.get(i).getRemark());//订单备注
     			detailVO.setOrderPrice(Format.keepTwoMoney(lists.get(i).getOrderPrice()));
+    			detailVO.setRedMoney(Format.keepTwoMoney(lists.get(i).getRedMoney()));
     			detailVO.setReceiveName(lists.get(i).getReceiveName());
     			detailVO.setReceivePhone(lists.get(i).getReceivePhone());
     			detailVO.setReceiveAddress(lists.get(i).getReceiveAddress());
@@ -400,7 +404,7 @@ public class OrderService implements IOrderService {
     	map.put("state", model.getState());
         map.put("receiveState", model.getReceiveState());
         map.put("orderId", orderId);
-        map.put("userPhone", model.getUserPhone());
+        map.put("loginName", model.getLoginName());
         map.put("startTime", startTime);
         map.put("endTime", endTime);
         map.put("start",null);
@@ -438,9 +442,10 @@ public class OrderService implements IOrderService {
 	    			if (CheckData.isNotNullOrEmpty(lists.get(i).getCompany())) {
 	    				detailVO.setCompany(lists.get(i).getCompany());
 	    			}//物流公司
-	    			detailVO.setUserPhone(lists.get(i).getUserPhone());//下单人手机号
+	    			detailVO.setLoginName(lists.get(i).getLoginName());//下单人昵称
 	    			detailVO.setRemark(lists.get(i).getRemark());//订单备注
 	    			detailVO.setOrderPrice(Format.keepTwoMoney(lists.get(i).getOrderPrice()));
+	    			detailVO.setRedMoney(Format.keepTwoMoney(lists.get(i).getRedMoney()));
 	    			detailVO.setReceiveName(lists.get(i).getReceiveName());
 	    			detailVO.setReceivePhone(lists.get(i).getReceivePhone());
 	    			detailVO.setReceiveAddress(lists.get(i).getReceiveAddress());

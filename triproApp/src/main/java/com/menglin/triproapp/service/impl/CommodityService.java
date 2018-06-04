@@ -20,6 +20,7 @@ import com.menglin.triproapp.util.Format;
 import com.menglin.triproapp.util.PageBean;
 import com.menglin.triproapp.util.SystemParam;
 import com.menglin.triproapp.vo.CommodityDetailVO;
+import com.menglin.triproapp.vo.CommodityListInfo;
 
 /** 
  * @author CGS 
@@ -64,78 +65,57 @@ public class CommodityService implements ICommodityService {
 		commodityDao.soldOutByIds(commodityIds);
 		
 	}
+	
+	/**
+	 * 商品详情，并匹配给 CommodityDetailVO 实体
+	 */
+	@Override
+	public CommodityDetailVO selectCommodityDetail( Integer commodityId) {
+		Commodity commodity=commodityDao.selectByPrimaryKey(commodityId);
+		CommodityDetailVO vo=new CommodityDetailVO();
+		if (CheckData.isNotNullOrEmpty(commodity)) {
+        	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			vo.setCommodityId(commodity.getCommodityid());
+			vo.setCommodityName(commodity.getCommodityName());
+			vo.setPrice(Format.keepTwoMoney(commodity.getPrice()));
+			vo.setDiscountPrice(Format.keepTwoMoney(commodity.getDiscountPrice()));
+			vo.setAmount(commodity.getAmount());
+			vo.setAllowance(commodity.getAllowance());
+			vo.setCommodityImg(SystemParam.DOMAIN_NAME+commodity.getCommodityImg());
+			vo.setSpecification(commodity.getSpecification());
+			vo.setRealSale(commodity.getRealSale());
+			vo.setVirtualSales(commodity.getVirtualSales());
+			vo.setState(commodity.getState());
+			vo.setClassify(commodity.getClassify());
+			vo.setAddTime(sdf.format(commodity.getAddTime()));
+			vo.setUpdateTime(sdf.format(commodity.getUpdateTime()));
+			vo.setDescription(commodity.getDescription());
+		}
+		return vo;
+	}
 	/**
 	 * 查询所有商品，并匹配给 CommodityDetailVO 实体
 	 */
 	@Override
-	public List<CommodityDetailVO> selectCommodityList(Integer uid) {
-		List <CommodityDetailVO> commodityVOList =new ArrayList<CommodityDetailVO>();
-		List<Commodity> commodityList=commodityDao.selectCommodityList();
-		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		
-		if (CheckData.isNotEmpty(commodityList)) {
-			if (null!=uid) {
-				User user=userDao.selectByPrimaryKey(uid);
-				if (CheckData.isNotNullOrEmpty(user) && user.getIdentity()==2 ) { //用户身份：1个人用户2供销商
-					for (int i = 0; i < commodityList.size(); i++) {
-						CommodityDetailVO vo=new CommodityDetailVO();
-						vo.setCommodityId(commodityList.get(i).getId());
-						vo.setName(commodityList.get(i).getName());
-						vo.setPrice(Format.keepTwoMoney(commodityList.get(i).getPrice()));
-						vo.setDiscountPrice(Format.keepTwoMoney(commodityList.get(i).getDiscountPrice()));
-						vo.setAmount(commodityList.get(i).getAmount());
-						vo.setAllowance(commodityList.get(i).getAllowance());
-						vo.setImg(SystemParam.DOMAIN_NAME+commodityList.get(i).getImg());
-						vo.setSpecification(commodityList.get(i).getSpecification());
-						vo.setSales(commodityList.get(i).getSales());
-						vo.setState(commodityList.get(i).getState());
-						vo.setAddTime(sdf.format(commodityList.get(i).getAddTime()));
-						vo.setUpdateTime(sdf.format(commodityList.get(i).getUpdateTime()));
-						vo.setDescription(commodityList.get(i).getDescription());
-						commodityVOList.add(vo);
-					}
-				}else{
-					for (int i = 0; i < commodityList.size(); i++) {
-						CommodityDetailVO vo=new CommodityDetailVO();
-						vo.setCommodityId(commodityList.get(i).getId());
-						vo.setName(commodityList.get(i).getName());
-						vo.setPrice(Format.keepTwoMoney(commodityList.get(i).getPrice()));
-						//无用户ID 或者未审核通过，就不显示供货价
-	//					vo.setDiscountPrice(Format.keepTwoMoney(commodityList.get(i).getDiscountPrice())); 
-						vo.setAmount(commodityList.get(i).getAmount());
-						vo.setAllowance(commodityList.get(i).getAllowance());
-						vo.setImg(SystemParam.DOMAIN_NAME+commodityList.get(i).getImg());
-						vo.setSpecification(commodityList.get(i).getSpecification());
-						vo.setSales(commodityList.get(i).getSales());
-						vo.setState(commodityList.get(i).getState());
-						vo.setAddTime(sdf.format(commodityList.get(i).getAddTime()));
-						vo.setUpdateTime(sdf.format(commodityList.get(i).getUpdateTime()));
-						vo.setDescription(commodityList.get(i).getDescription());
-						commodityVOList.add(vo);
-					}
-				}
-		  }else{
-			  //uid 为null 
-				for (int i = 0; i < commodityList.size(); i++) {
-					CommodityDetailVO vo=new CommodityDetailVO();
-					vo.setCommodityId(commodityList.get(i).getId());
-					vo.setName(commodityList.get(i).getName());
-					vo.setPrice(Format.keepTwoMoney(commodityList.get(i).getPrice()));
-					//无用户ID 或者未审核通过，就不显示供货价
-//					vo.setDiscountPrice(Format.keepTwoMoney(commodityList.get(i).getDiscountPrice())); 
-					vo.setAmount(commodityList.get(i).getAmount());
-					vo.setAllowance(commodityList.get(i).getAllowance());
-					vo.setImg(SystemParam.DOMAIN_NAME+commodityList.get(i).getImg());
-					vo.setSpecification(commodityList.get(i).getSpecification());
-					vo.setSales(commodityList.get(i).getSales());
-					vo.setState(commodityList.get(i).getState());
-					vo.setAddTime(sdf.format(commodityList.get(i).getAddTime()));
-					vo.setUpdateTime(sdf.format(commodityList.get(i).getUpdateTime()));
-					vo.setDescription(commodityList.get(i).getDescription());
-					commodityVOList.add(vo);
-				}
-		  }
-	    }
+	public List<CommodityListInfo> selectCommodityList( Integer condition,Integer classify,String commodityName) {
+		List <CommodityListInfo> commodityVOList =new ArrayList<CommodityListInfo>();
+		//封装每页显示的数据
+        HashMap<String,Object> map = new HashMap<String,Object>();
+        map.put("condition",condition);
+        map.put("classify", classify);
+        map.put("commodityName", commodityName);
+		List<Commodity> commodityList=commodityDao.selectCommodityList(map);
+		for (int i = 0; i < commodityList.size(); i++) {
+			CommodityListInfo vo=new CommodityListInfo();
+			vo.setCommodityId(commodityList.get(i).getCommodityid());
+			vo.setCommodityName(commodityList.get(i).getCommodityName());
+			vo.setPrice(Format.keepTwoMoney(commodityList.get(i).getPrice()));
+			vo.setDiscountPrice(Format.keepTwoMoney(commodityList.get(i).getDiscountPrice()));
+			if (CheckData.isNotNullOrEmpty(commodityList.get(i).getCommodityImg())) {
+				vo.setCommodityImg(SystemParam.DOMAIN_NAME+commodityList.get(i).getCommodityImg());
+			}
+			commodityVOList.add(vo);
+		}
 		return commodityVOList;
 	}
 
@@ -169,16 +149,18 @@ public class CommodityService implements ICommodityService {
         	for (int i = 0; i < lists.size(); i++) {
         		CommodityDetailVO vo= new CommodityDetailVO();
             	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    			vo.setCommodityId(lists.get(i).getId());
-    			vo.setName(lists.get(i).getName());
+    			vo.setCommodityId(lists.get(i).getCommodityid());
+    			vo.setCommodityName(lists.get(i).getCommodityName());
     			vo.setPrice(Format.keepTwoMoney(lists.get(i).getPrice()));
     			vo.setDiscountPrice(Format.keepTwoMoney(lists.get(i).getDiscountPrice()));
     			vo.setAmount(lists.get(i).getAmount());
     			vo.setAllowance(lists.get(i).getAllowance());
-    			vo.setImg(SystemParam.DOMAIN_NAME+lists.get(i).getImg());
+    			vo.setCommodityImg(SystemParam.DOMAIN_NAME+lists.get(i).getCommodityImg());
     			vo.setSpecification(lists.get(i).getSpecification());
-    			vo.setSales(lists.get(i).getSales());
+    			vo.setRealSale(lists.get(i).getRealSale());
+    			vo.setVirtualSales(lists.get(i).getVirtualSales());
     			vo.setState(lists.get(i).getState());
+    			vo.setClassify(lists.get(i).getClassify());
     			vo.setAddTime(sdf.format(lists.get(i).getAddTime()));
     			vo.setUpdateTime(sdf.format(lists.get(i).getUpdateTime()));
     			vo.setDescription(lists.get(i).getDescription());

@@ -6,6 +6,7 @@ import com.menglin.triproapp.entity.Admin;
 import com.menglin.triproapp.entity.Commodity;
 import com.menglin.triproapp.util.PageBean;
 import com.menglin.triproapp.vo.CommodityDetailVO;
+import com.menglin.triproapp.vo.CommodityListInfo;
 
 /** 
  * @author CGS 
@@ -23,9 +24,11 @@ public interface ICommodityService {
 		    
 		    void soldOutCommodity(Integer[] commodityIds);
 		    
-		    List<CommodityDetailVO> selectCommodityList(Integer uid);
+		    List<CommodityListInfo> selectCommodityList(Integer condition,Integer classify,String commodityName);
 		    
 		    PageBean<CommodityDetailVO> findByPage(Integer currentPage,Integer pageSize,Commodity model);
+
+			CommodityDetailVO selectCommodityDetail(Integer commodityId);
 	
 		 
 }

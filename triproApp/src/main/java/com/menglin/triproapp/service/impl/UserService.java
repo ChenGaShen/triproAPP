@@ -66,8 +66,7 @@ public class UserService  implements IUserService {
 		}
 		//封装每页显示的数据
         HashMap<String,Object> map1 = new HashMap<String,Object>();
-        map1.put("userPhone", model.getUserPhone());
-        map1.put("audit", model.getAudit());
+        map1.put("loginName", model.getLoginName());
         map1.put("startTime", startTime);
         map1.put("endTime", endTime);
         //总记录数
@@ -86,8 +85,7 @@ public class UserService  implements IUserService {
     	
         map.put("start",(currentPage-1)*pageSize);
         map.put("size", pageSize);
-        map.put("userPhone", model.getUserPhone());
-        map.put("audit", model.getAudit());
+        map.put("loginName", model.getLoginName());
         map.put("startTime", startTime);
         map.put("endTime", endTime);
        
@@ -95,20 +93,7 @@ public class UserService  implements IUserService {
         
         PageBean<User> pageBean = new PageBean<User>(currentPage, pageSize,totalCount);
         
-        if (CheckData.isNotNullOrEmpty(lists)) {
-			for (int i = 0; i < lists.size(); i++) {
-				 if (CheckData.isNotNullOrEmpty(lists.get(i).getIdCardImg())) {
-					 lists.get(i).setIdCardImg(SystemParam.DOMAIN_NAME+lists.get(i).getIdCardImg());
-				}
-				 if (CheckData.isNotNullOrEmpty(lists.get(i).getIdCardImgB())) {
-					 lists.get(i).setIdCardImgB(SystemParam.DOMAIN_NAME+lists.get(i).getIdCardImgB());
-				}
-				 if (CheckData.isNotNullOrEmpty(lists.get(i).getBusinessImg())) {
-					 lists.get(i).setBusinessImg(SystemParam.DOMAIN_NAME+lists.get(i).getBusinessImg());
-				}
-				
-			}
-		}
+        
         pageBean.setPageList(lists);
 
         return pageBean;
@@ -121,6 +106,11 @@ public class UserService  implements IUserService {
 		return userDao.findUserByPhone(userPhone);
 	}
 
+	
+	@Override
+	public User findUserByOpenId(String openId) {
+		return  userDao.findUserByOpenId(openId);
+	}
 
 	@Override
 	public List<UserVO> outExport(User model, String startTime, String endTime) {
@@ -134,8 +124,7 @@ public class UserService  implements IUserService {
         
         //封装每页显示的数据
         HashMap<String,Object> map = new HashMap<String,Object>();
-        map.put("userPhone", model.getUserPhone());
-        map.put("audit", model.getAudit());
+        map.put("loginName", model.getLoginName());
         map.put("startTime", startTime);
         map.put("endTime", endTime);
        
@@ -148,32 +137,18 @@ public class UserService  implements IUserService {
 	        	SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				for (int i = 0; i < lists.size(); i++) {
 						UserVO vo =new UserVO();
-						vo.setUid(lists.get(i).getId());
-						vo.setUserPhone(lists.get(i).getUserPhone());
-						vo.setIdentity(lists.get(i).getIdentity());
+						vo.setUid(lists.get(i).getUserId());
+						vo.setLoginName(lists.get(i).getLoginName());
 						vo.setState(lists.get(i).getState());
 						vo.setPhoneBelong(lists.get(i).getPhoneBelong());
 						vo.setAddTime(lists.get(i).getAddTime());
 						vo.setLoginTime(lists.get(i).getLoginTime());
-						vo.setAudit(lists.get(i).getAudit());
 						vo.setRemark(lists.get(i).getRemark());
-					if (CheckData.isNotNullOrEmpty(lists.get(i).getIdCard())) {
-							 vo.setIdCard(lists.get(i).getIdCard());
-						}
-					 if (CheckData.isNotNullOrEmpty(lists.get(i).getIdCardImg())) {
-						 vo.setIdCardImg(SystemParam.DOMAIN_NAME+lists.get(i).getIdCardImg());
-					}
-					 if (CheckData.isNotNullOrEmpty(lists.get(i).getIdCardImgB())) {
-						 vo.setIdCardImgB(SystemParam.DOMAIN_NAME+lists.get(i).getIdCardImgB());
-					}
-					 if (CheckData.isNotNullOrEmpty(lists.get(i).getBusinessImg())) {
-						 vo.setBusinessImg(SystemParam.DOMAIN_NAME+lists.get(i).getBusinessImg());
-					}
 					 userVOs.add(vo);
 				}
 			}
 		return userVOs;
 	}
-	
+
 
 }

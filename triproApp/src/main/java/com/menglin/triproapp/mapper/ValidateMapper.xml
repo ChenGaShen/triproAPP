@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.menglin.tripro.dao.ValidateDao" >
-  <resultMap id="BaseResultMap" type="com.menglin.tripro.entity.Validate" >
+<mapper namespace="com.menglin.triproapp.dao.ValidateDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.Validate" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="validate_code" property="validateCode" jdbcType="VARCHAR" />
@@ -93,7 +93,7 @@
     delete from t_validate
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.tripro.entity.Validate" >
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.Validate" >
     insert into t_validate (id, phone, validate_code, 
       validate_type, add_time, state
       )
@@ -101,7 +101,7 @@
       #{validateType,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{state,jdbcType=INTEGER}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.tripro.entity.Validate" >
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.Validate" >
     insert into t_validate
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -144,7 +144,7 @@
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.tripro.entity.Validate" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.Validate" >
     update t_validate
     <set >
       <if test="phone != null" >
@@ -165,7 +165,7 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.tripro.entity.Validate" >
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.Validate" >
     update t_validate
     set phone = #{phone,jdbcType=VARCHAR},
       validate_code = #{validateCode,jdbcType=VARCHAR},

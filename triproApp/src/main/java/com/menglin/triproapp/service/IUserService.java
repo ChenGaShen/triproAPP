@@ -13,6 +13,7 @@ public interface IUserService   {
 	public void delete(int id);
 	public void update(User user);
 	public User findUserByPhone(String userPhone);
+	public User findUserByOpenId(String openId);
 	public List<User> selectUserList();
 	PageBean<User> findByPage(Integer currentPage,Integer pageSize,User model,String startTime,String endTime);
 	List<UserVO> outExport(User model,String startTime,String endTime);
