@@ -58,6 +58,7 @@ public class WeixinPayUtil {
 			HttpResponse response = httpclient.execute(httpost);
 			String jsonStr = EntityUtils
 					.toString(response.getEntity(), "UTF-8");
+			System.out.println("jsonStr:"+jsonStr);
 			Map<String, Object> dataMap = new HashMap<String, Object>();
 
 			if (jsonStr.indexOf("FAIL") != -1) {
@@ -65,6 +66,7 @@ public class WeixinPayUtil {
 			}
 			Map map = doXMLParse(jsonStr);
 			String return_code = (String) map.get("return_code");
+			System.out.println("return_code:"+return_code);
 			prepay_id = (String) map.get("prepay_id");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

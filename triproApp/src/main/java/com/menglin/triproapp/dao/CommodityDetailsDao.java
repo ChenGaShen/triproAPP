@@ -17,5 +17,6 @@ public interface CommodityDetailsDao {
     
     CommodityDetails findByCommodityId(Integer commodityId);
     
+    CommodityDetails findByCommoditySeckillId(Integer seckillId);
     
 }

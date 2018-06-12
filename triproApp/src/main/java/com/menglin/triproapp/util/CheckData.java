@@ -1,9 +1,12 @@
 package com.menglin.triproapp.util;
 
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.util.ObjectUtils;
 
 public class CheckData {
 	public static boolean isNullOrZero(Integer args)
@@ -133,6 +136,34 @@ public class CheckData {
 	  public static boolean isNotNullOrEmpty(Object obj) {  
 		  return !isNullOrEmpty(obj);
 	  }
+	  
+	  public static boolean allfieldIsNUll(Object o){
+		    try{
+		        for(Field field:o.getClass().getDeclaredFields()){
+		            field.setAccessible(true);//把私有属性公有化
+		            Object object = field.get(o);
+		            if(object instanceof CharSequence){
+		                if(!CheckData.isEmpty((String)object)){
+		                    return false;
+		                }
+		            }else{
+		                if(!CheckData.isNullOrEmpty(object)){
+		                    return false;
+		                }
+		            }
+
+		        }
+		    }catch (Exception e){
+		        e.printStackTrace();
+		    }
+		    return true;
+		}
+	  
+	  public static boolean allfieldIsNotNUll(Object o){
+		
+		    return !CheckData.allfieldIsNUll(o);
+		}
+
 
 	  public static boolean isNotEmptyString(String args)
 	  {

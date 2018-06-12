@@ -1,129 +1,141 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.menglin.triproapp.dao.OrderItemDao" >
-  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.OrderItem" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
-    <result column="img" property="img" jdbcType="VARCHAR" />
-    <result column="commodity_name" property="commodityName" jdbcType="VARCHAR" />
-    <result column="amount" property="amount" jdbcType="INTEGER" />
-    <result column="price" property="price" jdbcType="DOUBLE" />
-    <result column="commodity_id" property="commodityId" jdbcType="INTEGER" />
-    <result column="specification" property="specification" jdbcType="VARCHAR" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.menglin.triproapp.dao.OrderItemDao">
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.OrderItem">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="img" jdbcType="VARCHAR" property="img" />
+    <result column="commodity_name" jdbcType="VARCHAR" property="commodityName" />
+    <result column="amount" jdbcType="INTEGER" property="amount" />
+    <result column="price" jdbcType="DOUBLE" property="price" />
+    <result column="commodity_id" jdbcType="INTEGER" property="commodityId" />
+    <result column="specification" jdbcType="VARCHAR" property="specification" />
+    <result column="seckill_Id" jdbcType="INTEGER" property="seckillId" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    id, order_id AS orderId, img, commodity_name AS commodityName , amount, price, commodity_id AS commodityId, specification
+  <sql id="Base_Column_List">
+      id, order_id AS orderId, img, commodity_name AS commodityName , amount, price, commodity_id AS commodityId, specification, seckill_Id AS seckillId
   </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
-    <include refid="Base_Column_List" />
-    from t_order_item
-    where id = #{id,jdbcType=INTEGER}
-  </select>
   
-  <!--根据订单orderId，查询商品信息归属 -->
-    <select id="selectListByOrderId" resultType="com.menglin.triproapp.entity.OrderItem" parameterType="java.lang.String" >
+   <!--根据订单orderId，查询商品信息归属 -->
+    <select id="selectListByOrderId" parameterType="java.lang.String" resultType="com.menglin.triproapp.entity.OrderItem">
         select
         <include refid="Base_Column_List" />
         from t_order_item
         where order_id =#{orderId}
     </select>
   
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order_item
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_order_item
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.triproapp.entity.OrderItem" >
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.OrderItem">
     insert into t_order_item (id, order_id, img, 
       commodity_name, amount, price, 
-      commodity_id, specification)
+      commodity_id, specification, seckill_Id
+      )
     values (#{id,jdbcType=INTEGER}, #{orderId,jdbcType=VARCHAR}, #{img,jdbcType=VARCHAR}, 
       #{commodityName,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{price,jdbcType=DOUBLE}, 
-      #{commodityId,jdbcType=INTEGER}, #{specification,jdbcType=VARCHAR})
+      #{commodityId,jdbcType=INTEGER}, #{specification,jdbcType=VARCHAR}, #{seckillId,jdbcType=INTEGER}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.OrderItem" >
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.OrderItem">
     insert into t_order_item
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="orderId != null" >
+      <if test="orderId != null">
         order_id,
       </if>
-      <if test="img != null" >
+      <if test="img != null">
         img,
       </if>
-      <if test="commodityName != null" >
+      <if test="commodityName != null">
         commodity_name,
       </if>
-      <if test="amount != null" >
+      <if test="amount != null">
         amount,
       </if>
-      <if test="price != null" >
+      <if test="price != null">
         price,
       </if>
-      <if test="commodityId != null" >
+      <if test="commodityId != null">
         commodity_id,
       </if>
-      <if test="specification != null" >
+      <if test="specification != null">
         specification,
       </if>
+      <if test="seckillId != null">
+        seckill_Id,
+      </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="orderId != null" >
+      <if test="orderId != null">
         #{orderId,jdbcType=VARCHAR},
       </if>
-      <if test="img != null" >
+      <if test="img != null">
         #{img,jdbcType=VARCHAR},
       </if>
-      <if test="commodityName != null" >
+      <if test="commodityName != null">
         #{commodityName,jdbcType=VARCHAR},
       </if>
-      <if test="amount != null" >
+      <if test="amount != null">
         #{amount,jdbcType=INTEGER},
       </if>
-      <if test="price != null" >
+      <if test="price != null">
         #{price,jdbcType=DOUBLE},
       </if>
-      <if test="commodityId != null" >
+      <if test="commodityId != null">
         #{commodityId,jdbcType=INTEGER},
       </if>
-      <if test="specification != null" >
+      <if test="specification != null">
         #{specification,jdbcType=VARCHAR},
+      </if>
+      <if test="seckillId != null">
+        #{seckillId,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.OrderItem" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.OrderItem">
     update t_order_item
-    <set >
-      <if test="orderId != null" >
+    <set>
+      <if test="orderId != null">
         order_id = #{orderId,jdbcType=VARCHAR},
       </if>
-      <if test="img != null" >
+      <if test="img != null">
         img = #{img,jdbcType=VARCHAR},
       </if>
-      <if test="commodityName != null" >
+      <if test="commodityName != null">
         commodity_name = #{commodityName,jdbcType=VARCHAR},
       </if>
-      <if test="amount != null" >
+      <if test="amount != null">
         amount = #{amount,jdbcType=INTEGER},
       </if>
-      <if test="price != null" >
+      <if test="price != null">
         price = #{price,jdbcType=DOUBLE},
       </if>
-      <if test="commodityId != null" >
+      <if test="commodityId != null">
         commodity_id = #{commodityId,jdbcType=INTEGER},
       </if>
-      <if test="specification != null" >
+      <if test="specification != null">
         specification = #{specification,jdbcType=VARCHAR},
+      </if>
+      <if test="seckillId != null">
+        seckill_Id = #{seckillId,jdbcType=INTEGER},
       </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.OrderItem" >
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.OrderItem">
     update t_order_item
     set order_id = #{orderId,jdbcType=VARCHAR},
       img = #{img,jdbcType=VARCHAR},
@@ -131,7 +143,8 @@
       amount = #{amount,jdbcType=INTEGER},
       price = #{price,jdbcType=DOUBLE},
       commodity_id = #{commodityId,jdbcType=INTEGER},
-      specification = #{specification,jdbcType=VARCHAR}
+      specification = #{specification,jdbcType=VARCHAR},
+      seckill_Id = #{seckillId,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

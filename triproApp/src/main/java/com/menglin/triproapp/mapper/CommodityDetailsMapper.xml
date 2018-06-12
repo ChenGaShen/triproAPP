@@ -1,179 +1,198 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.menglin.triproapp.dao.CommodityDetailsDao" >
-  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.CommodityDetails" >
-    <id column="detailsId" property="detailsId" jdbcType="INTEGER" />
-    <result column="commodity_Id" property="commodityId" jdbcType="INTEGER" />
-    <result column="details_01" property="details01" jdbcType="VARCHAR" />
-    <result column="details_02" property="details02" jdbcType="VARCHAR" />
-    <result column="details_03" property="details03" jdbcType="VARCHAR" />
-    <result column="details_04" property="details04" jdbcType="VARCHAR" />
-    <result column="details_05" property="details05" jdbcType="VARCHAR" />
-    <result column="details_06" property="details06" jdbcType="VARCHAR" />
-    <result column="details_07" property="details07" jdbcType="VARCHAR" />
-    <result column="details_08" property="details08" jdbcType="VARCHAR" />
-    <result column="details_09" property="details09" jdbcType="VARCHAR" />
-    <result column="details_10" property="details10" jdbcType="VARCHAR" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.menglin.triproapp.dao.CommodityDetailsDao">
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.CommodityDetails">
+    <id column="detailsId" jdbcType="INTEGER" property="detailsid" />
+    <result column="commodity_Id" jdbcType="INTEGER" property="commodityId" />
+    <result column="seckill_Id" jdbcType="INTEGER" property="seckillId" />
+    <result column="details_01" jdbcType="VARCHAR" property="details01" />
+    <result column="details_02" jdbcType="VARCHAR" property="details02" />
+    <result column="details_03" jdbcType="VARCHAR" property="details03" />
+    <result column="details_04" jdbcType="VARCHAR" property="details04" />
+    <result column="details_05" jdbcType="VARCHAR" property="details05" />
+    <result column="details_06" jdbcType="VARCHAR" property="details06" />
+    <result column="details_07" jdbcType="VARCHAR" property="details07" />
+    <result column="details_08" jdbcType="VARCHAR" property="details08" />
+    <result column="details_09" jdbcType="VARCHAR" property="details09" />
+    <result column="details_10" jdbcType="VARCHAR" property="details10" />
   </resultMap>
-  <sql id="Base_Column_List" >
-    detailsId, commodity_Id AS commodityId, details_01 AS details01, details_02 AS details02 , details_03 AS details03, details_04 AS details04,
+  <sql id="Base_Column_List">
+   detailsId, commodity_Id AS commodityId,seckill_Id AS seckillId, details_01 AS details01, details_02 AS details02 , details_03 AS details03, details_04 AS details04,
     details_05 AS details05 , details_06 AS details06, details_07 AS details07, details_08 AS details08 , details_09 AS details09,
     details_10 AS details10
   </sql>
- 
   
-  <!-- 通过商品ID查询详情图 -->
-  <select id="findByCommodityId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  
+   <!-- 通过商品ID查询详情图 -->
+  <select id="findByCommodityId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_commodity_details
     where commodity_Id = #{commodityId,jdbcType=INTEGER}
   </select>
   
-   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+   <!-- 通过秒杀商品ID查询详情图 -->
+  <select id="findByCommoditySeckillId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_commodity_details
-    where detailsId = #{detailsId,jdbcType=INTEGER}
+    where seckill_Id = #{seckillId,jdbcType=INTEGER}
   </select>
   
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_commodity_details
+    where detailsId = #{detailsid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_commodity_details
-    where detailsId = #{detailsId,jdbcType=INTEGER}
+    where detailsId = #{detailsid,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.triproapp.entity.CommodityDetails" >
-    insert into t_commodity_details (detailsId, commodity_Id, details_01, 
-      details_02, details_03, details_04, 
-      details_05, details_06, details_07, 
-      details_08, details_09, details_10
-      )
-    values (#{detailsId,jdbcType=INTEGER}, #{commodityId,jdbcType=INTEGER}, #{details01,jdbcType=VARCHAR}, 
-      #{details02,jdbcType=VARCHAR}, #{details03,jdbcType=VARCHAR}, #{details04,jdbcType=VARCHAR}, 
-      #{details05,jdbcType=VARCHAR}, #{details06,jdbcType=VARCHAR}, #{details07,jdbcType=VARCHAR}, 
-      #{details08,jdbcType=VARCHAR}, #{details09,jdbcType=VARCHAR}, #{details10,jdbcType=VARCHAR}
-      )
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.CommodityDetails">
+    insert into t_commodity_details (detailsId, commodity_Id, seckill_Id, 
+      details_01, details_02, details_03, 
+      details_04, details_05, details_06, 
+      details_07, details_08, details_09, 
+      details_10)
+    values (#{detailsid,jdbcType=INTEGER}, #{commodityId,jdbcType=INTEGER}, #{seckillId,jdbcType=INTEGER}, 
+      #{details01,jdbcType=VARCHAR}, #{details02,jdbcType=VARCHAR}, #{details03,jdbcType=VARCHAR}, 
+      #{details04,jdbcType=VARCHAR}, #{details05,jdbcType=VARCHAR}, #{details06,jdbcType=VARCHAR}, 
+      #{details07,jdbcType=VARCHAR}, #{details08,jdbcType=VARCHAR}, #{details09,jdbcType=VARCHAR}, 
+      #{details10,jdbcType=VARCHAR})
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.CommodityDetails" >
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.CommodityDetails">
     insert into t_commodity_details
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="detailsId != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="detailsid != null">
         detailsId,
       </if>
-      <if test="commodityId != null" >
+      <if test="commodityId != null">
         commodity_Id,
       </if>
-      <if test="details01 != null" >
+      <if test="seckillId != null">
+        seckill_Id,
+      </if>
+      <if test="details01 != null">
         details_01,
       </if>
-      <if test="details02 != null" >
+      <if test="details02 != null">
         details_02,
       </if>
-      <if test="details03 != null" >
+      <if test="details03 != null">
         details_03,
       </if>
-      <if test="details04 != null" >
+      <if test="details04 != null">
         details_04,
       </if>
-      <if test="details05 != null" >
+      <if test="details05 != null">
         details_05,
       </if>
-      <if test="details06 != null" >
+      <if test="details06 != null">
         details_06,
       </if>
-      <if test="details07 != null" >
+      <if test="details07 != null">
         details_07,
       </if>
-      <if test="details08 != null" >
+      <if test="details08 != null">
         details_08,
       </if>
-      <if test="details09 != null" >
+      <if test="details09 != null">
         details_09,
       </if>
-      <if test="details10 != null" >
+      <if test="details10 != null">
         details_10,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="detailsId != null" >
-        #{detailsId,jdbcType=INTEGER},
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="detailsid != null">
+        #{detailsid,jdbcType=INTEGER},
       </if>
-      <if test="commodityId != null" >
+      <if test="commodityId != null">
         #{commodityId,jdbcType=INTEGER},
       </if>
-      <if test="details01 != null" >
+      <if test="seckillId != null">
+        #{seckillId,jdbcType=INTEGER},
+      </if>
+      <if test="details01 != null">
         #{details01,jdbcType=VARCHAR},
       </if>
-      <if test="details02 != null" >
+      <if test="details02 != null">
         #{details02,jdbcType=VARCHAR},
       </if>
-      <if test="details03 != null" >
+      <if test="details03 != null">
         #{details03,jdbcType=VARCHAR},
       </if>
-      <if test="details04 != null" >
+      <if test="details04 != null">
         #{details04,jdbcType=VARCHAR},
       </if>
-      <if test="details05 != null" >
+      <if test="details05 != null">
         #{details05,jdbcType=VARCHAR},
       </if>
-      <if test="details06 != null" >
+      <if test="details06 != null">
         #{details06,jdbcType=VARCHAR},
       </if>
-      <if test="details07 != null" >
+      <if test="details07 != null">
         #{details07,jdbcType=VARCHAR},
       </if>
-      <if test="details08 != null" >
+      <if test="details08 != null">
         #{details08,jdbcType=VARCHAR},
       </if>
-      <if test="details09 != null" >
+      <if test="details09 != null">
         #{details09,jdbcType=VARCHAR},
       </if>
-      <if test="details10 != null" >
+      <if test="details10 != null">
         #{details10,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.CommodityDetails" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.CommodityDetails">
     update t_commodity_details
-    <set >
-      <if test="commodityId != null" >
+    <set>
+      <if test="commodityId != null">
         commodity_Id = #{commodityId,jdbcType=INTEGER},
       </if>
-      <if test="details01 != null" >
+      <if test="seckillId != null">
+        seckill_Id = #{seckillId,jdbcType=INTEGER},
+      </if>
+      <if test="details01 != null">
         details_01 = #{details01,jdbcType=VARCHAR},
       </if>
-      <if test="details02 != null" >
+      <if test="details02 != null">
         details_02 = #{details02,jdbcType=VARCHAR},
       </if>
-      <if test="details03 != null" >
+      <if test="details03 != null">
         details_03 = #{details03,jdbcType=VARCHAR},
       </if>
-      <if test="details04 != null" >
+      <if test="details04 != null">
         details_04 = #{details04,jdbcType=VARCHAR},
       </if>
-      <if test="details05 != null" >
+      <if test="details05 != null">
         details_05 = #{details05,jdbcType=VARCHAR},
       </if>
-      <if test="details06 != null" >
+      <if test="details06 != null">
         details_06 = #{details06,jdbcType=VARCHAR},
       </if>
-      <if test="details07 != null" >
+      <if test="details07 != null">
         details_07 = #{details07,jdbcType=VARCHAR},
       </if>
-      <if test="details08 != null" >
+      <if test="details08 != null">
         details_08 = #{details08,jdbcType=VARCHAR},
       </if>
-      <if test="details09 != null" >
+      <if test="details09 != null">
         details_09 = #{details09,jdbcType=VARCHAR},
       </if>
-      <if test="details10 != null" >
+      <if test="details10 != null">
         details_10 = #{details10,jdbcType=VARCHAR},
       </if>
     </set>
-    where detailsId = #{detailsId,jdbcType=INTEGER}
+    where detailsId = #{detailsid,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.CommodityDetails" >
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.CommodityDetails">
     update t_commodity_details
     set commodity_Id = #{commodityId,jdbcType=INTEGER},
+      seckill_Id = #{seckillId,jdbcType=INTEGER},
       details_01 = #{details01,jdbcType=VARCHAR},
       details_02 = #{details02,jdbcType=VARCHAR},
       details_03 = #{details03,jdbcType=VARCHAR},
@@ -184,6 +203,6 @@
       details_08 = #{details08,jdbcType=VARCHAR},
       details_09 = #{details09,jdbcType=VARCHAR},
       details_10 = #{details10,jdbcType=VARCHAR}
-    where detailsId = #{detailsId,jdbcType=INTEGER}
+    where detailsId = #{detailsid,jdbcType=INTEGER}
   </update>
 </mapper>

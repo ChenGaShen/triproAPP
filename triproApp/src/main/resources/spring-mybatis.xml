@@ -76,4 +76,44 @@
      <!--这行不加,注解无效-->
     <cache:annotation-driven cache-manager="cacheManager"/>
  
+ 	 <!-- 定义一个任务类 -->
+    <bean id="myJob" class="com.menglin.triproapp.common.QuartzJob1"></bean>
+
+    <!-- jobDetail -->
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="myJob"></property>
+        <property name="targetMethod" value="execute"></property>
+        <property name="concurrent" value="false" /><!-- 作业不并发调度  -->
+    </bean>
+
+    <!-- 定义trigger 触发器 -->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail"></property>
+        <property name="cronExpression" value="0/10 * * * * ?"></property>
+    </bean>
+    
+     <!-- 定义另一个任务类 -->
+    <bean id="myJob2" class="com.menglin.triproapp.common.QuartzJob2"></bean>
+
+    <!-- jobDetail2 -->
+    <bean id="jobDetail2" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="myJob2"></property>
+        <property name="targetMethod" value="execute"></property>
+        <property name="concurrent" value="false" /><!-- 作业不并发调度  -->   <!-- 是否允许任务并发执行。当值为false时，表示必须等到前一个线程处理完毕后才再启一个新的线程 --> 
+    </bean>
+
+    <!-- 定义2trigger 触发器 -->
+    <bean id="cronTrigger2" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail2"></property>
+        <property name="cronExpression" value="0/5 * * * * ?"></property>
+    </bean>
+
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+           <list>
+                <ref bean="cronTrigger"/>
+                <ref bean="cronTrigger2"/>
+           </list>
+        </property>
+    </bean>
 </beans>

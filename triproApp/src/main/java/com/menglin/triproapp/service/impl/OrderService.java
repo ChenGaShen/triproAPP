@@ -98,6 +98,7 @@ public class OrderService implements IOrderService {
 				
 			}
 			detailVO.setOrderItems(orderItemVOs);
+			detailVO.setPayState(orders.get(i).getState());
 			switch (orders.get(i).getState()){
 			case 0:detailVO.setState("待付款");break;//状态：0待付款1已付款2取消订单3已失效
 			case 1:detailVO.setState("已付款");break;
@@ -105,6 +106,7 @@ public class OrderService implements IOrderService {
 			case 3:detailVO.setState("已失效");break;
 			}
 			if (orders.get(i).getState()==1) {
+				detailVO.setDeliveryState(orders.get(i).getReceiveState());
 				switch (orders.get(i).getReceiveState()){
 				case 0:detailVO.setReceiveState("待发货");break;//订单状态0待发货1配送中2已签收
 				case 1:detailVO.setReceiveState("配送中");break;
@@ -119,7 +121,11 @@ public class OrderService implements IOrderService {
 				detailVO.setCompany(orders.get(i).getCompany());
 			}//物流公司
 			detailVO.setOrderPrice(Format.keepTwoMoney(orders.get(i).getOrderPrice()));
-			detailVO.setRedMoney(Format.keepTwoMoney(orders.get(i).getRedMoney()));
+			if (CheckData.isNotNullOrEmpty(orders.get(i).getRedMoney())) {
+				detailVO.setRedMoney(Format.keepTwoMoney(orders.get(i).getRedMoney()));
+			}else{
+				detailVO.setRedMoney("0.00");
+			}
 			detailVO.setReceiveName(orders.get(i).getReceiveName());
 			detailVO.setReceivePhone(orders.get(i).getReceivePhone());
 			detailVO.setReceiveAddress(orders.get(i).getReceiveAddress());
@@ -162,7 +168,7 @@ public class OrderService implements IOrderService {
 			
 		}
 		detailVO.setOrderItems(orderItemVOs);
-	
+		detailVO.setPayState(order.getState());
 		switch (order.getState()){
 		case 0:detailVO.setState("待付款");break;//状态：0待付款1已付款2取消订单3已失效
 		case 1:detailVO.setState("已付款");break;
@@ -170,6 +176,7 @@ public class OrderService implements IOrderService {
 		case 3:detailVO.setState("已失效");break;
 		}
 		if (order.getState()==1) {
+			detailVO.setDeliveryState(order.getReceiveState());
 			switch (order.getReceiveState()){
 			case 0:detailVO.setReceiveState("待发货");break;//订单状态0待发货1配送中2已签收
 			case 1:detailVO.setReceiveState("配送中");break;
@@ -186,7 +193,11 @@ public class OrderService implements IOrderService {
 		detailVO.setLoginName(order.getLoginName());//下单人手机号
 		detailVO.setRemark(order.getRemark());//订单备注
 		detailVO.setOrderPrice(Format.keepTwoMoney(order.getOrderPrice()));
-		detailVO.setRedMoney(Format.keepTwoMoney(order.getRedMoney()));
+		if (CheckData.isNotNullOrEmpty(order.getRedMoney())) {
+			detailVO.setRedMoney(Format.keepTwoMoney(order.getRedMoney()));
+		}else{
+			detailVO.setRedMoney("0.00");
+		}
 		detailVO.setReceiveName(order.getReceiveName());
 		detailVO.setReceivePhone(order.getReceivePhone());
 		detailVO.setReceiveAddress(order.getReceiveAddress());
@@ -230,7 +241,7 @@ public class OrderService implements IOrderService {
 				
 			}
 			detailVO.setOrderItems(orderItemVOs);
-		
+			detailVO.setPayState(orders.get(i).getState());
 			switch (orders.get(i).getState()){
 			case 0:detailVO.setState("待付款");break;//状态：0待付款1已付款2取消订单3已失效
 			case 1:detailVO.setState("已付款");break;
@@ -238,6 +249,7 @@ public class OrderService implements IOrderService {
 			case 3:detailVO.setState("已失效");break;
 			}
 			if (orders.get(i).getState()==1) {
+				detailVO.setDeliveryState(orders.get(i).getReceiveState());
 				switch (orders.get(i).getReceiveState()){
 				case 0:detailVO.setReceiveState("待发货");break;//订单状态0待发货1配送中2已签收
 				case 1:detailVO.setReceiveState("配送中");break;
@@ -252,7 +264,11 @@ public class OrderService implements IOrderService {
 				detailVO.setCompany(orders.get(i).getCompany());
 			}//物流公司
 			detailVO.setOrderPrice(Format.keepTwoMoney(orders.get(i).getOrderPrice()));
-			detailVO.setRedMoney(Format.keepTwoMoney(orders.get(i).getRedMoney()));
+			if (CheckData.isNotNullOrEmpty(orders.get(i).getRedMoney())) {
+				detailVO.setRedMoney(Format.keepTwoMoney(orders.get(i).getRedMoney()));
+			}else{
+				detailVO.setRedMoney("0.00");
+			}
 			detailVO.setReceiveName(orders.get(i).getReceiveName());
 			detailVO.setReceivePhone(orders.get(i).getReceivePhone());
 			detailVO.setReceiveAddress(orders.get(i).getReceiveAddress());
@@ -365,7 +381,11 @@ public class OrderService implements IOrderService {
     			detailVO.setLoginName(lists.get(i).getLoginName());//下单人微信昵称
     			detailVO.setRemark(lists.get(i).getRemark());//订单备注
     			detailVO.setOrderPrice(Format.keepTwoMoney(lists.get(i).getOrderPrice()));
-    			detailVO.setRedMoney(Format.keepTwoMoney(lists.get(i).getRedMoney()));
+    			if (CheckData.isNotNullOrEmpty(lists.get(i).getRedMoney())) {
+    				detailVO.setRedMoney(Format.keepTwoMoney(lists.get(i).getRedMoney()));
+    			}else{
+    				detailVO.setRedMoney("0.00");
+    			}
     			detailVO.setReceiveName(lists.get(i).getReceiveName());
     			detailVO.setReceivePhone(lists.get(i).getReceivePhone());
     			detailVO.setReceiveAddress(lists.get(i).getReceiveAddress());

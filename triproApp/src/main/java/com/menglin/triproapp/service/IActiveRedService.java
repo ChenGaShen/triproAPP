@@ -15,6 +15,8 @@ public interface IActiveRedService {
     void save(ActiveRed record);
 
     ActiveRed get(Integer id);
+    
+    ActiveRed selectByorderId(String orderId); 
 
     void update(ActiveRed record);
     

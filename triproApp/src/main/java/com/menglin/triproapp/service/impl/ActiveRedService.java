@@ -89,6 +89,12 @@ public class ActiveRedService implements IActiveRedService {
         return pageBean;
 	}
 
+	@Override
+	public ActiveRed selectByorderId(String orderId) {
+		
+		return activeRedDao.selectByorderId(orderId);
+	}
+
 	
 
 }

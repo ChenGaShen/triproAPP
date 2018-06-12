@@ -21,12 +21,14 @@ import com.menglin.triproapp.common.Recruitment;
 import com.menglin.triproapp.entity.ActiveRed;
 import com.menglin.triproapp.entity.Adress;
 import com.menglin.triproapp.entity.Commodity;
+import com.menglin.triproapp.entity.CommoditySeckill;
 import com.menglin.triproapp.entity.Order;
 import com.menglin.triproapp.entity.OrderItem;
 import com.menglin.triproapp.entity.Shopping;
 import com.menglin.triproapp.entity.User;
 import com.menglin.triproapp.service.IActiveRedService;
 import com.menglin.triproapp.service.IAdressService;
+import com.menglin.triproapp.service.ICommoditySeckillService;
 import com.menglin.triproapp.service.ICommodityService;
 import com.menglin.triproapp.service.IMessageService;
 import com.menglin.triproapp.service.IOrderItemService;
@@ -64,6 +66,9 @@ public class OrderWebController {
 
 	@Resource  
     private ICommodityService commodityService;
+	
+	@Resource  
+    private ICommoditySeckillService commoditySeckillService;
 	
 	@Resource  
     private IOrderService orderService; 
@@ -158,22 +163,24 @@ public class OrderWebController {
 					model.setReceivePhone(adress.getReceivedPhone());
 					model.setReceiveAddress(adress.getReceivedProvince()+adress.getReceivedCity()+adress.getReceivedCanton()+adress.getReceivedDetail());//拼接收货地址
 				}
-				model.setId(autOrderId);
-				model.setUid(model.getUid());
-				ActiveRed  activeRed=activeRedService.get(activeid);
-				if (CheckData.isNotNullOrEmpty(activeRed.getActiveid())) {
-					model.setOrderPrice(OrderPrice-activeRed.getRedMoney());//使用红包 金额减少
-					model.setMoney(activeRed.getRedMoney());//订单中的红包金额
+				if (CheckData.isNotNullOrEmpty(activeid)) {
+					ActiveRed  activeRed=activeRedService.get(activeid);
+					if (CheckData.isNotNullOrEmpty(activeRed.getActiveid()) && activeRed.getRedState()==0) { //0 未使用1 已使用 2已过期
+						model.setOrderPrice(OrderPrice-activeRed.getRedMoney());//使用红包 金额减少
+						model.setRedMoney(activeRed.getRedMoney());//订单中的红包金额
+						//红包状态修改
+						activeRed.setOrderId(autOrderId);
+						activeRed.setRedState(1); //0 未使用1 已使用 2已过期
+						activeRedService.update(activeRed);
+					}else{
+						model.setOrderPrice(OrderPrice);//订单总价
+					}
 				}else{
 					model.setOrderPrice(OrderPrice);//订单总价
 				}
-	//			model.setMoney(OrderPrice);//实际支付金额
-				model.setState(0);//状态：0待付款1已付款2取消订单3已失效
-	//			model.setReceiveState(0);//订单状态0待发货1配送中2已签收
 				if (CheckData.isNotNullOrEmpty(model.getRemark())) {
 					model.setRemark(model.getRemark());//订单备注
 				}
-				model.setAddTime(new Date());
 				
 				// 订单IP信息
 				String ip = request.getHeader("X-Forwarded-For");
@@ -203,6 +210,11 @@ public class OrderWebController {
 				}
 				//订单iP 信息结束
 				model.setIpAddress(ipAddress);
+				model.setAddTime(new Date());
+				model.setId(autOrderId);
+				model.setUid(model.getUid());
+				model.setState(0);//状态：0待付款1已付款2取消订单3已失效
+				model.setSeckillState(1);//订单秒杀状态0秒杀订单1普通订单
 				//总订单生成
 				orderService.save(model);			
 				vn.setResult(Result.suc("购物车下单成功，跳转付款页面..."));
@@ -211,6 +223,121 @@ public class OrderWebController {
 				return vn;
 			}else{
 				vn.setResult(Result.fal("空空如也,快去逛逛吧~"));
+				return vn;
+			}
+			
+		}else{
+			vn.setResult(Result.fal("账户已被冻结!!"));
+			return vn;
+		}
+	}
+	
+	/**
+	 * 秒杀商品下单
+	 * @author CGS
+	 * @time 2018年6月8日上午10:58:56
+	 * @param model
+	 * @param addressId
+	 * @param json
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@RequestMapping(value="/doSeckillOrder.json",method = {RequestMethod.POST})
+	public @ResponseBody ResultOrderVN doSeckillOrder(Order model, Integer commodityseckillId,Integer num,Integer addressId,String json,HttpServletRequest request,HttpServletResponse response){
+		ResultOrderVN vn=new ResultOrderVN();
+		
+		User user=userService.get(model.getUid());
+	if (user.getState()!=2) {
+			// //开始下单
+			// //***************************************
+				CommoditySeckill seckill =commoditySeckillService.get(commodityseckillId);
+				if (CheckData.allfieldIsNotNUll(seckill)) {
+					//判断商品的上架和秒杀状态  //商品秒杀状态0开启1关闭    //商品状态0上架1下架 
+					if (seckill.getSeckillState()==0 && seckill.getSeckillOnsale()==0) {
+						if ((seckill.getSeckillAllowance() - num) < 0) {
+							vn.setResult(Result.fal("您秒杀的"+seckill.getCommodityseckillName()+"商品已售完!!"));
+							return vn;
+						}else{
+						seckill.setSeckillAllowance(seckill.getSeckillAllowance()- num);
+						seckill.setSeckillVirtualSales(seckill.getSeckillVirtualSales()+num);//虚拟销量改变
+						seckill.setSeckillRealSale(seckill.getSeckillRealSale()+num);//真是销量改变
+						commoditySeckillService.update(seckill);
+						String autOrderId =OrderUtils.genOrderNo(); //工具类生成订单ID
+						model.setOrderPrice(seckill.getSeckillDiscountprice()*num);//订单总价
+						
+						// 子订单项生成
+						OrderItem orderItem =new OrderItem();
+						
+						orderItem.setSeckillId(seckill.getCommodityseckillId());
+						orderItem.setCommodityName(seckill.getCommodityseckillName());
+						orderItem.setAmount(num);
+						orderItem.setImg(seckill.getSeckillCommodityimg());
+						orderItem.setSpecification(seckill.getSeckillSpecification());
+						orderItem.setPrice(seckill.getSeckillDiscountprice());
+						orderItem.setOrderId(autOrderId);
+						orderItemService.save(orderItem);	
+						
+						
+						//总订单生成
+						Adress adress =adressService.get(addressId);
+						//填入默认地址
+						if (null!=adress) {
+							model.setReceiveName(adress.getReceivedName());
+							model.setReceivePhone(adress.getReceivedPhone());
+							model.setReceiveAddress(adress.getReceivedProvince()+adress.getReceivedCity()+adress.getReceivedCanton()+adress.getReceivedDetail());//拼接收货地址
+						}
+						if (CheckData.isNotNullOrEmpty(model.getRemark())) {
+							model.setRemark(model.getRemark());//订单备注
+						}
+						
+						// 订单IP信息
+						String ip = request.getHeader("X-Forwarded-For");
+						if ((ip == null) || (ip.length() == 0)|| ("unknown".equalsIgnoreCase(ip)))
+							ip = request.getHeader("Proxy-Client-IP");
+						if ((ip == null) || (ip.length() == 0)|| ("unknown".equalsIgnoreCase(ip)))
+							ip = request.getHeader("WL-Proxy-Client-IP");
+						if ((ip == null) || (ip.length() == 0)|| ("unknown".equalsIgnoreCase(ip)))
+							ip = request.getHeader("HTTP_CLIENT_IP");
+						if ((ip == null) || (ip.length() == 0)|| ("unknown".equalsIgnoreCase(ip)))
+							ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+						if ((ip == null) || (ip.length() == 0)|| ("unknown".equalsIgnoreCase(ip)))
+							ip = request.getRemoteAddr();
+						if (("127.0.0.1".equals(ip))
+								|| ("0:0:0:0:0:0:0:1".equals(ip)))
+							try {
+								ip = InetAddress.getLocalHost().getHostAddress();
+							} catch (UnknownHostException localUnknownHostException) {
+			
+							}
+						model.setIp(ip);
+						String ipAddress = "";
+						try {
+							ipAddress = PhoneUtils.getIPBelonging(ip);
+						} catch (Exception e1) {
+							e1.printStackTrace();
+						}
+						//订单iP 信息结束
+						model.setIpAddress(ipAddress);
+						model.setAddTime(new Date());
+						model.setId(autOrderId);
+						model.setUid(model.getUid());
+						model.setRedMoney(0.00);
+						model.setState(0);//状态：0待付款1已付款2取消订单3已失效
+						model.setSeckillState(0);//订单秒杀状态0秒杀订单1普通订单
+						//总订单生成
+						orderService.save(model);			
+						vn.setResult(Result.suc("秒杀下单成功，跳转付款页面..."));
+						vn.setOrderId(autOrderId);
+						return vn;
+					}
+				}else{
+					vn.setResult(Result.fal("秒杀活动已结束,快去逛逛首页吧~"));
+					return vn;
+				}
+				
+			}else{
+				vn.setResult(Result.fal("秒杀活动不存在,快去逛逛首页吧~"));
 				return vn;
 			}
 			
@@ -410,19 +537,33 @@ public class OrderWebController {
 		
 		ResultVN vn = new ResultVN();
 		Order order=  orderService.get(orderId);
-		if (null!=order) {
+		if (CheckData.allfieldIsNotNUll(order)) {
 			
 			
 			if (order.getState()==0) { //状态：0待付款1已付款2取消订单3已失效
 				order.setState(2);//状态：0待付款1已付款2取消订单3已失效
 				orderService.update(order);
-				
+				if (order.getSeckillState()==1) {//订单秒杀状态0秒杀订单1普通订单
 		    	List<OrderItem> items =orderItemService.findListByOrderId(orderId);
-		    	if (CheckData.isNotEmpty(items)) {
-					for (int i = 0; i < items.size(); i++) {
-						Commodity commodity=commodityService.get(items.get(i).getCommodityId());
-				    	commodity.setAllowance(commodity.getAllowance()+items.get(i).getAmount());//取消订单，修改商品的余量。
-				    	commodityService.update(commodity);
+			    	if (CheckData.isNotEmpty(items)) {
+						for (int i = 0; i < items.size(); i++) {
+							Commodity commodity=commodityService.get(items.get(i).getCommodityId());
+					    	commodity.setAllowance(commodity.getAllowance()+items.get(i).getAmount());//取消订单，修改商品的余量。
+					    	commodity.setRealSale(commodity.getRealSale()-items.get(i).getAmount());//取消订单，修改商品的真实销量
+					    	commodity.setVirtualSales(commodity.getVirtualSales()-items.get(i).getAmount());//取消订单，修改商品的虚拟销量
+					    	commodityService.update(commodity);
+						}
+					}
+				}else{ //秒杀商品回复
+					List<OrderItem> items =orderItemService.findListByOrderId(orderId);
+			    	if (CheckData.isNotEmpty(items)) {
+						for (int i = 0; i < items.size(); i++) {
+							CommoditySeckill seckill =commoditySeckillService.get(items.get(i).getSeckillId());
+							seckill.setSeckillAllowance(seckill.getSeckillAllowance()+items.get(i).getAmount());//取消订单，修改秒杀商品的余量。
+							seckill.setSeckillRealSale(seckill.getSeckillRealSale()-items.get(i).getAmount());//取消订单，修改秒杀商品的真实销量
+							seckill.setSeckillVirtualSales(seckill.getSeckillVirtualSales()-items.get(i).getAmount());//取消订单，修改秒杀商品的虚拟销量
+							commoditySeckillService.update(seckill);
+						}
 					}
 				}
 				vn.setResult(Result.suc("订单取消成功!"));

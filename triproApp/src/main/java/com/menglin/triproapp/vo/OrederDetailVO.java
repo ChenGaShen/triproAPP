@@ -17,9 +17,13 @@ public class OrederDetailVO {
 	
 	private List<OrderItemVO> orderItems;//订单子项
 	
-	private String state; //支付状态：0待付款1已付款2取消订单3已失效
+	private String state; //支付状态String：0待付款1已付款2取消订单3已失效
 	
-	private String receiveState;// 订单状态0待发货1配送中2已签收
+	private Integer payState; //支付状态int：0待付款1已付款2取消订单3已失效
+	
+	private Integer deliveryState; // 订单状态int :0待发货1配送中2已签收
+	
+	private String receiveState;// 订单状态String :0待发货1配送中2已签收
 	
 	private String receiveName;
 
@@ -87,6 +91,23 @@ public class OrederDetailVO {
 	}
 	
 	
+	
+	public Integer getPayState() {
+		return payState;
+	}
+
+	public void setPayState(Integer payState) {
+		this.payState = payState;
+	}
+
+	public Integer getDeliveryState() {
+		return deliveryState;
+	}
+
+	public void setDeliveryState(Integer deliveryState) {
+		this.deliveryState = deliveryState;
+	}
+
 	public String getReceiveState() {
 		return receiveState;
 	}

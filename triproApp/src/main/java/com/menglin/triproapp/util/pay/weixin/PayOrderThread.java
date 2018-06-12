@@ -3,14 +3,17 @@ package com.menglin.triproapp.util.pay.weixin;
 
 import java.util.Date;
 
+import com.menglin.triproapp.entity.ActiveRed;
 import com.menglin.triproapp.entity.Message;
 import com.menglin.triproapp.entity.Order;
 import com.menglin.triproapp.entity.PayWx;
 import com.menglin.triproapp.entity.User;
+import com.menglin.triproapp.service.IActiveRedService;
 import com.menglin.triproapp.service.IMessageService;
 import com.menglin.triproapp.service.IOrderService;
 import com.menglin.triproapp.service.IPayWxService;
 import com.menglin.triproapp.service.IUserService;
+import com.menglin.triproapp.util.CheckData;
 import com.menglin.triproapp.util.Format;
 
 
@@ -30,6 +33,8 @@ public class PayOrderThread extends Thread {
 	
 	 
     private IMessageService messageService;
+    
+    private IActiveRedService activeRedService;
 	
 	private String out_trade_no ="";
 	private String total_fee ="";
@@ -40,7 +45,7 @@ public class PayOrderThread extends Thread {
 	private Order order;
 	
 	
-	public PayOrderThread(Order order ,Date date,IUserService userService,IOrderService orderService,IPayWxService payWxService,IMessageService messageService,String out_trade_no, String total_fee, String transaction_id, String bank_type,
+	public PayOrderThread(Order order ,Date date,IUserService userService,IOrderService orderService,IPayWxService payWxService,IMessageService messageService,IActiveRedService activeRedService,String out_trade_no, String total_fee, String transaction_id, String bank_type,
 			String time_end) {
 		this.out_trade_no = out_trade_no;
 		this.total_fee = total_fee;
@@ -53,6 +58,7 @@ public class PayOrderThread extends Thread {
 		this.orderService =orderService;
 		this.payWxService =payWxService;
 		this.messageService =messageService;
+		this.activeRedService =activeRedService;
 		
 	}
 
@@ -85,14 +91,23 @@ public class PayOrderThread extends Thread {
 		//添加消息记录
 		System.out.println("消息记录添加开始---------");
 		Message message =new Message();
-		User user =userService.get(order.getUid());
 		message.setUid(order.getUid());
 		message.setOrderId(out_trade_no);//订单号
 		message.setTitle("订单处理");
-		message.setContent("手机号为："+user.getUserPhone()+" 的用户于  "+order.getPayTime()+" 时支付下单，请及时处理!!");
+		message.setContent("用户于  "+order.getPayTime()+" 时支付下单，请及时处理!!");
 		message.setState(1);//状态：1未读2已读3跟进
 		message.setAddtime(new Date());
 		messageService.save(message);
 		System.out.println("消息记录结束---------");
+		
+		if (CheckData.isNotNullOrEmpty(order.getRedMoney())&& order.getRedMoney()!=0.00) {
+			//红包状态修改记录
+			System.out.println("红包状态修改记录开始---------");
+			ActiveRed  activeRed=activeRedService.selectByorderId(out_trade_no);
+			activeRed.setRedState(1);//红包状态修改 //0 未使用1 已使用 2已过期
+			activeRedService.update(activeRed);
+			System.out.println("红包状态修改记录结束---------");
+		}
+		
 	}
 }

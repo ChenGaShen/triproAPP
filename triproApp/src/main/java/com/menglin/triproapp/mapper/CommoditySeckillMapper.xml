@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.menglin.triproapp.dao.CommoditySeckillDao" >
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.CommoditySeckill" >
+    <id column="commoditySeckill_Id" property="commodityseckillId" jdbcType="INTEGER" />
+    <result column="commoditySeckill_name" property="commodityseckillName" jdbcType="VARCHAR" />
+    <result column="seckill_price" property="seckillPrice" jdbcType="DOUBLE" />
+    <result column="seckill_discountPrice" property="seckillDiscountprice" jdbcType="DOUBLE" />
+    <result column="seckill_amount" property="seckillAmount" jdbcType="INTEGER" />
+    <result column="seckill_allowance" property="seckillAllowance" jdbcType="INTEGER" />
+    <result column="seckill_commodityImg" property="seckillCommodityimg" jdbcType="VARCHAR" />
+    <result column="seckill_specification" property="seckillSpecification" jdbcType="VARCHAR" />
+    <result column="seckill_real_sale" property="seckillRealSale" jdbcType="INTEGER" />
+    <result column="seckill_virtual_sales" property="seckillVirtualSales" jdbcType="INTEGER" />
+    <result column="seckill_onSale" property="seckillOnsale" jdbcType="INTEGER" />
+    <result column="seckill_state" property="seckillState" jdbcType="INTEGER" />
+    <result column="seckill_classify" property="seckillClassify" jdbcType="INTEGER" />
+    <result column="add_time" property="addTime" jdbcType="TIMESTAMP" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.menglin.triproapp.entity.CommoditySeckill" extends="BaseResultMap" >
+    <result column="seckill_description" property="seckillDescription" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    commoditySeckill_Id, commoditySeckill_name, seckill_price, seckill_discountPrice, 
+    seckill_amount, seckill_allowance, seckill_commodityImg, seckill_specification, seckill_real_sale, 
+    seckill_virtual_sales, seckill_onSale, seckill_state, seckill_classify, add_time, 
+    start_time, end_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    seckill_description AS seckillDescription
+  </sql>
+  
+    <!-- 查询用户记录总数 -->
+    <select id="selectCount" parameterType="java.util.Map" resultType="int">
+        select count(*) from  t_commodity_seckill where 1=1
+    </select>
+  <!-- 分页查询start 和size查询数据 -->
+  <select id="findByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List" />,<include refid="Blob_Column_List" />
+    	from t_commodity_seckill
+        <if test="start!=null and size!=null">
+            limit #{start},#{size}
+        </if>
+  </select>
+  
+   <!-- 商品列表 -->
+  <select id="selectCommoditySeckillList" parameterType="java.util.Map" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_commodity_seckill
+    where 1=1 
+    AND seckill_onSale=0
+    
+    AND seckill_state=0
+    
+  </select>
+  
+   <!-- 上架中的秒杀商品列表 -->
+  <select id="selectAllCommoditySeckill"  resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_commodity_seckill
+    where 1=1 
+    AND seckill_onSale=1 
+    
+  </select>
+  
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from t_commodity_seckill
+    where commoditySeckill_Id = #{commodityseckillId,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_commodity_seckill
+    where commoditySeckill_Id = #{commodityseckillId,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.CommoditySeckill" >
+    insert into t_commodity_seckill (commoditySeckill_Id, commoditySeckill_name, 
+      seckill_price, seckill_discountPrice, seckill_amount, 
+      seckill_allowance, seckill_commodityImg, 
+      seckill_specification, seckill_real_sale, 
+      seckill_virtual_sales, seckill_onSale, seckill_state, 
+      seckill_classify, add_time, start_time, 
+      end_time, seckill_description)
+    values (#{commodityseckillId,jdbcType=INTEGER}, #{commodityseckillName,jdbcType=VARCHAR}, 
+      #{seckillPrice,jdbcType=DOUBLE}, #{seckillDiscountprice,jdbcType=DOUBLE}, #{seckillAmount,jdbcType=INTEGER}, 
+      #{seckillAllowance,jdbcType=INTEGER}, #{seckillCommodityimg,jdbcType=VARCHAR}, 
+      #{seckillSpecification,jdbcType=VARCHAR}, #{seckillRealSale,jdbcType=INTEGER}, 
+      #{seckillVirtualSales,jdbcType=INTEGER}, #{seckillOnsale,jdbcType=INTEGER}, #{seckillState,jdbcType=INTEGER}, 
+      #{seckillClassify,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{startTime,jdbcType=TIMESTAMP}, 
+      #{endTime,jdbcType=TIMESTAMP}, #{seckillDescription,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.CommoditySeckill" >
+    insert into t_commodity_seckill
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="commodityseckillId != null" >
+        commoditySeckill_Id,
+      </if>
+      <if test="commodityseckillName != null" >
+        commoditySeckill_name,
+      </if>
+      <if test="seckillPrice != null" >
+        seckill_price,
+      </if>
+      <if test="seckillDiscountprice != null" >
+        seckill_discountPrice,
+      </if>
+      <if test="seckillAmount != null" >
+        seckill_amount,
+      </if>
+      <if test="seckillAllowance != null" >
+        seckill_allowance,
+      </if>
+      <if test="seckillCommodityimg != null" >
+        seckill_commodityImg,
+      </if>
+      <if test="seckillSpecification != null" >
+        seckill_specification,
+      </if>
+      <if test="seckillRealSale != null" >
+        seckill_real_sale,
+      </if>
+      <if test="seckillVirtualSales != null" >
+        seckill_virtual_sales,
+      </if>
+      <if test="seckillOnsale != null" >
+        seckill_onSale,
+      </if>
+      <if test="seckillState != null" >
+        seckill_state,
+      </if>
+      <if test="seckillClassify != null" >
+        seckill_classify,
+      </if>
+      <if test="addTime != null" >
+        add_time,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="seckillDescription != null" >
+        seckill_description,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="commodityseckillId != null" >
+        #{commodityseckillId,jdbcType=INTEGER},
+      </if>
+      <if test="commodityseckillName != null" >
+        #{commodityseckillName,jdbcType=VARCHAR},
+      </if>
+      <if test="seckillPrice != null" >
+        #{seckillPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="seckillDiscountprice != null" >
+        #{seckillDiscountprice,jdbcType=DOUBLE},
+      </if>
+      <if test="seckillAmount != null" >
+        #{seckillAmount,jdbcType=INTEGER},
+      </if>
+      <if test="seckillAllowance != null" >
+        #{seckillAllowance,jdbcType=INTEGER},
+      </if>
+      <if test="seckillCommodityimg != null" >
+        #{seckillCommodityimg,jdbcType=VARCHAR},
+      </if>
+      <if test="seckillSpecification != null" >
+        #{seckillSpecification,jdbcType=VARCHAR},
+      </if>
+      <if test="seckillRealSale != null" >
+        #{seckillRealSale,jdbcType=INTEGER},
+      </if>
+      <if test="seckillVirtualSales != null" >
+        #{seckillVirtualSales,jdbcType=INTEGER},
+      </if>
+      <if test="seckillOnsale != null" >
+        #{seckillOnsale,jdbcType=INTEGER},
+      </if>
+      <if test="seckillState != null" >
+        #{seckillState,jdbcType=INTEGER},
+      </if>
+      <if test="seckillClassify != null" >
+        #{seckillClassify,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null" >
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="seckillDescription != null" >
+        #{seckillDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.CommoditySeckill" >
+    update t_commodity_seckill
+    <set >
+      <if test="commodityseckillName != null" >
+        commoditySeckill_name = #{commodityseckillName,jdbcType=VARCHAR},
+      </if>
+      <if test="seckillPrice != null" >
+        seckill_price = #{seckillPrice,jdbcType=DOUBLE},
+      </if>
+      <if test="seckillDiscountprice != null" >
+        seckill_discountPrice = #{seckillDiscountprice,jdbcType=DOUBLE},
+      </if>
+      <if test="seckillAmount != null" >
+        seckill_amount = #{seckillAmount,jdbcType=INTEGER},
+      </if>
+      <if test="seckillAllowance != null" >
+        seckill_allowance = #{seckillAllowance,jdbcType=INTEGER},
+      </if>
+      <if test="seckillCommodityimg != null" >
+        seckill_commodityImg = #{seckillCommodityimg,jdbcType=VARCHAR},
+      </if>
+      <if test="seckillSpecification != null" >
+        seckill_specification = #{seckillSpecification,jdbcType=VARCHAR},
+      </if>
+      <if test="seckillRealSale != null" >
+        seckill_real_sale = #{seckillRealSale,jdbcType=INTEGER},
+      </if>
+      <if test="seckillVirtualSales != null" >
+        seckill_virtual_sales = #{seckillVirtualSales,jdbcType=INTEGER},
+      </if>
+      <if test="seckillOnsale != null" >
+        seckill_onSale = #{seckillOnsale,jdbcType=INTEGER},
+      </if>
+      <if test="seckillState != null" >
+        seckill_state = #{seckillState,jdbcType=INTEGER},
+      </if>
+      <if test="seckillClassify != null" >
+        seckill_classify = #{seckillClassify,jdbcType=INTEGER},
+      </if>
+      <if test="addTime != null" >
+        add_time = #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="seckillDescription != null" >
+        seckill_description = #{seckillDescription,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where commoditySeckill_Id = #{commodityseckillId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.menglin.triproapp.entity.CommoditySeckill" >
+    update t_commodity_seckill
+    set commoditySeckill_name = #{commodityseckillName,jdbcType=VARCHAR},
+      seckill_price = #{seckillPrice,jdbcType=DOUBLE},
+      seckill_discountPrice = #{seckillDiscountprice,jdbcType=DOUBLE},
+      seckill_amount = #{seckillAmount,jdbcType=INTEGER},
+      seckill_allowance = #{seckillAllowance,jdbcType=INTEGER},
+      seckill_commodityImg = #{seckillCommodityimg,jdbcType=VARCHAR},
+      seckill_specification = #{seckillSpecification,jdbcType=VARCHAR},
+      seckill_real_sale = #{seckillRealSale,jdbcType=INTEGER},
+      seckill_virtual_sales = #{seckillVirtualSales,jdbcType=INTEGER},
+      seckill_onSale = #{seckillOnsale,jdbcType=INTEGER},
+      seckill_state = #{seckillState,jdbcType=INTEGER},
+      seckill_classify = #{seckillClassify,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      seckill_description = #{seckillDescription,jdbcType=LONGVARCHAR}
+    where commoditySeckill_Id = #{commodityseckillId,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.CommoditySeckill" >
+    update t_commodity_seckill
+    set commoditySeckill_name = #{commodityseckillName,jdbcType=VARCHAR},
+      seckill_price = #{seckillPrice,jdbcType=DOUBLE},
+      seckill_discountPrice = #{seckillDiscountprice,jdbcType=DOUBLE},
+      seckill_amount = #{seckillAmount,jdbcType=INTEGER},
+      seckill_allowance = #{seckillAllowance,jdbcType=INTEGER},
+      seckill_commodityImg = #{seckillCommodityimg,jdbcType=VARCHAR},
+      seckill_specification = #{seckillSpecification,jdbcType=VARCHAR},
+      seckill_real_sale = #{seckillRealSale,jdbcType=INTEGER},
+      seckill_virtual_sales = #{seckillVirtualSales,jdbcType=INTEGER},
+      seckill_onSale = #{seckillOnsale,jdbcType=INTEGER},
+      seckill_state = #{seckillState,jdbcType=INTEGER},
+      seckill_classify = #{seckillClassify,jdbcType=INTEGER},
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP}
+    where commoditySeckill_Id = #{commodityseckillId,jdbcType=INTEGER}
+  </update>
+</mapper>

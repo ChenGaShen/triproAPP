@@ -27,11 +27,14 @@ import org.springframework.web.servlet.ModelAndView;
 import org.xml.sax.InputSource;
 
 import com.menglin.triproapp.entity.Commodity;
+import com.menglin.triproapp.entity.CommoditySeckill;
 import com.menglin.triproapp.entity.Message;
 import com.menglin.triproapp.entity.Order;
 import com.menglin.triproapp.entity.OrderItem;
 import com.menglin.triproapp.entity.PayWx;
 import com.menglin.triproapp.entity.User;
+import com.menglin.triproapp.service.IActiveRedService;
+import com.menglin.triproapp.service.ICommoditySeckillService;
 import com.menglin.triproapp.service.ICommodityService;
 import com.menglin.triproapp.service.IMessageService;
 import com.menglin.triproapp.service.IOrderItemService;
@@ -39,6 +42,7 @@ import com.menglin.triproapp.service.IOrderService;
 import com.menglin.triproapp.service.IPayWxService;
 import com.menglin.triproapp.service.IUserService;
 import com.menglin.triproapp.util.CheckData;
+import com.menglin.triproapp.util.Result;
 import com.menglin.triproapp.util.SystemParam;
 import com.menglin.triproapp.util.pay.weixin.CommonUtil;
 import com.menglin.triproapp.util.pay.weixin.PayOrderThread;
@@ -65,6 +69,10 @@ public class WeixinPayController {
     private ICommodityService commodityService;
 	
 	@Resource  
+    private ICommoditySeckillService commoditySeckillService;
+	
+	
+	@Resource  
     private IOrderService orderService;
 	
 	@Resource
@@ -75,6 +83,9 @@ public class WeixinPayController {
 	
 	@Resource  
     private IMessageService messageService;
+	
+	@Resource
+	private IActiveRedService activeRedService;
 	
 	
 	@RequestMapping(value="/toWeiXinAppPay.json",method = {RequestMethod.POST})
@@ -98,14 +109,14 @@ public class WeixinPayController {
 			String total_fee = WeixinPayUtil.getMoney(totalFeeStr);//元转为分
 			System.out.println("in toPay,total_fee:" + total_fee);
 //			测试使用
-			total_fee="0.01"; 
+			total_fee="1"; 
 			//商户订单号
 			String out_trade_no = orderId;
 			//订单生成的机器 IP
 			String spbill_create_ip = request.getRemoteAddr();
 					
 			//这里notify_url是 支付完成后微信发给该链接信息，可以判断会员是否支付成功，改变订单状态等。
-			String notify_url = SystemParam.DOMAIN_NAME + "/web/pay/notifyUrl.json";
+			String notify_url = SystemParam.DOMAIN_NAME + "/web/wxpay/notifyUrl.json";
 			
 			SortedMap<String, String> packageParams = new TreeMap<String, String>();
 			packageParams.put("appid", SystemParam.WX_APPID);
@@ -146,9 +157,12 @@ public class WeixinPayController {
 				System.out.println("prepay_id:" + prepay_id);
 				if(prepay_id.equals("")){
 					request.setAttribute("ErrorMsg", "统一支付接口获取预支付订单出错");
+					System.out.println("统一支付接口获取预支付订单出错");
+					wxInfo.setResult(Result.fal("请求失败,统一支付接口获取预支付订单出错"));	
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();
+				wxInfo.setResult(Result.fal("请求失败!!"));
 			}
 			SortedMap<String, String> finalpackage = new TreeMap<String, String>();
 			String timestamp = Sha1Util.getTimeStamp();
@@ -168,9 +182,10 @@ public class WeixinPayController {
 			wxInfo.setSign(finalsign);
 			wxInfo.setOrderId(orderId);
 			wxInfo.setPayPrice(total_fee);
-			
+			wxInfo.setResult(Result.suc("请求成功!!"));		
 		} catch (NumberFormatException e) {
 			e.printStackTrace();
+			wxInfo.setResult(Result.fal("请求失败!!"));	
 		}
 		return  wxInfo;
 		
@@ -240,7 +255,7 @@ public class WeixinPayController {
         		if (order.getState()!=1) { //状态：0待付款1已付款2取消订单3已失效
         			
         			//开一个线程，更新订单状态  
-        			new PayOrderThread(order, new Date(), userService,orderService,payWxService,messageService,out_trade_no, total_fee, transaction_id, bank_type, time_end).start();
+        			new PayOrderThread(order, new Date(), userService,orderService,payWxService,messageService,activeRedService,out_trade_no, total_fee, transaction_id, bank_type, time_end).start();
 				}
         		
         
@@ -248,13 +263,26 @@ public class WeixinPayController {
 //		    	 result=RequestHandler.setXML("FAIL", "resultStr is null");
 //		    	 System.out.println(RequestHandler.setXML("FAIL", "resultStr is null"));
 		        //支付失败的业务逻辑
+		    	Order  order=orderService.get(out_trade_no);
 		    	List<OrderItem> items =orderItemService.findListByOrderId(out_trade_no);
 		    	if (CheckData.isNotEmpty(items)) {
-					for (int i = 0; i < items.size(); i++) {
-						Commodity commodity=commodityService.get(items.get(i).getCommodityId());
-				    	commodity.setAllowance(commodity.getAllowance()+items.get(i).getAmount());//付款失败，修改商品的余量。
-				    	commodityService.update(commodity);
-					}
+		    		if (order.getSeckillState()==1) {//订单秒杀状态0秒杀订单1普通订单
+						for (int i = 0; i < items.size(); i++) {//普通商品修改
+							Commodity commodity=commodityService.get(items.get(i).getCommodityId());
+					    	commodity.setAllowance(commodity.getAllowance()+items.get(i).getAmount());//付款失败，修改商品的余量。
+					    	commodity.setRealSale(commodity.getRealSale()-items.get(i).getAmount());//付款失败，修改商品的真实销量
+					    	commodity.setVirtualSales(commodity.getVirtualSales()-items.get(i).getAmount());//付款失败，修改商品的虚拟销量
+					    	commodityService.update(commodity);
+						}
+					}else{// 秒杀商品修改
+						for (int i = 0; i < items.size(); i++) {
+							CommoditySeckill seckill =commoditySeckillService.get(items.get(i).getSeckillId());
+							seckill.setSeckillAllowance(seckill.getSeckillAllowance()+items.get(i).getAmount());//取消订单，修改秒杀商品的余量。
+							seckill.setSeckillRealSale(seckill.getSeckillRealSale()-items.get(i).getAmount());//取消订单，修改秒杀商品的真实销量
+							seckill.setSeckillVirtualSales(seckill.getSeckillVirtualSales()-items.get(i).getAmount());//取消订单，修改秒杀商品的虚拟销量
+							commoditySeckillService.update(seckill);
+						}
+					}	
 				}
  	
 		    }

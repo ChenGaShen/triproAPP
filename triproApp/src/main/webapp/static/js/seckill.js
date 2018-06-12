@@ -3,6 +3,42 @@ $(function() {
 	// 时间控件
 	$('#startTime').cxCalendar();
 	$('#endTime').cxCalendar();
+	
+	//表格中的时间控件
+	var picker1 = $('#add_startTime').datetimepicker({ 
+		language: 'zh-CN',//显示中文
+        format: 'yyyy-mm-dd hh:ii:ss', 
+        autoclose: true,//选中自动关闭
+        todayBtn: true,//显示今日按钮
+        locale: moment.locale('zh-cn'),  
+        //minDate: '2016-7-1'  
+    });  
+    var picker2 = $('#add_endTime').datetimepicker({  
+    	language: 'zh-CN',//显示中文
+        format: 'yyyy-mm-dd hh:ii:ss', 
+        autoclose: true,//选中自动关闭
+        todayBtn: true,//显示今日按钮
+        locale: moment.locale('zh-cn'),  
+    });  
+	var picker3 = $('#update_startTime').datetimepicker({ 
+		language: 'zh-CN',//显示中文
+        format: 'yyyy-mm-dd hh:ii:ss', 
+        autoclose: true,//选中自动关闭
+        todayBtn: true,//显示今日按钮
+        locale: moment.locale('zh-cn'),  
+        //minDate: '2016-7-1'  
+    });  
+    var picker4 = $('#update_endTime').datetimepicker({  
+    	language: 'zh-CN',//显示中文
+        format: 'yyyy-mm-dd hh:ii:ss', 
+        autoclose: true,//选中自动关闭
+        todayBtn: true,//显示今日按钮
+        locale: moment.locale('zh-cn'),  
+    }); 
+    
+    
+	$('#startTime').cxCalendar();
+	$('#endTime').cxCalendar();
 	// 1.初始化Table
 	var oTable = new TableInit();
 	oTable.Init();
@@ -15,7 +51,7 @@ var TableInit = function() {
 	
 	oTableInit.Init = function() {
 		$('#t_table').bootstrapTable({
-			url : '../admin/commodity/findByPage.json', // 请求后台的URL（*）
+			url : '../admin/commoditySeckill/findByPage.json', // 请求后台的URL（*）
 			method : 'post', // 请求方式（*）
 			data :[],
 			dataType: 'json',
@@ -42,7 +78,7 @@ var TableInit = function() {
 			clickToSelect : true, // 是否启用点击选中行
 			height : 500, // 行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
 			undefinedText : '---', //未定义时显示
-			uniqueId : "commodityId", // 每一行的唯一标识，一般为主键列
+			uniqueId : "commodityseckillId", // 每一行的唯一标识，一般为主键列
 			showToggle : true, // 是否显示详细视图和列表视图的切换按钮
 			cardView : false, // 是否显示详细视图
 			detailView : false, // 是否显示父子表
@@ -63,13 +99,13 @@ var TableInit = function() {
 	                return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
 	            }
 	        },{
-				  field: 'commodityId', // 返回json数据中的name
+				  field: 'commodityseckillId', // 返回json数据中的name
 	              title: 'ID', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	              visible: false //不可见，隐藏
 			}, {
-				  field: 'classify', // 返回json数据中的name
+				  field: 'seckillClassify', // 返回json数据中的name
 	              title: '种类', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
@@ -88,65 +124,66 @@ var TableInit = function() {
 	                   }
 	             }
 			},{
-				  field: 'commodityName', // 返回json数据中的name
-	              title: '商品名称', // 表格表头显示文字
+				  field: 'commodityseckillName', // 返回json数据中的name
+	              title: '秒杀商品名称', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	            	  
 			}, {
-				  field: 'price', // 返回json数据中的name
+				  field: 'seckillPrice', // 返回json数据中的name
 	              title: '普通价格(元)', // 表格表头显示文字
 	              width: '60px',
 	              align: 'center', // 左右居中
 	              valign: 'middle' // 上下居中
 			}, {
-				  field: 'discountPrice', // 返回json数据中的name
-	              title: '折后价格(元)', // 表格表头显示文字
+				  field: 'seckillDiscountprice', // 返回json数据中的name
+	              title: '秒杀价格(元)', // 表格表头显示文字
 	              width: '60px',
 	              align: 'center', // 左右居中
 	              valign: 'middle' ,// 上下居中
 			}, {
-				  field: 'amount', // 返回json数据中的name
+				  field: 'seckillAmount', // 返回json数据中的name
 	              title: '总数量(件/包)', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle',// 上下居中
 			}, {
-				  field: 'allowance', // 返回json数据中的name
+				  field: 'seckillAllowance', // 返回json数据中的name
 	              title: '库存(件/包)', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 			},{
-				  field: 'realSale', // 返回json数据中的name
+				  field: 'seckillRealSale', // 返回json数据中的name
 	              title: '实际销量(件/包)', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              width: '60px',
 	              valign: 'middle', // 上下居中
 			},{
-				  field: 'virtualSales', // 返回json数据中的name
+				  field: 'seckillVirtualSales', // 返回json数据中的name
 	              title: '虚拟销量(件/包)', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              width: '60px',
 	              valign: 'middle', // 上下居中
 			},
 			{
-				  field: 'specification', // 返回json数据中的name
+				  field: 'seckillSpecification', // 返回json数据中的name
 	              title: '商品规格', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 			},{
-				  field: 'description', // 返回json数据中的name
+				  field: 'seckillDescription', // 返回json数据中的name
 	              title: '商品描述', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	              formatter : function(value, row, index) { 
+	            		  if(value!=null && value.length >= 18){
+		            		  value=value.slice(0,18)+"...";
+		            	  }
 //          		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
-	            	  if(value.length >= 18){
-	            		  value=value.slice(0,18)+"...";
-	            	  }
+	            	  
 	            	  return  value;
 	              } 
 			}, {
-				  field: 'commodityImg', // 返回json数据中的name
+				  field: 'seckillCommodityimg', // 返回json数据中的name
 	              title: '商品图片', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
@@ -154,9 +191,46 @@ var TableInit = function() {
 //          		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
 	            	  return  '<img src="'+value+'" style="display:inline-block; width:150px; height:100px;">';
 	              } 
+			},
+			 {
+				  field: 'seckillOnsale', // 返回json数据中的name
+	              title: '销售状态', // 表格表头显示文字
+	              align: 'center', // 左右居中
+	              valign: 'middle', // 上下居中
+	              formatter : function(value, row, index) { 
+//	       		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
+	           	  if (value == 1) { //商品状态1上架0下架
+	                       return "销售中";
+	                   } else if (value == 1) {
+	                       return "已下架";
+	                   } 
+	             }
+			},
+			 {
+				  field: 'seckillState', // 返回json数据中的name
+	              title: '秒杀状态', // 表格表头显示文字
+	              align: 'center', // 左右居中
+	              valign: 'middle', // 上下居中
+	              formatter : function(value, row, index) { 
+//	       		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
+	           	  if (value == 0) { //商品秒杀状态0开启1关闭
+	                       return "进行中";
+	                   } else if (value == 1) {
+	                       return "已结束";
+	                   } 
+	             }
 			},{
-				  field: 'updateTime', // 返回json数据中的name
-	              title: '更新时间', // 表格表头显示文字
+				  field: 'startTime', // 返回json数据中的name
+	              title: '开始时间', // 表格表头显示文字
+	              align: 'center', // 左右居中
+	              valign: 'middle', // 上下居中
+	              formatter : function(value, row, index) { 
+//            		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
+	            	  return   formatDateTime(value);
+	              } 
+			},{
+				  field: 'endTime', // 返回json数据中的name
+	              title: '结束时间', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	              formatter : function(value, row, index) { 
@@ -228,7 +302,7 @@ $('#btn_add').click(function(){
           */
         submitButtons: 'button[type="submit"]',
         fields: {
-        	add_commodityName: {
+        	add_commodityseckillName: {
                 message: '商品名不合法',
                 validators: {
                     notEmpty: {
@@ -245,7 +319,7 @@ $('#btn_add').click(function(){
                     }
                 }
             }, 
-            add_classify: {
+            add_seckillClassify: {
                 message: '类目不合法',
                 validators: {
                     notEmpty: {
@@ -253,7 +327,7 @@ $('#btn_add').click(function(){
                     }
                 }
             }, 
-            add_price: {
+            add_seckillPrice: {
             	  message:'普通价格不合法',
                   validators: {
                       notEmpty: {
@@ -265,7 +339,7 @@ $('#btn_add').click(function(){
                       },
                   }
             }, 
-            add_discountPrice: {
+            add_seckillDiscountprice: {
           	  message:'折后价格不合法',
                 validators: {
                     notEmpty: {
@@ -288,7 +362,7 @@ $('#btn_add').click(function(){
                     }*/
                 }
           },
-          add_amount: {
+          add_seckillAmount: {
 	        	  message:'总数量输入有误',
 	              validators: {
 	                  notEmpty: {
@@ -304,7 +378,7 @@ $('#btn_add').click(function(){
 	                  },
 	              }
 	        }, 
-	        add_allowance: {
+	        add_seckillAllowance: {
 	      	  message:'库存输入不合法',
 	            validators: {
 	                notEmpty: {
@@ -321,10 +395,10 @@ $('#btn_add').click(function(){
 	              /*  callback: {自定义，可以在这里与其他输入项联动校验
 	                    message: '库存数量不能大于总数量',
 	                    callback:function(value, validator,$field){
-	                  	  if(scope.add_amount==undefined ||scope.add_allowance==undefined){
+	                  	  if(scope.add_amount==undefined ||scope.add_seckillAllowance==undefined){
 	                            return true;
 	                        }else{
-	                        	return scope.add_allowance<=scope.add_amount;
+	                        	return scope.add_seckillAllowance<=scope.add_amount;
 	                        }
 	                    }
 	                }*/
@@ -346,7 +420,7 @@ $('#btn_add').click(function(){
                   },
               }
         }, 
-            add_specification: {
+            add_seckillSpecification: {
                 validators: {
                     notEmpty: {
                         message: '商品规格不能为空'
@@ -358,7 +432,7 @@ $('#btn_add').click(function(){
                 }
             },
             //备注
-            add_description: {
+            add_seckillDescription: {
                 validators: {
                 	  notEmpty: {
                           message: '商品描述不能为空'
@@ -368,6 +442,22 @@ $('#btn_add').click(function(){
                       }
                 }
             },
+            add_startTime: {
+                message: '开始时间输入不合法',
+                validators: {
+                    notEmpty: {
+                        message: '开始时间不能为空'
+                    }
+                }
+            }, 
+            add_endTime: {
+                message: '结束时间输入不合法',
+                validators: {
+                    notEmpty: {
+                        message: '结束时间不能为空'
+                    }
+                }
+            }, 
             file: {
                 validators: {
                     notEmpty: {
@@ -395,20 +485,23 @@ $("#addButton").click(function () {
 	    bootstrapValidator.validate();
 	  if ($("#form_data").data('bootstrapValidator').isValid()) {//获取验证结果，如果成功，执行下面代码 
     	   var formData=new FormData($('#form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
-    	   formData.append('commodityName', $("input[name='add_commodityName']").val());
-    	   formData.append('classify', $("#add_classify").val());
-           formData.append('price', $("input[name='add_price']").val());
-           formData.append('discountPrice', $("input[name='add_discountPrice']").val());
-           formData.append('amount', $("input[name='add_amount']").val());
-           formData.append('allowance', $("input[name='add_allowance']").val());
-           formData.append('virtualSales', $("input[name='add_virtualSales']").val());
-           formData.append('specification', $("input[name='add_specification']").val());
-           formData.append('description', $("textarea[name='add_description']").val());
+    	   formData.append('commodityseckillName', $("input[name='add_commodityseckillName']").val());
+    	   formData.append('seckillClassify', $("#add_seckillClassify").val());
+           formData.append('seckillPrice', $("input[name='add_seckillPrice']").val());
+           formData.append('seckillDiscountprice', $("input[name='add_seckillDiscountprice']").val());
+           formData.append('seckillAmount', $("input[name='add_seckillAmount']").val());
+           formData.append('seckillAllowance', $("input[name='add_seckillAllowance']").val());
+           formData.append('seckillVirtualSales', $("input[name='add_seckillVirtualSales']").val());
+           formData.append('seckillSpecification', $("input[name='add_seckillSpecification']").val());
+           formData.append('seckillStartTime', $("input[name='add_startTime']").val());
+           formData.append('seckillEndTime', $("input[name='add_endTime']").val());
+           formData.append('seckillSpecification', $("input[name='add_seckillSpecification']").val());
+           formData.append('seckillDescription', $("textarea[name='add_seckillDescription']").val());
            formData.append('file', $('#file')[0].files[0]);
     		$.ajax({
     		      type: "post",
     		      dataType: "json",
-    		      url : "../admin/commodity/addCommodity.json",
+    		      url : "../admin/commoditySeckill/addCommoditySeckill.json",
     		      data:formData,
     		      processData: false,//必须有
     	          contentType: false,//必须有
@@ -418,7 +511,7 @@ $("#addButton").click(function () {
     		    		  $("#imgPre").attr('src',"../static/img/noimage.png"); //图片回复默认
     		    		  $("#addModal").modal("hide");//js 控制隐藏模态框
     		    		  setTimeout(myToast(data.result.msg),10000);
-    		    		  setTimeout($('#t_table').bootstrapTable('refresh', {url: '../admin/commodity/findByPage.json'}),10000);//数据刷新
+    		    		  setTimeout($('#t_table').bootstrapTable('refresh', {url: '../admin/commoditySeckill/findByPage.json'}),10000);//数据刷新
     		    	  }else{
     		    		  setTimeout(myToast(data.result.msg),10000);
     		    	  }
@@ -437,8 +530,8 @@ $('#btn_delete').click(function(){
     if(rowData.length<=0){
     	myToast("请选中一条数据");
     }else{
-    	$("#delete_commodityId").val(rowData[0].commodityId);
-    	$("#delete_name").html(rowData[0].commodityName);
+    	$("#delete_commodityseckillId").val(rowData[0].commodityseckillId);
+    	$("#delete_name").html(rowData[0].commodityseckillName);
     	$("#deleteModal").modal("show");//js 控制显示模态框
     }
 	
@@ -448,11 +541,11 @@ $('#btn_delete').click(function(){
 //删除商品确认按钮 信息修改
 $("#deleteButton").click(function () {
     	   var formData = new FormData();
-    		formData.append("commodityId", $("#delete_commodityId").val());
+    		formData.append("commodityseckillId", $("#delete_commodityseckillId").val());
     		$.ajax({
     		      type: "post",
     		      dataType: "json",
-    		      url : "../admin/commodity/deleteCommodity.json",
+    		      url : "../admin/commoditySeckill/deleteCommodity.json",
     		      data:formData,
     		      processData: false,//必须有
     	          contentType: false,//必须有
@@ -460,7 +553,7 @@ $("#deleteButton").click(function () {
     		    	  if(data.result.status==0){
     		    		  $("#deleteModal").modal("hide");//js 控制隐藏模态框
     		    		  setTimeout(myToast(data.result.msg),10000);
-    		    		  $('#t_table').bootstrapTable('refresh', {url: '../admin/commodity/findByPage.json'});//数据刷新
+    		    		  $('#t_table').bootstrapTable('refresh', {url: '../admin/commoditySeckill/findByPage.json'});//数据刷新
     		    	  }else{
     		    		  setTimeout(myToast(data.result.msg),10000);
     		    	  }
@@ -480,20 +573,23 @@ $('#btn_edit').click(function(){
 	    if(rowData.length<=0){
 	    	myToast("请选中一条数据");
 	    }else{
-	    	$("#update_commodityId").val(rowData[0].commodityId);
-	    	$("#update_commodityName").val(rowData[0].commodityName);
-	    	$("#update_price").val(rowData[0].price);
-	    	$("#update_discountPrice").val(rowData[0].discountPrice);
-	    	$("#update_amount").val(rowData[0].amount);
-	    	$("#update_allowance").val(rowData[0].allowance);
-	    	$("#update_virtualSales").val(rowData[0].virtualSales);
-	    	$("#update_specification").val(rowData[0].specification);
-	    	$("#update_description").val(rowData[0].description);
-	    	$("#update_imgPre").attr('src',rowData[0].commodityImg);
-	    	if (rowData[0].classify!=null) {
-	    		$("#update_classify").find("option[value='"+rowData[0].classify+"']").attr("selected",true);
+	    	$("#update_commodityseckillId").val(rowData[0].commodityseckillId);
+	    	$("#update_commodityseckillName").val(rowData[0].commodityseckillName);
+	    	$("#update_seckillPrice").val(rowData[0].seckillPrice);
+	    	$("#update_seckillDiscountprice").val(rowData[0].seckillDiscountprice);
+	    	$("#update_seckillAmount").val(rowData[0].seckillAmount);
+	    	$("#update_seckillAllowance").val(rowData[0].seckillAllowance);
+	    	$("#update_seckillVirtualSales").val(rowData[0].seckillVirtualSales);
+	    	$("#update_seckillSpecification").val(rowData[0].seckillSpecification);
+	    	$("#update_seckillDescription").val(rowData[0].seckillDescription);
+	    	$("#update_startTime").val(formatDateTime(rowData[0].startTime));
+	    	$("#update_endTime").val(formatDateTime(rowData[0].endTime));
+	    	//回显开始+结束时间
+	    	$("#update_imgPre").attr('src',rowData[0].seckillCommodityimg);
+	    	if (rowData[0].seckillClassify!=null) {
+	    		$("#update_seckillClassify").find("option[value='"+rowData[0].seckillClassify+"']").attr("selected",true);
 			}else{
-				$("#update_classify").find("option[value='']").attr("selected",true);
+				$("#update_seckillClassify").find("option[value='']").attr("selected",true);
 			}
 	   
 	$("#updateModal").modal("show");//js 控制显示模态框
@@ -517,7 +613,7 @@ $('#btn_edit').click(function(){
         */
       submitButtons: 'button[type="submit"]',
       fields: {
-    	  update_commodityName: {
+    	  update_commodityseckillName: {
               message: '商品名不合法',
               validators: {
                   notEmpty: {
@@ -534,7 +630,7 @@ $('#btn_edit').click(function(){
                   }
               }
           }, 
-          update_classify: {
+          update_seckillClassify: {
               message: '类目不合法',
               validators: {
                   notEmpty: {
@@ -542,7 +638,7 @@ $('#btn_edit').click(function(){
                   }
               }
           },  
-          update_price: {
+          update_seckillPrice: {
           	  message:'普通价格不合法',
                 validators: {
                     notEmpty: {
@@ -554,7 +650,7 @@ $('#btn_edit').click(function(){
                     },
                 }
           }, 
-          update_discountPrice: {
+          update_seckillDiscountprice: {
         	  message:'折后价格不合法',
               validators: {
                   notEmpty: {
@@ -577,7 +673,7 @@ $('#btn_edit').click(function(){
                   }*/
               }
         },
-        update_amount: {
+        update_seckillAmount: {
 	        	  message:'总数量输入有误',
 	              validators: {
 	                  notEmpty: {
@@ -593,7 +689,7 @@ $('#btn_edit').click(function(){
 	                  },
 	              }
 	        }, 
-	        update_allowance: {
+	        update_seckillAllowance: {
 	      	  message:'库存输入不合法',
 	            validators: {
 	                notEmpty: {
@@ -610,10 +706,10 @@ $('#btn_edit').click(function(){
 	              /*  callback: {自定义，可以在这里与其他输入项联动校验
 	                    message: '库存数量不能大于总数量',
 	                    callback:function(value, validator,$field){
-	                  	  if(scope.add_amount==undefined ||scope.add_allowance==undefined){
+	                  	  if(scope.add_seckillAmount==undefined ||scope.add_seckillAllowance==undefined){
 	                            return true;
 	                        }else{
-	                        	return scope.add_allowance<=scope.add_amount;
+	                        	return scope.add_seckillAllowance<=scope.add_seckillAmount;
 	                        }
 	                    }
 	                }*/
@@ -635,7 +731,7 @@ $('#btn_edit').click(function(){
                   },
               }
         }, 
-	      update_specification: {
+	      update_seckillSpecification: {
               validators: {
                   notEmpty: {
                       message: '商品规格不能为空'
@@ -646,7 +742,7 @@ $('#btn_edit').click(function(){
                   }
               }
           },
-          update_description: {
+          update_seckillDescription: {
               validators: {
               	  notEmpty: {
                         message: '商品描述不能为空'
@@ -655,7 +751,23 @@ $('#btn_edit').click(function(){
                         message: '请输入小于100个字符'
                     }
               }
-          },
+          }, 
+          update_startTime: {
+              message: '开始时间输入不合法',
+              validators: {
+                  notEmpty: {
+                      message: '开始时间不能为空'
+                  }
+              }
+          }, 
+          update_endTime: {
+              message: '结束时间输入不合法',
+              validators: {
+                  notEmpty: {
+                      message: '结束时间不能为空'
+                  }
+              }
+          }, 
           file1:{
               validators: {
 //                  notEmpty: {
@@ -684,23 +796,25 @@ $("#updateButton").click(function () {
 	   bootstrapValidator.validate();
 	  if (($("#update_form_data").data('bootstrapValidator')).isValid()) {//获取验证结果，如果成功，执行下面代码 
   	   var formData1=new FormData($('#update_form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
-  	     formData1.append('commodityid', $("input[name='update_commodityId']").val());
-  	   	 formData1.append('commodityName', $("input[name='update_commodityName']").val());
-  	   	 formData1.append('classify', $("#update_classify").val());
-         formData1.append('price', $("input[name='update_price']").val());
-         formData1.append('discountPrice', $("input[name='update_discountPrice']").val());
-         formData1.append('amount', $("input[name='update_amount']").val());
-         formData1.append('allowance', $("input[name='update_allowance']").val());
+  	     formData1.append('commodityseckillId', $("input[name='update_commodityseckillId']").val());
+  	   	 formData1.append('commodityseckillName', $("input[name='update_commodityseckillName']").val());
+  	   	 formData1.append('seckillClassify', $("#update_seckillClassify").val());
+         formData1.append('seckillPrice', $("input[name='update_seckillPrice']").val());
+         formData1.append('seckillDiscountprice', $("input[name='update_seckillDiscountprice']").val());
+         formData1.append('seckillAmount', $("input[name='update_seckillAmount']").val());
+         formData1.append('seckillAllowance', $("input[name='update_seckillAllowance']").val());
          formData1.append('virtualSales', $("input[name='update_virtualSales']").val());
-         formData1.append('specification', $("input[name='update_specification']").val());
-         formData1.append('description', $("textarea[name='update_description']").val());
+         formData1.append('seckillSpecification', $("input[name='update_seckillSpecification']").val());
+         formData1.append('seckillDescription', $("textarea[name='update_seckillDescription']").val());
+         formData1.append('seckillStartTime', $("input[name='update_startTime']").val());
+         formData1.append('seckillEndTime', $("input[name='update_endTime']").val());
          if($('#file1')[0].files[0] != undefined){
         	 formData1.append('file1', $('#file1')[0].files[0]);//非常重要
          }
   		$.ajax({
   		      type: "post",
   		      dataType: "json",
-  		      url : "../admin/commodity/updateCommodity.json",
+  		      url : "../admin/commoditySeckill/updateCommoditySeckill.json",
   		      data:formData1,
   		      processData: false,//必须有
   	          contentType: false,//必须有
@@ -710,7 +824,7 @@ $("#updateButton").click(function () {
   		    		  $("#update_imgPre").attr('src',"../static/img/noimage.png"); //图片回复默认
   		    		  $("#updateModal").modal("hide");//js 控制隐藏模态框
   		    		  setTimeout(myToast(data.result.msg),10000);
-  		    		  setTimeout($('#t_table').bootstrapTable('refresh', {url: '../admin/commodity/findByPage.json'}),10000);//数据刷新
+  		    		  setTimeout($('#t_table').bootstrapTable('refresh', {url: '../admin/commoditySeckill/findByPage.json'}),10000);//数据刷新
   		    	  }else{
   		    		  setTimeout(myToast(data.result.msg),10000);
   		    	  }
@@ -733,8 +847,8 @@ $('#btn_detailImg').click(function(){
 			$.ajax({
 			      type: "post",
 			      dataType: "json",
-			      url : "../admin/commodity/commodityDetailImg.json",
-			      data: {commodityId:rowData[0].commodityId},
+			      url : "../admin/commoditySeckill/commoditySeckillDetailImg.json",
+			      data: {commodityseckillId:rowData[0].commodityseckillId},
 			/*      processData: false,//必须有
 		          contentType: false,//必须有
 */			      success: function (data) {
@@ -786,8 +900,8 @@ $('#btn_detailImg').click(function(){
 		    		 $("#detailImg_imgPre09").attr('src',"../static/img/noimage.png"); //图片回复默认
 		    		 $("#detailImg_imgPre10").attr('src',"../static/img/noimage.png"); //图片回复默认
 			}
-	    	$("#detailImg_commodityId").val(rowData[0].commodityId);
-	    	$("#detailImg_commodityName").val(rowData[0].commodityName);
+	    	$("#detailImg_commodityseckillId").val(rowData[0].commodityseckillId);
+	    	$("#detailImg_commodityseckillName").val(rowData[0].commodityseckillName);
 	   
 	   
 	$("#detailImgModal").modal("show");//js 控制显示模态框
@@ -914,8 +1028,8 @@ $("#detailImgButton").click(function () {
 	   bootstrapValidator.validate();
 	  if (($("#detailImg_form_data").data('bootstrapValidator')).isValid()) {//获取验证结果，如果成功，执行下面代码 
   	   var formData=new FormData($('#detailImg_form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
-  	   formData.append('commodityId', $("input[name='detailImg_commodityId']").val());//商品ID
-  	   formData.append('detailsId', $("input[name='detailImg_detailsId']").val());//商品详情图ID
+  	   formData.append('seckillId', $("input[name='detailImg_commodityseckillId']").val());//商品ID
+  	   formData.append('detailsid', $("input[name='detailImg_detailsId']").val());//商品详情图ID
          if($('#file01')[0].files[0] != undefined){
         	 formData.append('file01', $('#file01')[0].files[0]);//非常重要
          }
@@ -951,7 +1065,7 @@ $("#detailImgButton").click(function () {
   		$.ajax({
   		      type: "post",
   		      dataType: "json",
-  		      url : "../admin/commodity/addCommodityDetailImg.json",
+  		      url : "../admin/commoditySeckill/addCommoditySeckillDetailImg.json",
   		      data:formData,
   		      processData: false,//必须有
   	          contentType: false,//必须有
@@ -970,7 +1084,7 @@ $("#detailImgButton").click(function () {
   		    		 $("#detailImg_imgPre10").attr('src',"../static/img/noimage.png"); //图片回复默认
   		    		  $("#detailImgModal").modal("hide");//js 控制隐藏模态框
   		    		  setTimeout(myToast(data.result.msg),10000);
-  		    		  setTimeout($('#t_table').bootstrapTable('refresh', {url: '../admin/commodity/findByPage.json'}),10000);//数据刷新
+  		    		  setTimeout($('#t_table').bootstrapTable('refresh', {url: '../admin/commoditySeckill/findByPage.json'}),10000);//数据刷新
   		    	  }else{
   		    		  setTimeout(myToast(data.result.msg),10000);
   		    	  }

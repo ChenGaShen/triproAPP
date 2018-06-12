@@ -12,7 +12,9 @@ public class ActiveRed {
     private Integer redState;
 
     private Date addTime;
-    
+
+    private String orderId;
+
     public Integer getActiveid() {
         return activeid;
     }
@@ -52,6 +54,14 @@ public class ActiveRed {
     public void setAddTime(Date addTime) {
         this.addTime = addTime;
     }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId == null ? null : orderId.trim();
+    }
     
     //查询使用
     private String  loginName;
@@ -63,5 +73,4 @@ public class ActiveRed {
 	public void setLoginName(String loginName) {
 		this.loginName = loginName;
 	}
-    
 }

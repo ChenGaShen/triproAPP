@@ -1,9 +1,11 @@
 package com.menglin.triproapp.entity;
 
 public class CommodityDetails {
-    private Integer detailsId;
+    private Integer detailsid;
 
     private Integer commodityId;
+
+    private Integer seckillId;
 
     private String details01;
 
@@ -25,22 +27,28 @@ public class CommodityDetails {
 
     private String details10;
 
-    
+    public Integer getDetailsid() {
+        return detailsid;
+    }
 
-    public Integer getDetailsId() {
-		return detailsId;
-	}
+    public void setDetailsid(Integer detailsid) {
+        this.detailsid = detailsid;
+    }
 
-	public void setDetailsId(Integer detailsId) {
-		this.detailsId = detailsId;
-	}
-
-	public Integer getCommodityId() {
+    public Integer getCommodityId() {
         return commodityId;
     }
 
     public void setCommodityId(Integer commodityId) {
         this.commodityId = commodityId;
+    }
+
+    public Integer getSeckillId() {
+        return seckillId;
+    }
+
+    public void setSeckillId(Integer seckillId) {
+        this.seckillId = seckillId;
     }
 
     public String getDetails01() {

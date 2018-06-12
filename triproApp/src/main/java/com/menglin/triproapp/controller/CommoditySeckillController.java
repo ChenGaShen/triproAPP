@@ -3,6 +3,7 @@ package com.menglin.triproapp.controller;
 import java.io.File;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -19,7 +20,9 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.menglin.triproapp.entity.Admin;
 import com.menglin.triproapp.entity.Commodity;
 import com.menglin.triproapp.entity.CommodityDetails;
+import com.menglin.triproapp.entity.CommoditySeckill;
 import com.menglin.triproapp.service.ICommodityDetailImgService;
+import com.menglin.triproapp.service.ICommoditySeckillService;
 import com.menglin.triproapp.service.ICommodityService;
 import com.menglin.triproapp.util.CheckData;
 import com.menglin.triproapp.util.Format;
@@ -29,7 +32,7 @@ import com.menglin.triproapp.util.Result;
 import com.menglin.triproapp.util.SystemParam;
 import com.menglin.triproapp.util.file;
 import com.menglin.triproapp.vo.CommodityDetailImgVO;
-import com.menglin.triproapp.vo.CommodityDetailVO;
+import com.menglin.triproapp.vo.CommoditySeckillDetailVO;
 import com.menglin.triproapp.vo.PageRuslt;
 import com.menglin.triproapp.vo.ResultObject;
 import com.menglin.triproapp.vo.ResultVN;
@@ -40,11 +43,11 @@ import com.menglin.triproapp.vo.ResultVN;
  * @date 2018年2月1日 下午1:33:48 
  */
 @Controller  
-@RequestMapping("/admin/commodity")
-public class CommodityController {
+@RequestMapping("/admin/commoditySeckill")
+public class CommoditySeckillController {
 	
 	@Resource  
-    private ICommodityService commodityService;
+    private ICommoditySeckillService commoditySeckillService;
 	
 	@Resource  
     private ICommodityDetailImgService  commodityDetailImgService;
@@ -53,7 +56,7 @@ public class CommodityController {
 	
 	
 	/**
-	 * 商品列表分页
+	 * 秒杀商品列表分页
 	 * @author CGS
 	 * @time 2018年3月22日下午1:43:31
 	 * @param currentPage
@@ -62,9 +65,9 @@ public class CommodityController {
 	 * @return
 	 */
 	@RequestMapping(value="/findByPage.json",method={RequestMethod.POST})  
-    public @ResponseBody PageRuslt<CommodityDetailVO> findByPage(int currentPage, int pageSize,Commodity model){
-		PageRuslt<CommodityDetailVO> pageRuslt =new PageRuslt<CommodityDetailVO>();
-		PageBean<CommodityDetailVO> PageUser=commodityService.findByPage(currentPage, pageSize, model);
+    public @ResponseBody PageRuslt<CommoditySeckillDetailVO> findByPage(int currentPage, int pageSize,CommoditySeckill model){
+		PageRuslt<CommoditySeckillDetailVO> pageRuslt =new PageRuslt<CommoditySeckillDetailVO>();
+		PageBean<CommoditySeckillDetailVO> PageUser=commoditySeckillService.findByPage(currentPage, pageSize, model);
 		pageRuslt.setPageBean(PageUser);
       return pageRuslt;
        
@@ -77,28 +80,28 @@ public class CommodityController {
 	 * @param commodityId
 	 * @return
 	 */
-	@RequestMapping(value="/commodityDetail.json",method={RequestMethod.POST})  
-	public @ResponseBody CommodityDetailVO commodityDetail(Integer commodityId){
-		Commodity commodity =commodityService.get(commodityId);
-		CommodityDetailVO vo=new CommodityDetailVO();
-		if (null!=commodity) {
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			vo.setCommodityId(commodity.getCommodityid());
-			vo.setCommodityName(commodity.getCommodityName());
-			vo.setPrice(Format.keepTwoMoney(commodity.getPrice()));
-			vo.setDiscountPrice(Format.keepTwoMoney(commodity.getDiscountPrice()));
-			vo.setAmount(commodity.getAmount());
-			vo.setAllowance(commodity.getAllowance());
-			if (null!=commodity.getCommodityImg()) {
-				vo.setCommodityImg(SystemParam.DOMAIN_NAME+commodity.getCommodityImg());
-			}
-			vo.setSpecification(commodity.getSpecification());
-			vo.setRealSale(commodity.getRealSale());
-			vo.setVirtualSales(commodity.getVirtualSales());
-			vo.setState(commodity.getState());
-			vo.setAddTime(sdf.format(commodity.getAddTime()));
-			vo.setUpdateTime(sdf.format(commodity.getUpdateTime()));
-			vo.setDescription(commodity.getDescription());
+	@RequestMapping(value="/commoditySeckillDetail.json",method={RequestMethod.POST})  
+	public @ResponseBody CommoditySeckillDetailVO commodityDetail(Integer commodityId){
+		CommoditySeckill commoditySeckill =commoditySeckillService.get(commodityId);
+		CommoditySeckillDetailVO vo=new CommoditySeckillDetailVO();
+		if (CheckData.allfieldIsNotNUll(commoditySeckill)) {
+			vo.setCommodityseckillId(commoditySeckill.getCommodityseckillId());
+			vo.setCommodityseckillName(commoditySeckill.getCommodityseckillName());
+			vo.setSeckillPrice(Format.keepTwoMoney(commoditySeckill.getSeckillPrice()));
+			vo.setSeckillDiscountprice(Format.keepTwoMoney(commoditySeckill.getSeckillDiscountprice()));
+			vo.setSeckillAmount(commoditySeckill.getSeckillAmount());
+			vo.setSeckillAllowance(commoditySeckill.getSeckillAllowance());
+			vo.setSeckillCommodityimg(SystemParam.DOMAIN_NAME+commoditySeckill.getSeckillCommodityimg());
+			vo.setSeckillSpecification(commoditySeckill.getSeckillSpecification());
+			vo.setSeckillRealSale(commoditySeckill.getSeckillRealSale());
+			vo.setSeckillVirtualSales(commoditySeckill.getSeckillVirtualSales());
+			vo.setSeckillOnsale(commoditySeckill.getSeckillOnsale());//是否出售
+			vo.setSeckillState(commoditySeckill.getSeckillState());//是否开启秒杀
+			vo.setSeckillClassify(commoditySeckill.getSeckillClassify());
+			vo.setAddTime(commoditySeckill.getAddTime());
+			vo.setStartTime(commoditySeckill.getStartTime());
+			vo.setEndTime(commoditySeckill.getEndTime());
+			vo.setSeckillDescription(commoditySeckill.getSeckillDescription());
 		}
 		return vo;
 	}
@@ -112,9 +115,10 @@ public class CommodityController {
 	 * @param f
 	 * @return
 	 * @throws IOException
+	 * @throws ParseException 
 	 */
-	@RequestMapping(value="/addCommodity.json",method={RequestMethod.POST})
-	public @ResponseBody ResultVN addCommodity(Commodity model, MultipartHttpServletRequest request,file f) throws IOException {
+	@RequestMapping(value="/addCommoditySeckill.json",method={RequestMethod.POST})
+	public @ResponseBody ResultVN addCommodity(CommoditySeckill model, String seckillStartTime,String seckillEndTime, MultipartHttpServletRequest request,file f) throws IOException, ParseException {
 		ResultVN vn =new ResultVN();
 		
 			/*if (model.getName() == null || "".equals(model.getName())) {
@@ -133,104 +137,47 @@ public class CommodityController {
 						if (file.getName().equals("file")) {
 							String fileName = file.getOriginalFilename();
 							if (fileName.trim() != "") {
-								long  startTime=System.currentTimeMillis();
 								Date date = new Date();
 								SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 								String timestamp = sdf.format(date);
 //								String basePath = request.getSession().getServletContext().getRealPath("/");
 								String basePath = "E:\\images\\uploadApp\\";
 								fileName=fileName.substring(fileName.lastIndexOf("."));
-								String path =timestamp+"_ml"+fileName;// 文件保存路径
+								String path =timestamp+"_mlmiaosha"+fileName;// 文件保存路径
 								File localFile = new File(basePath + path);
 								file.transferTo(localFile);
 //								Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
 								new ImgPressThread(localFile).start();//多线程压缩图片
 								lis.add(path);
-								model.setCommodityImg("/imgApp/"+path);
-								System.out.println(SystemParam.DOMAIN_NAME+model.getCommodityImg());
-							
-								long  endTime=System.currentTimeMillis();
-								System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+								model.setSeckillCommodityimg("/imgApp/"+path);
 							   
 							}
 						}
 						
 				}
-					//测试+正式
-					/*List<String> lis=new ArrayList<String>();
-					Iterator<String> iter = request.getFileNames();
-					while (iter.hasNext()) {
-						MultipartFile file = request.getFile(iter.next());
-						if (file != null) {
-							if (file.getName().equals("file")) {
-								String fileName = file.getOriginalFilename();
-								if (fileName.trim() != "") {
-									long  startTime=System.currentTimeMillis();
-									Date date = new Date();
-									SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-									String timestamp = sdf.format(date);
-									String basePath = request.getSession().getServletContext().getRealPath("/");
-//									String basePath = "E:\\images\\upload\\";
-									fileName=fileName.substring(fileName.lastIndexOf("."));
-									String path ="/static/upload/images/"+timestamp+"_ml"+fileName;// 文件保存路径
-									File localFile = new File(basePath + path);
-									file.transferTo(localFile);
-//									Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
-									new ImgPressThread(localFile).start();//多线程压缩图片
-									lis.add(path);
-									model.setImg(path);
-									System.out.println(SystemParam.DOMAIN_NAME+model.getImg());
-								
-									long  endTime=System.currentTimeMillis();
-									System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
-								   
-								}
-							}
-							
-					}*/
-		
-	/*	if (!f.getFile().getOriginalFilename().equals("")) {
-			String fileName = f.getFile().getOriginalFilename();
-			String imgType=fileName.substring(fileName.indexOf("."));
-			String basePath = request.getSession().getServletContext().getRealPath("/")+"/static/upload/images/";
-			if (fileName.trim() != "") {
-				Date date = new Date();
-				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-				String timestamp = sdf.format(date);
-				String newName=timestamp+imgType;
-				String path =  newName;// 文件保存路径
-				OutputStream output = new FileOutputStream(new File(basePath, newName));//在路径URL中创建newFileName文件
-				IOUtils.copy(f.getFile().getInputStream(), output);//将file中的图片写入
-				File localFile = new File(basePath + path);
-				Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
-//				ImgCompress imgCom = new ImgCompress(basePath + newName);  
-//				imgCom.resizeFix(400, 400,basePath + newName);
-				model.setImg(path); 
-				System.out.println(model.getImg().toString());
-				
-				
-			
-			}
-		}	*/
 					
-	 }			model.setCommodityName(model.getCommodityName());//商品名称
-				model.setPrice(Format.formatMoney(model.getPrice()));//商品普通价格
-				model.setDiscountPrice(Format.formatMoney(model.getDiscountPrice()));//商品供销商价格
-				model.setAllowance(model.getAmount());//库存
-				model.setAmount(model.getAmount());//总量
-				model.setDescription(model.getDescription());//描述
-				model.setSpecification(model.getSpecification());// 规格
-				model.setState(1);//商品状态1上架0下架
-				model.setRealSale(0);//实际销量
-				model.setVirtualSales(model.getVirtualSales());//虚拟销量
-				model.setClassify(model.getClassify());
+	 }			model.setCommodityseckillName(model.getCommodityseckillName());//商品名称
+				model.setSeckillPrice(Format.formatMoney(model.getSeckillPrice()));//商品普通价格
+				model.setSeckillDiscountprice(Format.formatMoney(model.getSeckillDiscountprice()));//商品供销商价格
+				model.setSeckillAmount(model.getSeckillAmount());//库存
+				model.setSeckillAllowance(model.getSeckillAllowance());//总量
+				model.setSeckillDescription(model.getSeckillDescription());//描述
+				model.setSeckillSpecification(model.getSeckillSpecification());// 规格
+				model.setSeckillOnsale(0);//商品状态0上架1下架
+				model.setSeckillState(0);//商品秒杀状态0开启1关闭
+				model.setSeckillRealSale(0);//实际销量
+				model.setSeckillVirtualSales(model.getSeckillVirtualSales());//虚拟销量
+				model.setSeckillClassify(model.getSeckillClassify());
 				model.setAddTime(new Date());
-				model.setUpdateTime(new Date());
-				commodityService.save(model);
-				vn.setResult(Result.suc("商品添加成功!!"));
-				System.out.println("添加名称："+model.getCommodityName());
-				System.out.println("添加规格："+model.getSpecification());
-				System.out.println("添加描述："+model.getDescription());
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				System.out.println("startTime1:"+seckillStartTime);
+				System.out.println("startTime2:"+sdf.parse(seckillStartTime));
+				model.setStartTime(sdf.parse(seckillStartTime));
+				System.out.println("endTime1:"+seckillEndTime);
+				System.out.println("endTime2:"+sdf.parse(seckillEndTime));
+				model.setEndTime(sdf.parse(seckillEndTime));
+				commoditySeckillService.save(model);
+				vn.setResult(Result.suc("商品秒杀添加成功!!"));
 				
 				return vn;
   }
@@ -246,11 +193,11 @@ public class CommodityController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/addCommodityDetailImg.json",method={RequestMethod.POST})
+	@RequestMapping(value="/addCommoditySeckillDetailImg.json",method={RequestMethod.POST})
 	public @ResponseBody ResultVN addCommodityDetailImg(CommodityDetails model, MultipartHttpServletRequest request,file f) throws IOException {
 			ResultVN vn =new ResultVN();
-			Commodity commodity =commodityService.get(model.getCommodityId());
-			if (CheckData.isNotNullOrEmpty(commodity)) {
+			CommoditySeckill commoditySeckill =commoditySeckillService.get(model.getSeckillId());
+			if (CheckData.isNotNullOrEmpty(commoditySeckill)) {
 				List<String> lis=new ArrayList<String>();
 				Date date = new Date();
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
@@ -736,13 +683,14 @@ public class CommodityController {
 	 * @param f
 	 * @return
 	 * @throws IOException
+	 * @throws ParseException 
 	 */
-	@RequestMapping(value="/updateCommodity.json",method={RequestMethod.POST})
-	public @ResponseBody ResultVN updateCommodity(Commodity model, MultipartHttpServletRequest request,file f) throws IOException {
+	@RequestMapping(value="/updateCommoditySeckill.json",method={RequestMethod.POST})
+	public @ResponseBody ResultVN updateCommodity(CommoditySeckill model,String seckillStartTime,String seckillEndTime,  MultipartHttpServletRequest request,file f) throws IOException, ParseException {
 		ResultVN vn =new ResultVN();
 		
-		Commodity commodity =commodityService.get(model.getCommodityid());
-		if (null!=commodity) {
+		CommoditySeckill commoditySeckill =commoditySeckillService.get(model.getCommodityseckillId());
+		if (CheckData.isNotNullOrEmpty(commoditySeckill)) {
 		//本地
 		List<String> lis=new ArrayList<String>();
 		Iterator<String> iter = request.getFileNames();
@@ -752,47 +700,46 @@ public class CommodityController {
 				if (file.getName().equals("file1")) {
 					String fileName = file.getOriginalFilename();
 					if (fileName.trim() != "") {
-						long  startTime=System.currentTimeMillis();
 						Date date = new Date();
 						SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
 						String timestamp = sdf.format(date);
 //						String basePath = request.getSession().getServletContext().getRealPath("/");
 						String basePath = "E:\\images\\uploadApp\\";
 						fileName=fileName.substring(fileName.lastIndexOf("."));
-						String path =timestamp+"_ml"+fileName;// 文件保存路径
+						String path =timestamp+"_mlmiaosha"+fileName;// 文件保存路径
 						File localFile = new File(basePath + path);
 						file.transferTo(localFile);
 //						Thumbnails.of(localFile).scale(1f).outputQuality(0.25f).toFile(localFile);
 						new ImgPressThread(localFile).start();//多线程压缩图片
 						lis.add(path);
-						commodity.setCommodityImg("/imgApp/"+path);
-						System.out.println(SystemParam.DOMAIN_NAME+commodity.getCommodityImg());
-					
-						long  endTime=System.currentTimeMillis();
-						System.out.println("1采用多线程的运行时间："+String.valueOf(endTime-startTime)+"ms");
+						commoditySeckill.setSeckillCommodityimg("/imgApp/"+path);
 					   
 					}
 				}
 				
 		}
 	}
-	
-		commodity.setCommodityName(model.getCommodityName());//商品名称
-		commodity.setPrice(Format.formatMoney(model.getPrice()));//商品普通价格
-		commodity.setDiscountPrice(Format.formatMoney(model.getDiscountPrice()));//商品供销商价格
-		commodity.setAllowance(model.getAmount());//库存
-		commodity.setAmount(model.getAmount());//总量
-		commodity.setDescription(model.getDescription());//描述
-		commodity.setSpecification(model.getSpecification());// 规格
-		commodity.setState(1);//商品状态1上架0下架
-		commodity.setClassify(model.getClassify());
-		commodity.setVirtualSales(model.getVirtualSales());//虚拟销量
-		commodity.setUpdateTime(new Date());
-		commodityService.update(commodity);
+		commoditySeckill.setCommodityseckillName(model.getCommodityseckillName());//商品名称
+		commoditySeckill.setSeckillPrice(Format.formatMoney(model.getSeckillPrice()));//商品普通价格
+		commoditySeckill.setSeckillDiscountprice(Format.formatMoney(model.getSeckillDiscountprice()));//商品供销商价格
+		commoditySeckill.setSeckillAmount(model.getSeckillAmount());//库存
+		commoditySeckill.setSeckillAllowance(model.getSeckillAllowance());//总量
+		commoditySeckill.setSeckillDescription(model.getSeckillDescription());//描述
+		commoditySeckill.setSeckillSpecification(model.getSeckillSpecification());// 规格
+		commoditySeckill.setSeckillOnsale(0);//商品状态0上架1下架
+		commoditySeckill.setSeckillState(0);//商品秒杀状态0开启1关闭
+		commoditySeckill.setSeckillVirtualSales(model.getSeckillVirtualSales());//虚拟销量
+		commoditySeckill.setSeckillClassify(model.getSeckillClassify());
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		System.out.println("startTime1:"+seckillStartTime);
+		System.out.println("startTime2:"+sdf.parse(seckillStartTime));
+		commoditySeckill.setStartTime(sdf.parse(seckillStartTime));
+		System.out.println("endTime1:"+seckillEndTime);
+		System.out.println("endTime2:"+sdf.parse(seckillEndTime));
+		commoditySeckill.setEndTime(sdf.parse(seckillEndTime));
+		commoditySeckillService.update(commoditySeckill);
 		vn.setResult(Result.suc("商品修改成功!!"));
-		System.out.println("修改名称："+model.getCommodityName());
-		System.out.println("修改规格："+model.getSpecification());
-		System.out.println("修改描述："+model.getDescription());
 		return vn;
 	}else{
 		vn.setResult(Result.suc("商品不存在!!"));
@@ -800,28 +747,27 @@ public class CommodityController {
 	}
   }
 	
-	
 	/**
-	 * 商品详情图
+	 * 秒杀商品详情图
 	 * @author CGS
 	 * @time 2018年5月22日下午4:34:43
 	 * @param commodityId
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping(value="/commodityDetailImg.json",method = {RequestMethod.POST})
-	public @ResponseBody ResultObject<CommodityDetailImgVO> commodityDetailImg(Integer commodityId) throws IOException {
+	@RequestMapping(value="/commoditySeckillDetailImg.json",method = {RequestMethod.POST})
+	public @ResponseBody ResultObject<CommodityDetailImgVO> commodityDetailImg(Integer commodityseckillId) throws IOException {
 			ResultObject<CommodityDetailImgVO> rs=new ResultObject<CommodityDetailImgVO>();
-			CommodityDetailImgVO commodityDetailImgVO=commodityDetailImgService.findAdminByCommodityId(commodityId);
-			
+			CommodityDetailImgVO commodityDetailImgVO=commodityDetailImgService.findAdminByCommoditySeckillId(commodityseckillId);
 			if (CheckData.allfieldIsNotNUll(commodityDetailImgVO)) {
 				rs.setObject(commodityDetailImgVO);
 				rs.setResult(Result.suc("查询成功!!"));
 			}else{
-				rs.setResult(Result.fal("暂无商品详情图!!"));
+				rs.setResult(Result.fal("暂无秒杀商品详情图!!"));
 			}
 			return rs;
 	}
+	
 	/**
 	 * 删除商品
 	 * @author CGS
@@ -830,10 +776,10 @@ public class CommodityController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping("/deleteCommodity.json")
-	public @ResponseBody ResultVN deleteCommodity(Integer commodityId) throws IOException {
+	@RequestMapping("/deleteCommoditySeckill.json")
+	public @ResponseBody ResultVN deleteCommodity(Integer commodityseckillId) throws IOException {
 		ResultVN vn =new ResultVN();
-		commodityService.deleteByPrimaryKey(commodityId);
+		commoditySeckillService.deleteByPrimaryKey(commodityseckillId);
 		vn.setResult(Result.suc("商品删除成功!!"));
 		return vn;
 	}
@@ -846,10 +792,10 @@ public class CommodityController {
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping("/soldOutCommodity.json")
+	@RequestMapping("/soldOutCommoditySeckill.json")
 	public @ResponseBody ResultVN soldOutCommodity(Integer[] commodityIds) throws IOException {
 		ResultVN vn =new ResultVN();
-		commodityService.soldOutCommodity(commodityIds);
+//		commoditySeckillService.soldOutCommodity(commodityIds);
 		vn.setResult(Result.suc("商品下架成功!!"));
 		return vn;
 	}

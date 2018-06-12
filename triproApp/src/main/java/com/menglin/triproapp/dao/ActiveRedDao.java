@@ -14,6 +14,8 @@ public interface ActiveRedDao {
     int insertSelective(ActiveRed record);
 
     ActiveRed selectByPrimaryKey(Integer activeid);
+    
+    ActiveRed selectByorderId(String orderId); 
 
     int updateByPrimaryKeySelective(ActiveRed record);
 

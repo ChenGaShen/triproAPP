@@ -17,6 +17,8 @@ public class OrderItem {
 
     private String specification;
 
+    private Integer seckillId;
+
     public Integer getId() {
         return id;
     }
@@ -79,5 +81,13 @@ public class OrderItem {
 
     public void setSpecification(String specification) {
         this.specification = specification == null ? null : specification.trim();
+    }
+
+    public Integer getSeckillId() {
+        return seckillId;
+    }
+
+    public void setSeckillId(Integer seckillId) {
+        this.seckillId = seckillId;
     }
 }

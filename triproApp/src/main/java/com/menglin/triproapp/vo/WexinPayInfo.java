@@ -1,6 +1,9 @@
 package com.menglin.triproapp.vo;
 
+import com.menglin.triproapp.util.Result;
+
 public class WexinPayInfo {
+	private Result result;
 	private String appid;
 	private String timeStamp;
 	private String nonceStr;
@@ -8,6 +11,13 @@ public class WexinPayInfo {
 	private String sign;
 	private String orderId;
 	private String payPrice;
+	
+	public Result getResult() {
+		return result;
+	}
+	public void setResult(Result result) {
+		this.result = result;
+	}
 	public String getAppid() {
 		return appid;
 	}

@@ -3,6 +3,7 @@ package com.menglin.triproapp.service;
 import java.util.List;
 
 import com.menglin.triproapp.entity.CommodityDetails;
+import com.menglin.triproapp.vo.CommodityDetailImgVO;
 
 
 /** 
@@ -20,6 +21,13 @@ public interface ICommodityDetailImgService {
 	    void update(CommodityDetails record);
 	    
 	    List<String> findByCommodityId(Integer commodityId);
+	    
+	    List<String> findByCommoditySeckillId(Integer seckillId);
+	    
+	    CommodityDetailImgVO findAdminByCommodityId(Integer commodityId);
+	    
+	    CommodityDetailImgVO findAdminByCommoditySeckillId(Integer seckillId);
+	    
 	    
 	   /* void soldOutCommodity(Integer[] commodityIds);
 	    

@@ -230,7 +230,6 @@ public class UserWebController {
 	    		
 	    		String openId = jsonObject.getString("openid");
 		    	String session_key = jsonObject.getString("session_key");
-//		    	String unionid = jsonObject.getString("unionid");
 		        String token = UUID.randomUUID().toString().replaceAll("-", "");// 随机数
 		        System.out.println(openId+"----"+session_key+"----"+token);
 		        if(CheckData.isNotEmptyString(openId)){
@@ -245,6 +244,7 @@ public class UserWebController {
 		        		HashMap<String,Object> map = new HashMap<String,Object>();
 		        		map.put(token, openId+session_key);
 		        		map.put("uid", user.getUserId());
+		        		map.put("openId", openId);
 		        		resultObject.setObject(map);
 			        	resultObject.setResult(Result.suc("登录成功!"));
 			        	System.out.println("重新登录!!");

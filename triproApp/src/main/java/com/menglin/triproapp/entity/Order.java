@@ -36,10 +36,20 @@ public class Order {
     private String ipAddress;
 
     private String remark;
+
+    private Integer seckillState;
     
-    //查询使用
-    private String loginName;
     
+  //查询使用
+    private String  loginName;
+
+	public String getLoginName() {
+		return loginName;
+	}
+
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
+	}
 
     public String getId() {
         return id;
@@ -177,13 +187,11 @@ public class Order {
         this.remark = remark == null ? null : remark.trim();
     }
 
-	public String getLoginName() {
-		return loginName;
-	}
+    public Integer getSeckillState() {
+        return seckillState;
+    }
 
-	public void setLoginName(String loginName) {
-		this.loginName = loginName;
-	}
-    
-    
+    public void setSeckillState(Integer seckillState) {
+        this.seckillState = seckillState;
+    }
 }

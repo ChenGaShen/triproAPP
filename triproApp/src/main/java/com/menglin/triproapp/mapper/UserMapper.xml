@@ -23,16 +23,16 @@
   
    <!--在mapper文件中的头部引入缓存策略-->
     <!-- 以下两个<cache>标签二选一,第一个可以输出日志,第二个不输出日志 -->  
-    <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
+   <!--  <cache type="org.mybatis.caches.ehcache.LoggingEhcache" />
 	    <cache type="org.mybatis.caches.ehcache.EhcacheCache">
 			 <property name="timeToIdleSeconds" value="3600" />
 			 <property name="timeToLiveSeconds" value="3600" />
-			 <!-- 同ehcache参数maxElementsInMemory -->
+			 同ehcache参数maxElementsInMemory
 			 <property name="maxEntriesLocalHeap" value="1000" />
-			 <!-- 同ehcache参数maxElementsOnDisk -->
+			 同ehcache参数maxElementsOnDisk
 			 <property name="maxEntriesLocalDisk" value="10000000" />
 			 <property name="memoryStoreEvictionPolicy" value="LRU" />
-		</cache>
+		</cache> -->
     <!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"/> --> 
     
 <!--     单个开关
