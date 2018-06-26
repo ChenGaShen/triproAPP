@@ -164,7 +164,7 @@ public class CommoditySeckillController {
 				model.setSeckillDescription(model.getSeckillDescription());//描述
 				model.setSeckillSpecification(model.getSeckillSpecification());// 规格
 				model.setSeckillOnsale(0);//商品状态0上架1下架
-				model.setSeckillState(0);//商品秒杀状态0开启1关闭
+				model.setSeckillState(1);//商品秒杀状态0开启1关闭 -----定时开启
 				model.setSeckillRealSale(0);//实际销量
 				model.setSeckillVirtualSales(model.getSeckillVirtualSales());//虚拟销量
 				model.setSeckillClassify(model.getSeckillClassify());
@@ -727,7 +727,7 @@ public class CommoditySeckillController {
 		commoditySeckill.setSeckillDescription(model.getSeckillDescription());//描述
 		commoditySeckill.setSeckillSpecification(model.getSeckillSpecification());// 规格
 		commoditySeckill.setSeckillOnsale(0);//商品状态0上架1下架
-		commoditySeckill.setSeckillState(0);//商品秒杀状态0开启1关闭
+		commoditySeckill.setSeckillState(1);//商品秒杀状态0开启1关闭 —— 定时开启
 		commoditySeckill.setSeckillVirtualSales(model.getSeckillVirtualSales());//虚拟销量
 		commoditySeckill.setSeckillClassify(model.getSeckillClassify());
 		
@@ -784,19 +784,35 @@ public class CommoditySeckillController {
 		return vn;
 	}
 	
+	
 	/**
-	 * 下架商品
+	 * 秒杀活动改变
 	 * @author CGS
-	 * @time 2018年2月2日下午2:24:52
-	 * @param commodityId
+	 * @time 2018年6月13日下午5:00:10
+	 * @param commodityseckillId
+	 * @param seckillState
 	 * @return
 	 * @throws IOException
 	 */
-	@RequestMapping("/soldOutCommoditySeckill.json")
-	public @ResponseBody ResultVN soldOutCommodity(Integer[] commodityIds) throws IOException {
+	@RequestMapping("/closeAndStartCommoditySeckill.json")
+	public @ResponseBody ResultVN closeAndStartCommoditySeckill(Integer commodityseckillId,Integer seckillState) throws IOException {
 		ResultVN vn =new ResultVN();
-//		commoditySeckillService.soldOutCommodity(commodityIds);
-		vn.setResult(Result.suc("商品下架成功!!"));
+		CommoditySeckill seckill=commoditySeckillService.get(commodityseckillId);
+		if (CheckData.allfieldIsNotNUll(seckill) && CheckData.isNotNullOrEmpty(seckillState)) {
+			if (seckillState ==1) {//商品秒杀状态0开启1关闭
+				seckill.setSeckillOnsale(1);//商品状态0上架1下架
+				seckill.setSeckillState(1);//商品秒杀状态0开启1关闭
+				commoditySeckillService.update(seckill);
+				vn.setResult(Result.suc("秒杀活动已关闭!!"));
+			}else{
+				seckill.setSeckillOnsale(0);//商品状态0上架1下架
+				seckill.setSeckillState(1);//商品秒杀状态0开启1关闭  -----定时开启
+				commoditySeckillService.update(seckill);
+				vn.setResult(Result.suc("秒杀活动已开启!!"));
+			}
+		}else{
+			vn.setResult(Result.fal("操作失败!!"));
+		}
 		return vn;
 	}
 }

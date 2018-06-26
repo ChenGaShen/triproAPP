@@ -22,7 +22,9 @@ public interface ActiveRedDao {
     int updateByPrimaryKey(ActiveRed record);
     
 
-    List<ActiveRed> selectActiveRedList(Integer uid);
+    List<ActiveRed> selectActiveRedList(HashMap<String,Object> map);
+    
+    int selectActiveRedCount(HashMap<String,Object> map);
     
     
     int selectCount(HashMap<String,Object> map);

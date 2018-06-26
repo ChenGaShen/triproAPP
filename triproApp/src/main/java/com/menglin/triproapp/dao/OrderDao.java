@@ -23,6 +23,7 @@ public interface OrderDao {
     
     List<Order> selectByUidAndStatus(HashMap<String,Object> map);
     
+    List<Order> selectByUidAndFiled(HashMap<String,Object> map);
     
     /**
      * 查询用户记录总数(条件)

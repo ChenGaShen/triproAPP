@@ -17,17 +17,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.menglin.triproapp.entity.ActiveRed;
 import com.menglin.triproapp.entity.Adress;
+import com.menglin.triproapp.entity.Message;
 import com.menglin.triproapp.entity.User;
 import com.menglin.triproapp.service.IActiveRedService;
 import com.menglin.triproapp.service.IAdressService;
 import com.menglin.triproapp.service.IMessageService;
 import com.menglin.triproapp.service.IUserService;
 import com.menglin.triproapp.service.IValidateService;
+import com.menglin.triproapp.util.Base64Utils;
 import com.menglin.triproapp.util.CheckData;
 import com.menglin.triproapp.util.Result;
 import com.menglin.triproapp.util.SystemParam;
 import com.menglin.triproapp.util.pay.weixin.CommonUtil;
 import com.menglin.triproapp.vo.ResultListVN;
+import com.menglin.triproapp.vo.ResultMessageObject;
 import com.menglin.triproapp.vo.ResultObject;
 import com.menglin.triproapp.vo.ResultVN;
 import net.sf.json.JSONObject;
@@ -54,6 +57,82 @@ public class UserWebController {
 	@Resource
 	private IActiveRedService activeRedService;
 	
+	
+	/**
+	 * 微信登录保存用户信息
+	 * @author CGS
+	 * @time 2018年5月31日下午3:13:41
+	 * @param request
+	 * @param session
+	 * @return
+	 */
+ 	@RequestMapping(value="/wxlogin.json",method = {RequestMethod.POST})
+    public @ResponseBody ResultObject<User> wxlogin(HttpServletRequest request, HttpSession session){
+ 		ResultObject<User> resultObject =new ResultObject<User>();
+        //获取用户登录传过来的code
+        String code=request.getParameter("code");
+        String loginName=request.getParameter("loginName");
+        System.out.println("code:"+code);
+        System.out.println("loginName:"+loginName);
+        String URL = "https://api.weixin.qq.com/sns/jscode2session?appid="
+				+ SystemParam.WX_APPID + "&secret=" + SystemParam.WX_AppSecret + "&js_code=" + code + "&grant_type=authorization_code";
+    	JSONObject jsonObject = CommonUtil.httpsRequest(URL, "GET", null);
+    	System.out.println("jsonObject:"+jsonObject);
+    	if (CheckData.isNotNullOrEmpty(jsonObject)) {
+    		
+    		String openId = jsonObject.getString("openid");
+	    	String session_key = jsonObject.getString("session_key");
+//	        String token = UUID.randomUUID().toString().replaceAll("-", "");// 随机数
+	        String token = Base64Utils.generateNumber2();// 随机数
+	        System.out.println(openId+"----"+session_key+"----"+token);
+	        if(CheckData.isNotEmptyString(openId)){
+	            /*在此处添加自己的逻辑代码，将openid保存在数据库，或是，使用session_key去微信服务器换取用户头像、昵称等信息。我在这里并没有用到，因此我只保存了用户的openid*/
+	        	User user =userService.findUserByOpenId(openId);// 根据openId 查找用户
+	        	if (CheckData.isNotNullOrEmpty(user)) {
+	        		user.setLoginTime(new Date());
+	        		user.setOpenid(openId);
+	        		user.setSessionKey(session_key);
+	        		userService.update(user);
+	        		//已经有了用户信息，重新登录
+	        		HashMap<String,Object> map = new HashMap<String,Object>();
+	        		map.put(token, openId+session_key);
+	        		map.put("uid", user.getUserId());
+	        		map.put("openId", openId);
+	        		resultObject.setObject(map);
+		        	resultObject.setResult(Result.suc("登录成功!"));
+		        	System.out.println("重新登录!!");
+				}else{
+					//初次登录
+					User newuser=new User();
+					newuser.setOpenid(openId);
+					newuser.setSessionKey(session_key);
+					newuser.setToken(token);
+					newuser.setState(1);
+					newuser.setAddTime(new Date());
+					newuser.setLoginTime(new Date());
+					newuser.setLoginName(loginName);
+					userService.save(newuser);
+					HashMap<String,Object> map = new HashMap<String,Object>();
+					User account=userService.findUserByOpenId(openId);
+	        		map.put(token, openId+session_key);
+	        		map.put("uid", account.getUserId());
+	        		resultObject.setObject(map);
+		        	resultObject.setResult(Result.suc("登录成功!"));
+		        	System.out.println("初次登录!!");
+				}
+	        	
+	        }else{
+	        	resultObject.setResult(Result.suc("登录失败!"));
+	        	System.out.println("结尾登录失败!");
+	        }
+    		
+		}else {
+			resultObject.setResult(Result.fal("登录失败!!"));
+    		System.out.println("开始就登录失败!!");
+		}
+    
+        return resultObject;
+    }
 	
 	/**
 	 * 地址新增
@@ -192,9 +271,9 @@ public class UserWebController {
 	 * @return
 	 */
 	@RequestMapping(value="/activeRedList.json",method = {RequestMethod.POST})
-	 public  @ResponseBody ResultListVN<ActiveRed> activeRedList(Integer uid){
+	 public  @ResponseBody ResultListVN<ActiveRed> activeRedList(Integer uid,Integer redState){
 		ResultListVN<ActiveRed> rs=new ResultListVN<ActiveRed>();
-		List<ActiveRed> activeRedList =activeRedService.activeRedList(uid);
+		List<ActiveRed> activeRedList =activeRedService.activeRedList(uid,redState);
 		if (CheckData.isNotNullOrEmpty(activeRedList)) {
 			rs.setResultList(activeRedList);
 			rs.setResult(Result.suc("查询成功!!"));
@@ -205,79 +284,106 @@ public class UserWebController {
 		 
 	 }
 	
-		
-		/**
-		 * 微信登录保存用户信息
-		 * @author CGS
-		 * @time 2018年5月31日下午3:13:41
-		 * @param request
-		 * @param session
-		 * @return
-		 */
-	 	@RequestMapping(value="/wxlogin.json",method = {RequestMethod.POST})
-	    public @ResponseBody ResultObject<User> wxlogin(HttpServletRequest request, HttpSession session){
-	 		ResultObject<User> resultObject =new ResultObject<User>();
-	        //获取用户登录传过来的code
-	        String code=request.getParameter("code");
-	        String loginName=request.getParameter("loginName");
-	        System.out.println("code:"+code);
-	        System.out.println("loginName:"+loginName);
-	        String URL = "https://api.weixin.qq.com/sns/jscode2session?appid="
-					+ SystemParam.WX_APPID + "&secret=" + SystemParam.WX_AppSecret + "&js_code=" + code + "&grant_type=authorization_code";
-	    	JSONObject jsonObject = CommonUtil.httpsRequest(URL, "GET", null);
-	    	System.out.println("jsonObject:"+jsonObject);
-	    	if (CheckData.isNotNullOrEmpty(jsonObject)) {
-	    		
-	    		String openId = jsonObject.getString("openid");
-		    	String session_key = jsonObject.getString("session_key");
-		        String token = UUID.randomUUID().toString().replaceAll("-", "");// 随机数
-		        System.out.println(openId+"----"+session_key+"----"+token);
-		        if(CheckData.isNotEmptyString(openId)){
-		            /*在此处添加自己的逻辑代码，将openid保存在数据库，或是，使用session_key去微信服务器换取用户头像、昵称等信息。我在这里并没有用到，因此我只保存了用户的openid*/
-		        	User user =userService.findUserByOpenId(openId);// 根据openId 查找用户
-		        	if (CheckData.isNotNullOrEmpty(user)) {
-		        		user.setLoginTime(new Date());
-		        		user.setOpenid(openId);
-		        		user.setSessionKey(session_key);
-		        		userService.update(user);
-		        		//已经有了用户信息，重新登录
-		        		HashMap<String,Object> map = new HashMap<String,Object>();
-		        		map.put(token, openId+session_key);
-		        		map.put("uid", user.getUserId());
-		        		map.put("openId", openId);
-		        		resultObject.setObject(map);
-			        	resultObject.setResult(Result.suc("登录成功!"));
-			        	System.out.println("重新登录!!");
-					}else{
-						//初次登录
-						User newuser=new User();
-						newuser.setOpenid(openId);
-						newuser.setSessionKey(session_key);
-						newuser.setToken(token);
-						newuser.setState(1);
-						newuser.setAddTime(new Date());
-						newuser.setLoginTime(new Date());
-						newuser.setLoginName(loginName);
-						userService.save(newuser);
-						HashMap<String,Object> map = new HashMap<String,Object>();
-						User account=userService.findUserByOpenId(openId);
-		        		map.put(token, openId+session_key);
-		        		map.put("uid", account.getUserId());
-		        		resultObject.setObject(map);
-			        	resultObject.setResult(Result.suc("登录成功!"));
-			        	System.out.println("初次登录!!");
-					}
-		        	
-		        }else{
-		        	resultObject.setResult(Result.suc("登录失败!"));
-		        	System.out.println("结尾登录失败!");
-		        }
-	    		
-			}else {
-				resultObject.setResult(Result.fal("登录失败!!"));
-	    		System.out.println("开始就登录失败!!");
+	/**
+	 * 用户消息列表
+	 * @author CGS
+	 * @time 2018年6月14日下午3:45:06
+	 * @param uid
+	 * @param type
+	 * @return
+	 */
+	@RequestMapping(value="/messAgeList.json",method = {RequestMethod.POST})
+	 public  @ResponseBody ResultListVN<Message> messAgeList(Integer uid,Integer type){
+		ResultListVN<Message> rs=new ResultListVN<Message>();
+		List<Message> activeRedList =messageService.messAgeList(uid,type);
+		if (CheckData.isNotNullOrEmpty(activeRedList)) {
+			rs.setResultList(activeRedList);
+			rs.setResult(Result.suc("查询成功!!"));
+		}else{
+			rs.setResult(Result.fal("暂无消息!!"));
+		}
+		return rs;
+		 
+	 }
+	/**
+	 * 消息更新（未读--已读）
+	 * @author CGS
+	 * @time 2018年6月15日上午10:59:31
+	 * @param uid
+	 * @param messageId
+	 * @return
+	 */
+	@RequestMapping(value="/updateMessAge.json",method = {RequestMethod.POST})
+	 public  @ResponseBody ResultVN updateMessAge(Integer messageId){
+		ResultVN vn =new ResultVN();
+		Message message =messageService.get(messageId);
+		if (CheckData.allfieldIsNotNUll(message)) {
+			message.setState(1);//0未读1已读2跟进
+			messageService.update(message);
+			vn.setResult(Result.suc("更新成功!!"));
+		}else{
+			vn.setResult(Result.fal("操作失败!!"));
+		}
+		return vn;
+		 
+	 }
+	
+	/**
+	 * 用户消息未读条数以及最新首条消息
+	 * @author CGS
+	 * @time 2018年6月15日下午2:19:58
+	 * @param uid
+	 * @return
+	 */
+	@RequestMapping(value="/whetherMessage.json",method = {RequestMethod.POST})
+	 public  @ResponseBody ResultMessageObject<Message> whetherMessage(Integer uid,Integer type){
+		ResultMessageObject<Message> vn =new ResultMessageObject<Message>();
+		if (type==0) {
+			int count= messageService.selectUnreadCount(uid);
+			Message message =messageService.firstOne(uid, type);
+			if (count>0 && CheckData.allfieldIsNotNUll(message)) {
+				vn.setObject(message);
+				vn.setUnreadCount(count);
+				vn.setResult(Result.suc("查询成功!!"));
+			}else{
+				vn.setUnreadCount(0);
+				vn.setObject(message);
+				vn.setResult(Result.suc("查询成功!!"));
 			}
-	    
-	        return resultObject;
-	    }
+		}else if (type==1) {
+			Message message =messageService.firstOne(uid, type);
+			if (CheckData.allfieldIsNotNUll(message)) {
+				vn.setObject(message);
+				vn.setResult(Result.suc("查询成功!!"));
+			}else{
+				vn.setResult(Result.fal("暂无系统消息!!"));
+			}
+		}else{
+			vn.setResult(Result.fal("暂无任何消息!!"));
+		}
+		return vn;
+	 }
+	
+	/**
+	 *用户红包未使用个数
+	 * @author CGS
+	 * @time 2018年6月15日下午2:28:03
+	 * @param uid
+	 * @return
+	 */
+	@RequestMapping(value="/whetherActiveRed.json",method = {RequestMethod.POST})
+	 public  @ResponseBody ResultObject<String> whetherActiveRed(Integer uid){
+		ResultObject<String> vn =new ResultObject<String>();
+		int count= activeRedService.selectActiveRedCount(uid);
+		if (count>0) {
+			vn.setObject(count);
+			vn.setResult(Result.suc("查询成功!!"));
+		}else{
+			vn.setResult(Result.fal("暂无未使用的红包!!"));
+		}
+		return vn;
+	 }
+	
+		
+		
 }

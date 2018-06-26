@@ -30,7 +30,7 @@ public class QuartzJob2 {
 		    			CommoditySeckill seckill=commoditySeckillService.get(list.get(i).getCommodityseckillId());
 						if (seckill.getCommodityseckillId()!=null) {
 							seckill.setSeckillState(1);//商品秒杀状态0开启1关闭
-							seckill.setSeckillOnsale(0);//商品状态0上架1下架,关闭同时，下架商品，不会在重复执行
+							seckill.setSeckillOnsale(1);//商品状态0上架1下架,关闭同时，下架商品，不会在重复执行
 							commoditySeckillService.update(seckill);
 				          }
 					}

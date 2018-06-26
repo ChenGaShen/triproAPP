@@ -394,6 +394,7 @@ $("#addButton").click(function () {
 		var bootstrapValidator = $("#form_data").data('bootstrapValidator');
 	    bootstrapValidator.validate();
 	  if ($("#form_data").data('bootstrapValidator').isValid()) {//获取验证结果，如果成功，执行下面代码 
+		  $("#loadingModal").modal("show");//js 控制隐藏模态框
     	   var formData=new FormData($('#form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
     	   formData.append('commodityName', $("input[name='add_commodityName']").val());
     	   formData.append('classify', $("#add_classify").val());
@@ -413,6 +414,7 @@ $("#addButton").click(function () {
     		      processData: false,//必须有
     	          contentType: false,//必须有
     		      success: function (data) {
+    		    	  $("#loadingModal").modal("hide");//js 控制隐藏模态框
     		    	  if(data.result.status==0){
     		    		  $('#form_data').bootstrapValidator('resetForm', true);//重置表单
     		    		  $("#imgPre").attr('src',"../static/img/noimage.png"); //图片回复默认
@@ -683,6 +685,7 @@ $("#updateButton").click(function () {
 	   var bootstrapValidator = $("#update_form_data").data('bootstrapValidator');
 	   bootstrapValidator.validate();
 	  if (($("#update_form_data").data('bootstrapValidator')).isValid()) {//获取验证结果，如果成功，执行下面代码 
+		  $("#loadingModal").modal("show");//js 控制隐藏模态框
   	   var formData1=new FormData($('#update_form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
   	     formData1.append('commodityid', $("input[name='update_commodityId']").val());
   	   	 formData1.append('commodityName', $("input[name='update_commodityName']").val());
@@ -705,6 +708,7 @@ $("#updateButton").click(function () {
   		      processData: false,//必须有
   	          contentType: false,//必须有
   		      success: function (data) {
+  		    	 $("#loadingModal").modal("hide");//js 控制隐藏模态框
   		    	  if(data.result.status==0){
   		    		  $('#update_form_data').bootstrapValidator('resetForm', true);//重置表单
   		    		  $("#update_imgPre").attr('src',"../static/img/noimage.png"); //图片回复默认
@@ -912,7 +916,8 @@ $('#btn_detailImg').click(function(){
 $("#detailImgButton").click(function () {
 	   var bootstrapValidator = $("#detailImg_form_data").data('bootstrapValidator');
 	   bootstrapValidator.validate();
-	  if (($("#detailImg_form_data").data('bootstrapValidator')).isValid()) {//获取验证结果，如果成功，执行下面代码 
+	  if (($("#detailImg_form_data").data('bootstrapValidator')).isValid()) {//获取验证结果，如果成功，执行下面代码
+		  $("#loadingModal").modal("show");//js 控制隐藏模态框
   	   var formData=new FormData($('#detailImg_form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
   	   formData.append('commodityId', $("input[name='detailImg_commodityId']").val());//商品ID
   	   formData.append('detailsId', $("input[name='detailImg_detailsId']").val());//商品详情图ID
@@ -956,6 +961,7 @@ $("#detailImgButton").click(function () {
   		      processData: false,//必须有
   	          contentType: false,//必须有
   		      success: function (data) {
+  		    	 $("#loadingModal").modal("hide");//js 控制隐藏模态框
   		    	  if(data.result.status==0){
   		    		 $('#detailImg_form_data').bootstrapValidator('resetForm', true);//重置表单
   		    		 $("#detailImg_imgPre01").attr('src',"../static/img/noimage.png"); //图片回复默认

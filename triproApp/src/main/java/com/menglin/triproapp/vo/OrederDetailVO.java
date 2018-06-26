@@ -25,6 +25,8 @@ public class OrederDetailVO {
 	
 	private String receiveState;// 订单状态String :0待发货1配送中2已签收
 	
+	private String seckillState; // 订单类别  订单秒杀状态0秒杀订单1普通订单
+	
 	private String receiveName;
 
 	private String receivePhone;
@@ -45,7 +47,9 @@ public class OrederDetailVO {
 	
 	private String redMoney; //红包金额
 	
-    private String loginName; //下单人昵称
+    private String loginName; //下单人微信昵称
+    
+    
 
 		
 
@@ -118,6 +122,14 @@ public class OrederDetailVO {
 	
 	
 	
+	public String getSeckillState() {
+		return seckillState;
+	}
+
+	public void setSeckillState(String seckillState) {
+		this.seckillState = seckillState;
+	}
+
 	public String getAir() {
 		return air;
 	}

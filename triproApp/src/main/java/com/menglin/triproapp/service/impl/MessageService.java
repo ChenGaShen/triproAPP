@@ -52,6 +52,7 @@ public class MessageService implements IMessageService {
 	public PageBean<Message> findByPage(Integer currentPage, Integer pageSize, Message model) {
 		//封装每页显示的数据
         HashMap<String,Object> map1 = new HashMap<String,Object>();
+        map1.put("type", model.getType());//消息类型 0私有 1公共 2订单
         map1.put("state", model.getState());//消息状态 状态：1未读2已读3跟进
         map1.put("title", model.getTitle());//消息标题   供销商认证    订单处理
         //总记录数
@@ -70,6 +71,7 @@ public class MessageService implements IMessageService {
     	
         map.put("start",(currentPage-1)*pageSize);
         map.put("size", pageSize);
+        map.put("type", model.getType());//消息类型 0私有 1公共 2订单
         map.put("state", model.getState());//消息状态 状态：1未读2已读3跟进
         map.put("title", model.getTitle());//消息标题   供销商认证    订单处理
        
@@ -80,6 +82,29 @@ public class MessageService implements IMessageService {
         pageBean.setPageList(lists);
 
         return pageBean;
+	}
+
+	@Override
+	public List<Message> messAgeList(Integer uid, Integer type) {
+		 HashMap<String,Object> map = new HashMap<String,Object>();
+		 	map.put("uid",uid);
+	        map.put("type", type);
+		return messageDao.selectMessAgeList(map);
+	}
+
+	@Override
+	public int selectUnreadCount(Integer uid) {
+		 HashMap<String,Object> map = new HashMap<String,Object>();
+		 	map.put("uid",uid);
+		return messageDao.selectUnreadCount(map);
+	}
+
+	@Override
+	public Message firstOne(Integer uid, Integer type) {
+		 HashMap<String,Object> map = new HashMap<String,Object>();
+		 	map.put("uid",uid);
+	        map.put("type", type);
+		return messageDao.firstOne(map);
 	}
 
 }

@@ -11,7 +11,7 @@
     <result column="total_fee" jdbcType="INTEGER" property="totalFee" />
     <result column="time_end" jdbcType="VARCHAR" property="timeEnd" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
-    <result column="userPhone" jdbcType="VARCHAR" property="userPhone" /><!-- 另外加的查询结果 -->
+    <result column="loginName" jdbcType="VARCHAR" property="loginName" /><!-- 另外加的查询结果 -->
   </resultMap>
   <sql id="Base_Column_List">
     id, uid,out_trade_no AS outTradeNo, transaction_id AS transactionId, bank_type AS bankType, cash_fee AS cashFee, total_fee AS totalFee, time_end AS timeEnd, add_time AS addTime
@@ -28,7 +28,7 @@
     <select id="selectCount" parameterType="java.util.Map" resultType="int">
      SELECT
 	count(*)
-	 from t_pay_wx t LEFT JOIN t_user u ON t.uid = u.id  where 1=1
+	 from t_pay_wx t LEFT JOIN t_user u ON t.uid = u.user_id  where 1=1
         <if test="userPhone!=null and userPhone !='' ">
           AND    u.user_phone like  CONCAT('%',#{userPhone},'%') 
         </if>
@@ -56,10 +56,10 @@
 	t.total_fee AS totalFee,
 	t.time_end AS timeEnd,
 	t.add_time AS addTime,
-	u.user_phone AS userPhone
-        from t_pay_wx t LEFT JOIN t_user u ON t.uid = u.id  where 1=1
-         <if test="userPhone!=null and userPhone !='' ">
-          AND   u.user_phone like  CONCAT('%',#{userPhone},'%') 
+	u.loginName AS loginName
+        from t_pay_wx t LEFT JOIN t_user u ON t.uid = u.user_id  where 1=1
+         <if test="loginName!=null and loginName !='' ">
+          AND   u.loginName like  CONCAT('%',#{loginName},'%') 
         </if>
          <if test="outTradeNo!=null and outTradeNo !='' ">
           AND   t.out_trade_no =  #{outTradeNo} 

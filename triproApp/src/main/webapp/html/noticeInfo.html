@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>TRIPRO</title>
+
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrap-table.css"/>
+<link rel="stylesheet" type="text/css" href="../static/bootstrap/css/bootstrapValidator.min.css"/>
+<link rel="stylesheet" href="../static/css/jquery.cxcalendar.css"/>
+<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrap-table-zh-CN.js"></script>
+<script type="text/javascript" src="../static/bootstrap/js/bootstrapValidator.min.js"></script>
+<script src="../static/js/jquery.cxcalendar.min.js"></script>
+<script src="../static/js/jquery.cxcalendar.languages.js"></script>
+<script type="text/javascript" src="../static/js/util.js"></script>
+<script type="text/javascript" src="../static/js/noticeInfo.js"></script>
+</head> 
+<body>
+	<div class="panel-body" style="padding-bottom:0px;">
+        <div class="panel panel-default">
+            <!-- <div class="panel-heading">查询条件</div>
+            <div class="panel-body">
+                <form id="formSearch" class="form-horizontal">
+                    <div class="form-group" >
+                    	
+                        <label class="control-label col-sm-1" for="loginName" style="margin-left: 5%;">账户昵称</label>
+                        <div class="col-sm-3" style="width: 10%;">
+                            <input type="text" class="form-control" id="loginName"/>
+                        </div>
+                        <div class="col-sm-3" style="text-align:left; float: right;margin-right: 30%;">
+                            <button type="button" style="margin-left:50px" id="btn_query" class="btn btn-primary">查询</button>
+                             <button type="button" style="margin-left:50px" id="btn_reset" class="btn btn-primary">清空</button>
+                        </div>
+                    </div>
+                </form>
+            </div> -->
+        </div>       
+        <div id="toolbar" class="btn-group">
+             <button id="btn_add" type="button" class="btn btn-default" data-toggle="modal" >
+                <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span>&nbsp;发布消息
+            </button>
+              <button id="btn_edit" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>&nbsp;编辑消息
+            </button>
+            <button id="btn_delete" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>&nbsp;删除消息
+            </button>
+        </div>
+        <table id="t_table" class="table table-hover">
+        	<thead>
+        	
+        	</thead>
+        
+        </table>
+        
+<!-- 新增模态框（Modal） -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    消息新增
+                </h4>
+            </div>
+            <form id="form_data" >
+						<div class="row" > 
+								<div class="form-group col-sm-4 " style="width: 44%; margin-left: 99px;margin-top: 5px;">
+									<label for="add_title">消息标题</label>
+									<input type="text" class="form-control" id="add_title"  name="add_title" style="width: 105%;"></input>
+								</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 51%; margin-left: 100px;margin-top: 5px;">
+								<label for="add_content">消息内容</label> 
+							<textarea class="form-control" id="add_content"  name="add_content" rows="6" cols="15" style="width: 106%;"></textarea>
+							</div>
+						</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button  id="addButton" class="btn btn-primary">
+									确认发布</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+    <!-- 删除商品模态框（Modal） -->
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                   删除消息
+                </h4>
+            </div>
+            <form id="delete_form_data">
+            <input type="text" id="delete_id" hidden/>
+            
+            <div class="modal-body">确认将标题为   <span id="delete_title" style="color: red;"></span>  的消息删除？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button  id="deleteButton" type="button" class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+       <!-- 编辑模态框（Modal） -->
+<div class="modal fade" id="updateModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 65%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    消息编辑
+                </h4>
+            </div>
+            <form id="update_form_data" >
+            		<input type="text" id="update_id" name="update_id" hidden/>
+						<div class="row" > 
+								<div class="form-group col-sm-4 " style="width: 44%; margin-left: 99px;margin-top: 5px;">
+									<label for="update_title">消息标题</label>
+									<input type="text" class="form-control" id="update_title"  name="update_title" style="width: 105%;"></input>
+								</div>
+						</div>
+						<div class="row" ><!-- 横向两个输入框 -->
+							<div class="form-group col-sm-4" style="width: 51%; margin-left: 100px;margin-top: 5px;">
+								<label for="update_content">消息内容</label> 
+							<textarea class="form-control" id="update_content"  name="update_content" rows="6" cols="15" style="width: 106%;"></textarea>
+							</div>
+						</div>
+							<div class="modal-footer">
+								<button type="button" class="btn btn-default"
+									data-dismiss="modal">关闭</button>
+								<button   id="updateButton" class="btn btn-primary">
+									确认更新</button>
+							</div>
+					</form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+           <!-- 加载模态框（Modal） -->
+	<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"  data-backdrop='static'>
+    	<div class="modal-dialog" role="document" style="width: 65%; margin-top: 12%; margin-left: 10%;" >
+			<div id="loading" class="loading">Loading pages...</div>
+    	</div>
+    </div>
+</div> 
+    
+</body>
+</html>

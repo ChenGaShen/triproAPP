@@ -2,7 +2,6 @@ package com.menglin.triproapp.dao;
 
 import java.util.HashMap;
 import java.util.List;
-
 import com.menglin.triproapp.entity.Message;
 
 
@@ -18,6 +17,12 @@ public interface MessageDao {
     int updateByPrimaryKeySelective(Message record);
 
     int updateByPrimaryKey(Message record);
+    
+    List<Message> selectMessAgeList(HashMap<String,Object> map);
+    
+    int selectUnreadCount(HashMap<String,Object> map);
+    
+    Message firstOne(HashMap<String,Object> map); 
     
     /**
      * 查询用户记录总数(条件)

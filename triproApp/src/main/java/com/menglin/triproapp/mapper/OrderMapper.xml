@@ -47,7 +47,8 @@
 	t.add_time AS addTime,
 	t.ip,
 	t.ip_address AS ipAddress,
-	t.remark
+	t.remark,
+	t.seckill_state AS seckillState
 FROM
 	t_order t
 LEFT JOIN t_user u ON t.uid = u.user_id
@@ -62,6 +63,7 @@ LEFT JOIN t_user u ON t.uid = u.user_id
     <include refid="Base_Column_List" />
     from t_order
     where uid = #{uid,jdbcType=INTEGER}
+    ORDER BY add_time desc
   </select>
   
    <!--根据用户ID和订单状态 查询对应订单  -->
@@ -78,6 +80,20 @@ LEFT JOIN t_user u ON t.uid = u.user_id
     	   AND   state =  1 
            AND   receive_state =  #{receiveState}
      </if>
+     ORDER BY add_time desc
+  </select>
+  
+   <!--根据用户ID和模糊字段查询对应订单  -->
+  <select id="selectByUidAndFiled" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_order
+    where uid = #{uid,jdbcType=INTEGER}
+    
+		<if test="field!=null and field !='' "> <!-- String 类型判断为空或者null -->
+          AND  CONCAT(IFNULL(receive_name,''),IFNULL(receive_phone,''),IFNULL(receive_address,'')) LIKE '%${field}%'
+        </if>
+        ORDER BY add_time desc
   </select>
   
     <!-- 条件查询用户记录总数 -->
@@ -91,7 +107,7 @@ LEFT JOIN t_user u ON t.uid = u.user_id
  		 <if test="orderId!=null and orderId !='' "> <!-- String 类型判断为空或者null -->
           AND   t.id like  CONCAT('%',#{orderId},'%')  
         </if>
-          <if test="loginName!=null and loginName'' ">
+           <if test="loginName !=null and loginName !='' ">
           AND   u.login_name like  CONCAT('%',#{loginName},'%')  
         </if>
            <if test="state!=null "> <!-- int 类型判断为空 或者为null-->
@@ -128,43 +144,39 @@ LEFT JOIN t_user u ON t.uid = u.user_id
 	t.add_time AS addTime,
 	t.ip,
 	t.ip_address AS ipAddress,
-	t.remark
+	t.remark,
+	t.seckill_state AS seckillState
 FROM
 	t_order t
 LEFT JOIN t_user u ON t.uid = u.user_id
 where 1=1 
- 		 <if test="orderId!=null and orderId !='' ">
+ 		 <if test="orderId !=null and orderId !='' ">
           AND   t.id like  CONCAT('%',#{orderId},'%')  
         </if>
-    	  <if test="loginName!=null and loginName!='' ">
+    	  <if test="loginName !=null and loginName !='' ">
           AND   u.login_name like  CONCAT('%',#{loginName},'%')  
         </if>
-           <if test="state!=null ">
+           <if test="state !=null ">
           AND   t.state   = #{state}  
         </if>
-        <if test="receiveState!=null  ">
+        <if test="receiveState !=null  ">
          
           AND   t.receive_state   = #{receiveState}  
         </if>
-        <if test="startTime!=null and startTime !='' ">
+        <if test="startTime  !=null and startTime !='' ">
           AND   t.add_time <![CDATA[>=]]> #{startTime} 
         </if>
-           <if test="endTime!=null and endTime !='' ">
+           <if test="endTime !=null and endTime !='' ">
           AND   t.add_time <![CDATA[<=]]> #{endTime} 
         </if>
        ORDER BY t.add_time desc
-        <if test="start!=null and size!=null">
+        <if test="start !=null and size !=null">
             limit #{start},#{size}
         </if>
    
   </select>
   
- <!--  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from t_order
-    where id = #{id,jdbcType=VARCHAR}
-  </select> -->
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
     delete from t_order
     where id = #{id,jdbcType=VARCHAR}

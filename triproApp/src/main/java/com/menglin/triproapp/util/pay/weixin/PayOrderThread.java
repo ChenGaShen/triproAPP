@@ -88,16 +88,30 @@ public class PayOrderThread extends Thread {
 		payWxService.save(payWx);
 		System.out.println("微信记录结束********");
 		
-		//添加消息记录
+		//用户添加支付成功消息记录
 		System.out.println("消息记录添加开始---------");
-		Message message =new Message();
-		message.setUid(order.getUid());
-		message.setOrderId(out_trade_no);//订单号
-		message.setTitle("订单处理");
-		message.setContent("用户于  "+order.getPayTime()+" 时支付下单，请及时处理!!");
-		message.setState(1);//状态：1未读2已读3跟进
-		message.setAddtime(new Date());
-		messageService.save(message);
+		Message userMessage =new Message();
+		userMessage.setUid(order.getUid());
+		userMessage.setOrderId(out_trade_no);//订单号
+		userMessage.setMoney(payMoney);
+		userMessage.setTitle("支付成功");
+		userMessage.setContent("您已于  "+Format.formatDateTime(order.getPayTime())+" 时支付成功!!");
+		userMessage.setState(0);//状态：0未读1已读2跟进
+		userMessage.setType(0); //消息类型 0私有 1公共 2订单
+		userMessage.setAddTime(new Date());
+		messageService.save(userMessage);
+		
+		//系统添加支付消息记录
+		Message orderMessage =new Message();
+		orderMessage.setUid(order.getUid());
+		orderMessage.setOrderId(out_trade_no);//订单号
+		orderMessage.setMoney(payMoney);
+		orderMessage.setTitle("订单处理");
+		orderMessage.setContent("用户于  "+Format.formatDateTime(order.getPayTime())+" 时支付下单，请及时处理!!");
+		orderMessage.setState(0);//状态：0未读1已读2跟进
+		orderMessage.setType(2); //消息类型 0私有 1公共 2订单
+		orderMessage.setAddTime(new Date());
+		messageService.save(orderMessage);
 		System.out.println("消息记录结束---------");
 		
 		if (CheckData.isNotNullOrEmpty(order.getRedMoney())&& order.getRedMoney()!=0.00) {

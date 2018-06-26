@@ -29,7 +29,7 @@ public class WxPayController {
     private IPayWxService payWxService;
 	
 	/**
-	 * 分页查询注册时验证码信息
+	 * 分页查询支付记录信息
 	 * @author CGS
 	 * @time 2018年3月8日上午10:08:00
 	 * @param currentPage
@@ -39,8 +39,6 @@ public class WxPayController {
 	 */
 	@RequestMapping(value="/findByPage.json",method={RequestMethod.POST})  
     public @ResponseBody PageRuslt<PayWx> findByPage(Integer currentPage, Integer pageSize,PayWx model,String startTime,String endTime){
-		System.out.println("findByPage 方法");
-		System.out.println(SystemParam.DOMAIN_NAME);
 		PageRuslt<PayWx> pageRuslt =new PageRuslt<PayWx>();
 		PageBean<PayWx> PageUser=payWxService.findByPage(currentPage, pageSize, model,startTime,endTime);
 		pageRuslt.setPageBean(PageUser);

@@ -1,174 +1,233 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.menglin.triproapp.dao.MessageDao" >
-  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.Message" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="uid" property="uid" jdbcType="INTEGER" />
-    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
-    <result column="title" property="title" jdbcType="VARCHAR" />
-    <result column="content" property="content" jdbcType="VARCHAR" />
-    <result column="money" property="money" jdbcType="DOUBLE" />
-    <result column="state" property="state" jdbcType="INTEGER" />
-    <result column="addtime" property="addtime" jdbcType="TIMESTAMP" />
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.menglin.triproapp.dao.MessageDao">
+  <resultMap id="BaseResultMap" type="com.menglin.triproapp.entity.Message">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="order_id" jdbcType="VARCHAR" property="orderId" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+    <result column="money" jdbcType="DOUBLE" property="money" />
+    <result column="state" jdbcType="INTEGER" property="state" />
+    <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+     <result column="loginName" jdbcType="VARCHAR" property="loginName" />
   </resultMap>
+  <sql id="Base_Column_List">
+    id, uid, order_id AS orderId, title, content, money, state, add_time AS addTime, type
+  </sql>
   
-    <resultMap id="QueryResultMap" type="com.menglin.triproapp.entity.Message" >
-    <id column="id" property="id" jdbcType="INTEGER" />
-    <result column="uid" property="uid" jdbcType="INTEGER" />
-    <result column="order_id" property="orderId" jdbcType="VARCHAR" />
-    <result column="title" property="title" jdbcType="VARCHAR" />
-    <result column="content" property="content" jdbcType="VARCHAR" />
-    <result column="money" property="money" jdbcType="DOUBLE" />
-    <result column="state" property="state" jdbcType="INTEGER" />
-    <result column="addtime" property="addtime" jdbcType="TIMESTAMP" />
-    <result column="identity" property="identity" jdbcType="INTEGER" />
-    <result column="userPhone" property="userPhone" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    id, uid, order_id, title, content, money, state, addtime
-  </sql>
-  <!-- 带别名的查询字段 -->
-   <sql id="Query_Column_List" >
-    t.id, t.uid, t.order_id AS orderId, t.title, t.content, t.money, t.state, t.addtime
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+     <!-- 根据用户UID 查询其所有的消息列表 -->
+  <select id="selectMessAgeList" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from t_message
+    where 1=1 
+        <if test='type=="1"'>
+         AND type= #{type,jdbcType=INTEGER} 
+        </if>
+		<if test='uid!=null and  type=="0" '>
+        AND type=#{type,jdbcType=INTEGER}  AND uid = #{uid,jdbcType=INTEGER} 
+        </if>
+     ORDER BY state ASC, add_time desc 
+  </select>
+  
+   <!-- 查询用户记录总数 -->
+    <select id="selectCount" parameterType="java.util.Map" resultType="int">
+    select  
+    count(*)
+	from t_message m
+	LEFT JOIN t_user u ON m.uid = u.user_id
+    WHERE 1=1
+     <if test="type!=null ">
+	AND type = #{type}
+	</if>
+	 <if test="state!=null ">
+	AND state = #{state}
+	</if>
+	 <if test="title!=null and title !='' ">
+	AND title=#{title}
+	</if>
+	
+    </select>
+  
+  <!-- 多表联合分页查询start 和size查询数据 -->
+  <select id="findByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+   SELECT
+	m.id,
+	m.uid,
+	m.order_id AS orderId,
+	m.title,
+	m.content,
+	m.money,
+	m.state,
+	m.add_time AS addTime,
+	m.type,
+	u.login_name AS loginName
+FROM
+	t_message m
+LEFT JOIN t_user u ON m.uid = u.user_id
+WHERE 1=1
+
+	<if test="type!=null ">
+	AND type = #{type} 
+	</if>
+	
+	 <if test="state!=null ">
+	AND t.state = #{state}
+	</if>
+	 <if test="title!=null and title !='' ">
+	AND title=#{title}
+	</if>
+	
+	ORDER BY m.state ASC, m.add_time desc 
+    <if test="start!=null and size!=null">
+       limit #{start},#{size}
+     </if>
+  </select>
+  
+   <!-- 查询用户消息未读条数 --> 
+    <select id="selectUnreadCount" parameterType="java.util.Map" resultType="int">
+    select  
+    count(*)
+	from t_message
+	
+    WHERE 1=1
+    AND state = 0 
+    AND type = 0
+	 <if test="uid !=null ">
+	AND uid=#{uid,jdbcType=INTEGER}
+	</if>
+    </select>
+    
+      <!-- 查询用户消息最新一条 --> 
+    <select id="firstOne" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select  
+    <include refid="Base_Column_List" />
+	from t_message
+    WHERE 1=1
+	   <if test='type=="1"'>
+         AND type= #{type,jdbcType=INTEGER} 
+        </if>
+		<if test='uid!=null and  type=="0" '>
+        AND type=#{type,jdbcType=INTEGER}  AND uid = #{uid,jdbcType=INTEGER} 
+        </if>
+	order by add_time desc LIMIT 1
+    </select>
+  
+    
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from t_message
     where id = #{id,jdbcType=INTEGER}
   </select>
-  
-  <!-- 多表联合分页查询start 和size查询数据 -->
-  <select id="findByPage" parameterType="Map" resultMap="QueryResultMap">
-    select  
-    <include refid="Query_Column_List" />, u.identity,u.user_phone AS userPhone
-	from t_message  t 
-	INNER  JOIN t_user u  
-	ON t.uid=u.id  
-	where 1=1
-	 <if test="state!=null ">
-	AND t.state = #{state}
-	</if>
-	 <if test="title!=null and title !='' ">
-	AND title=#{title}
-	</if>
-	ORDER BY t.addtime desc 
-        <if test="start!=null and size!=null">
-            limit #{start},#{size}
-        </if>
-  </select>
-  
-   <!-- 查询用户记录总数 -->
-    <select id="selectCount" parameterType="Map" resultType="int">
-        select  
-    count(*)
-	from t_message  t 
-	INNER  JOIN t_user u  
-	ON t.uid=u.id  
-	where 1=1
-	 <if test="state!=null ">
-	AND t.state = #{state}
-	</if>
-	 <if test="title!=null and title !='' ">
-	AND title=#{title}
-	</if>
-    </select>
-  
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from t_message
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <insert id="insert" parameterType="com.menglin.triproapp.entity.Message" >
+  <insert id="insert" parameterType="com.menglin.triproapp.entity.Message">
     insert into t_message (id, uid, order_id, 
       title, content, money, 
-      state, addtime)
+      state, add_time, type
+      )
     values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{orderId,jdbcType=VARCHAR}, 
       #{title,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{money,jdbcType=DOUBLE}, 
-      #{state,jdbcType=INTEGER}, #{addtime,jdbcType=TIMESTAMP})
+      #{state,jdbcType=INTEGER}, #{addTime,jdbcType=TIMESTAMP}, #{type,jdbcType=INTEGER}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.Message" >
+  <insert id="insertSelective" parameterType="com.menglin.triproapp.entity.Message">
     insert into t_message
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         id,
       </if>
-      <if test="uid != null" >
+      <if test="uid != null">
         uid,
       </if>
-      <if test="orderId != null" >
+      <if test="orderId != null">
         order_id,
       </if>
-      <if test="title != null" >
+      <if test="title != null">
         title,
       </if>
-      <if test="content != null" >
+      <if test="content != null">
         content,
       </if>
-      <if test="money != null" >
+      <if test="money != null">
         money,
       </if>
-      <if test="state != null" >
+      <if test="state != null">
         state,
       </if>
-      <if test="addtime != null" >
-        addtime,
+      <if test="addTime != null">
+        add_time,
+      </if>
+      <if test="type != null">
+        type,
       </if>
     </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="id != null" >
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="uid != null" >
+      <if test="uid != null">
         #{uid,jdbcType=INTEGER},
       </if>
-      <if test="orderId != null" >
+      <if test="orderId != null">
         #{orderId,jdbcType=VARCHAR},
       </if>
-      <if test="title != null" >
+      <if test="title != null">
         #{title,jdbcType=VARCHAR},
       </if>
-      <if test="content != null" >
+      <if test="content != null">
         #{content,jdbcType=VARCHAR},
       </if>
-      <if test="money != null" >
+      <if test="money != null">
         #{money,jdbcType=DOUBLE},
       </if>
-      <if test="state != null" >
+      <if test="state != null">
         #{state,jdbcType=INTEGER},
       </if>
-      <if test="addtime != null" >
-        #{addtime,jdbcType=TIMESTAMP},
+      <if test="addTime != null">
+        #{addTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="type != null">
+        #{type,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.Message" >
+  <update id="updateByPrimaryKeySelective" parameterType="com.menglin.triproapp.entity.Message">
     update t_message
-    <set >
-      <if test="uid != null" >
+    <set>
+      <if test="uid != null">
         uid = #{uid,jdbcType=INTEGER},
       </if>
-      <if test="orderId != null" >
+      <if test="orderId != null">
         order_id = #{orderId,jdbcType=VARCHAR},
       </if>
-      <if test="title != null" >
+      <if test="title != null">
         title = #{title,jdbcType=VARCHAR},
       </if>
-      <if test="content != null" >
+      <if test="content != null">
         content = #{content,jdbcType=VARCHAR},
       </if>
-      <if test="money != null" >
+      <if test="money != null">
         money = #{money,jdbcType=DOUBLE},
       </if>
-      <if test="state != null" >
+      <if test="state != null">
         state = #{state,jdbcType=INTEGER},
       </if>
-      <if test="addtime != null" >
-        addtime = #{addtime,jdbcType=TIMESTAMP},
+      <if test="addTime != null">
+        add_time = #{addTime,jdbcType=TIMESTAMP},
       </if>
-    </set>；
+      <if test="type != null">
+        type = #{type,jdbcType=INTEGER},
+      </if>
+    </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.Message" >
+  <update id="updateByPrimaryKey" parameterType="com.menglin.triproapp.entity.Message">
     update t_message
     set uid = #{uid,jdbcType=INTEGER},
       order_id = #{orderId,jdbcType=VARCHAR},
@@ -176,7 +235,8 @@
       content = #{content,jdbcType=VARCHAR},
       money = #{money,jdbcType=DOUBLE},
       state = #{state,jdbcType=INTEGER},
-      addtime = #{addtime,jdbcType=TIMESTAMP}
+      add_time = #{addTime,jdbcType=TIMESTAMP},
+      type = #{type,jdbcType=INTEGER}
     where id = #{id,jdbcType=INTEGER}
   </update>
 </mapper>

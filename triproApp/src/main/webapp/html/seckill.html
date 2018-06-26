@@ -41,8 +41,8 @@
 </head>
 <body>
 	<div class="panel-body" style="padding-bottom:0px;">
-        <!-- <div class="panel panel-default">
-            <div class="panel-heading">查询条件</div>
+        <div class="panel panel-default">
+            <!-- <div class="panel-heading">查询条件</div>
             <div class="panel-body">
                 <form id="formSearch" class="form-horizontal">
                     <div class="form-group" style="margin-top:15px">
@@ -73,8 +73,8 @@
                         </div>
                     </div>
                 </form>
-            </div>
-        </div> -->       
+            </div> -->
+        </div>       
 
         <div id="toolbar" class="btn-group">
            <button id="btn_add" type="button" class="btn btn-default">
@@ -88,6 +88,12 @@
             </button>
               <button id="btn_detailImg" type="button" class="btn btn-default">
                 <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>&nbsp;秒杀商品详情图
+            </button>
+                <button id="btn_close" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-remove-circle" aria-hidden="true"></span>&nbsp;关闭秒杀活动
+            </button>
+                <button id="btn_start" type="button" class="btn btn-default">
+                <span class="glyphicon glyphicon-ok-circle" aria-hidden="true"></span>&nbsp;开启秒杀活动
             </button>
         </div>
         <table id="t_table" class="table table-hover">
@@ -485,7 +491,70 @@
     </div><!-- /.modal -->
     </div>
     
- 
+     <!-- 关闭秒杀模态框（Modal） -->
+<div class="modal fade" id="closeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    关闭秒杀活动
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="close_commodityseckillId" hidden/>
+            
+            <div class="modal-body">确认关闭商品名为   <span id="close_commodityseckillName" style="color: #ffffff;"></span>  的秒杀活动？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button type="button" id="closeButton"  class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+        <!-- 开启秒杀模态框（Modal） -->
+<div class="modal fade" id="startModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document" style="width: 25%;" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    开启秒杀活动
+                </h4>
+            </div>
+            <form id="form_data">
+            <input type="text" id="start_commodityseckillId" hidden/>
+            
+            <div class="modal-body">确认开启商品名称为   <span id="start_commodityseckillName" style="color: red;"></span> 的秒杀活动？</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+               <button type="button" id="startButton"  class="btn btn-primary">
+                  	  确认
+                </button>
+            </div>
+            </form>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+    </div>
+    
+    
+ 	         <!-- 加载模态框（Modal） -->
+	<div class="modal fade" id="loadingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"  data-backdrop='static'>
+    	<div class="modal-dialog" role="document" style="width: 65%; margin-top: 12%; margin-left: 10%;" >
+			<div id="loading" class="loading">Loading pages...</div>
+    	</div>
+    </div>
     
 </div>  
 <script type="text/javascript">

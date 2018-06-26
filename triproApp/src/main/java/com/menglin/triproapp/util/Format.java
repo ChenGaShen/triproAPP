@@ -1,5 +1,6 @@
 package com.menglin.triproapp.util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -136,4 +137,23 @@ public class Format{
 		}*/
 		return date; 
 	}
+	
+	public static String formatDateTime(Date  time){
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		return 	sdf.format(time); 
+	}
+	
+	/**
+	 * double  类型 减法运算
+	 * 提供精确的减法运算。5-1
+     * @param v1 被减数   5
+     * @param v2 减数        1
+     * @return 两个参数的差
+	 */
+	
+	 public static double sub(double v1,double v2){
+	        BigDecimal b1 = new BigDecimal(Double.toString(v1));
+	        BigDecimal b2 = new BigDecimal(Double.toString(v2));
+	        return b1.subtract(b2).doubleValue();
+	    }
 }

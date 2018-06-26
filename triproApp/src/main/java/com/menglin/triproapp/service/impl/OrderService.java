@@ -358,6 +358,7 @@ public class OrderService implements IOrderService {
     			if (lists.get(i).getState()==1) {
     				detailVO.setReceiveState(lists.get(i).getReceiveState().toString());
     			}
+    			detailVO.setSeckillState(lists.get(i).getSeckillState().toString());// 订单秒杀状态0秒杀订单1普通订单
     			/*switch (lists.get(i).getState()){
     			case 0:detailVO.setState("待付款");break;//状态：0待付款1已付款2取消订单3已失效
     			case 1:detailVO.setState("已付款");break;
@@ -456,6 +457,7 @@ public class OrderService implements IOrderService {
 	    			if (lists.get(i).getState()==1) {
 	    				detailVO.setReceiveState(lists.get(i).getReceiveState().toString());//订单状态0待发货1配送中2已签收
 	    			}
+	    			detailVO.setSeckillState(lists.get(i).getSeckillState().toString()); // 订单秒杀状态0秒杀订单1普通订单
 	    			if (CheckData.isNotNullOrEmpty(lists.get(i).getAir())) {
 	    				detailVO.setAir(lists.get(i).getAir());
 	    			}//运单号
@@ -478,6 +480,86 @@ public class OrderService implements IOrderService {
 	    		}
 	    	}
 		return orederDetailVOs;
+	}
+
+	/**
+	 * 小程序 订单  字段 -模糊查询
+	 */
+	@Override
+	public ResultOrderList selectOrderListByfield(Integer uid, String field) {
+		ResultOrderList resultOrderList =new ResultOrderList();
+		List<OrederDetailVO> orederDetailVOs =new ArrayList<OrederDetailVO>();
+		//封装订单查询参数
+		HashMap<String,Object> map = new HashMap<String,Object>();
+		 	map.put("uid",uid);
+	        map.put("field", field);
+		List<Order> orders= orderDao.selectByUidAndFiled(map);
+	if (CheckData.isNotEmpty(orders)) {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		for (int i = 0; i < orders.size(); i++) {
+			OrederDetailVO detailVO=new OrederDetailVO();
+			detailVO.setOrderId(orders.get(i).getId());
+			
+			List<OrderItem> items =orderItemDao.selectListByOrderId(orders.get(i).getId());
+			List<OrderItemVO> orderItemVOs =new ArrayList<OrderItemVO>();
+			for (int j = 0; j < items.size(); j++) {
+				OrderItemVO itemVO=new OrderItemVO();
+				itemVO.setOrderId(items.get(j).getOrderId());
+				itemVO.setCommodityId(items.get(j).getCommodityId());
+				itemVO.setCommodityName(items.get(j).getCommodityName());
+				itemVO.setImg(SystemParam.DOMAIN_NAME+items.get(j).getImg());
+				itemVO.setAmount(items.get(j).getAmount());
+				itemVO.setPrice(Format.keepTwoMoney(items.get(j).getPrice()));
+				itemVO.setSpecification(items.get(j).getSpecification());
+				orderItemVOs.add(itemVO);
+				
+			}
+			detailVO.setOrderItems(orderItemVOs);
+			detailVO.setPayState(orders.get(i).getState());
+			switch (orders.get(i).getState()){
+			case 0:detailVO.setState("待付款");break;//状态：0待付款1已付款2取消订单3已失效
+			case 1:detailVO.setState("已付款");break;
+			case 2:detailVO.setState("已取消");break;
+			case 3:detailVO.setState("已失效");break;
+			}
+			if (orders.get(i).getState()==1) {
+				detailVO.setDeliveryState(orders.get(i).getReceiveState());
+				switch (orders.get(i).getReceiveState()){
+				case 0:detailVO.setReceiveState("待发货");break;//订单状态0待发货1配送中2已签收
+				case 1:detailVO.setReceiveState("配送中");break;
+				case 2:detailVO.setReceiveState("交易成功");break;
+				}
+			}
+			if (CheckData.isNotNullOrEmpty(orders.get(i).getAir())) {
+				detailVO.setAir(orders.get(i).getAir());
+			}//运单号
+			
+			if (CheckData.isNotNullOrEmpty(orders.get(i).getCompany())) {
+				detailVO.setCompany(orders.get(i).getCompany());
+			}//物流公司
+			detailVO.setOrderPrice(Format.keepTwoMoney(orders.get(i).getOrderPrice()));
+			if (CheckData.isNotNullOrEmpty(orders.get(i).getRedMoney())) {
+				detailVO.setRedMoney(Format.keepTwoMoney(orders.get(i).getRedMoney()));
+			}else{
+				detailVO.setRedMoney("0.00");
+			}
+			detailVO.setReceiveName(orders.get(i).getReceiveName());
+			detailVO.setReceivePhone(orders.get(i).getReceivePhone());
+			detailVO.setReceiveAddress(orders.get(i).getReceiveAddress());
+			detailVO.setAddTime(sdf.format(orders.get(i).getAddTime()));
+//			detailVO.setResult(Result.suc("主订单数据!!"));
+			orederDetailVOs.add(detailVO);
+		}
+		resultOrderList.setDetailVOs(orederDetailVOs);
+	}	
+	
+	if (CheckData.isNotEmpty(orederDetailVOs)) {
+		resultOrderList.setResult(Result.suc("模糊搜索订单列表查询成功!!"));
+	}else{
+		resultOrderList.setResult(Result.fal("订单空空如也~"));
+	}
+		
+		return resultOrderList;
 	}
 	
 	

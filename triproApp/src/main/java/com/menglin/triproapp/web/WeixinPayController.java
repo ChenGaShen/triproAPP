@@ -158,7 +158,8 @@ public class WeixinPayController {
 				if(prepay_id.equals("")){
 					request.setAttribute("ErrorMsg", "统一支付接口获取预支付订单出错");
 					System.out.println("统一支付接口获取预支付订单出错");
-					wxInfo.setResult(Result.fal("请求失败,统一支付接口获取预支付订单出错"));	
+					wxInfo.setResult(Result.fal("请求失败,统一支付接口获取预支付订单出错"));
+					return wxInfo;
 				}
 			} catch (Exception e1) {
 				e1.printStackTrace();

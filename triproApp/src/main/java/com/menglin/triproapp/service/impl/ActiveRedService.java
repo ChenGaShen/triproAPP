@@ -52,15 +52,18 @@ public class ActiveRedService implements IActiveRedService {
 	}
 	
 	@Override
-	public List<ActiveRed> activeRedList(Integer uid) {
-		
-		return activeRedDao.selectActiveRedList(uid);
+	public List<ActiveRed> activeRedList(Integer uid,Integer redState) {
+		 HashMap<String,Object> map = new HashMap<String,Object>();
+		 	map.put("uid",uid);
+	        map.put("redState", redState);
+		return activeRedDao.selectActiveRedList(map);
 	}
 
 	@Override
 	public PageBean<ActiveRed> findByPage(Integer currentPage, Integer pageSize, ActiveRed model) {
 		//封装每页显示的数据
         HashMap<String,Object> map1 = new HashMap<String,Object>();
+        map1.put("orderId", model.getOrderId());
         map1.put("loginName", model.getLoginName());
         //总记录数
         int totalCount = activeRedDao.selectCount(map1);
@@ -78,6 +81,7 @@ public class ActiveRedService implements IActiveRedService {
     	
         map.put("start",(currentPage-1)*pageSize);
         map.put("size", pageSize);
+        map.put("orderId", model.getOrderId());
         map.put("loginName", model.getLoginName());
        
         List<ActiveRed> lists = activeRedDao.findByPage(map);
@@ -93,6 +97,13 @@ public class ActiveRedService implements IActiveRedService {
 	public ActiveRed selectByorderId(String orderId) {
 		
 		return activeRedDao.selectByorderId(orderId);
+	}
+
+	@Override
+	public int selectActiveRedCount(Integer uid) {
+		 HashMap<String,Object> map = new HashMap<String,Object>();
+		 	map.put("uid",uid);
+		return activeRedDao.selectActiveRedCount(map);
 	}
 
 	

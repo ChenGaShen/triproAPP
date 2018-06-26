@@ -45,7 +45,7 @@
         </if>
   </select>
   
-   <!-- 商品列表 -->
+   <!-- 秒杀商品列表 -->
   <select id="selectCommoditySeckillList" parameterType="java.util.Map" resultMap="ResultMapWithBLOBs">
     select 
     <include refid="Base_Column_List" />
@@ -55,7 +55,7 @@
     where 1=1 
     AND seckill_onSale=0
     
-    AND seckill_state=0
+    AND seckill_state=1 or seckill_state=0
     
   </select>
   
@@ -67,7 +67,7 @@
     <include refid="Blob_Column_List" />
     from t_commodity_seckill
     where 1=1 
-    AND seckill_onSale=1 
+    AND seckill_onSale=0
     
   </select>
   

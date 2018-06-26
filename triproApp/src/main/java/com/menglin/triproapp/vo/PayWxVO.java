@@ -94,13 +94,13 @@ public class PayWxVO {
     }
     
     //查询条件
-    private String userPhone;
+    private String loginName;
 
-	public String getUserPhone() {
-		return userPhone;
+	public String getLoginName() {
+		return loginName;
 	}
 
-	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone;
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
 	}
 }

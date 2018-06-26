@@ -19,6 +19,7 @@ public interface IOrderService {
 	public Order findOrderByUid(Integer uid);
 	public ResultOrderList selectOrderListByUid(Integer uid);
 	public ResultOrderList selectOrderListByUidAndStatus(Integer uid,Integer state ,Integer receiveState);
+	public ResultOrderList selectOrderListByfield(Integer uid,String field);
 	public OrederDetailVO findByOrederId(String orderId);
 	PageBean<OrederDetailVO> findByPage(Integer currentPage,Integer pageSize,Order model,String orderId,String startTime,String endTime);
 	List<OrederDetailVO> export(Order model,String orderId,String startTime,String endTime);

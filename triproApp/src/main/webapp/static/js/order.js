@@ -75,8 +75,8 @@ var TableInit = function() {
 	                return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
 	            }
 	        }, {
-				  field: 'userPhone', // 返回json数据中的name
-	              title: '下单账户', // 表格表头显示文字
+				  field: 'loginName', // 返回json数据中的name
+	              title: '微信昵称', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	            	  
@@ -85,6 +85,19 @@ var TableInit = function() {
 	              title: '订单号', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
+			},{
+				  field: 'seckillState', // 返回json数据中的name
+	              title: '订单类别', // 表格表头显示文字  
+	              align: 'center', // 左右居中
+	              valign: 'middle' ,// 上下居中
+	              formatter : function(value, row, index) { 
+//            		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
+	            	  if (value == 0) { //状态：0秒杀订单1普通订单
+	                        return "秒杀订单";
+	                    } else if (value == 1) {
+	                        return "普通订单";
+	                    } 
+                  }
 			},{
 				  field: 'orderItems', // 返回json数据中的name
 	              title: '商品信息', // 表格表头显示文字
@@ -274,7 +287,7 @@ $('#btn_phyc').click(function(){
     	myToast("此订单暂未支付，无法录入");
     }else{
     	$("#phyc_orderId").val(rowData[0].orderId);
-    	$("#phyc_userPhone").val(rowData[0].userPhone);
+    	$("#phyc_loginName").val(rowData[0].loginName);
     	$("#phyc_receivePhone").val(rowData[0].receivePhone);
     	$("#phyc_receiveName").val(rowData[0].receiveName);
     	$("#phyc_receiveAddress").val(rowData[0].receiveAddress);
@@ -326,7 +339,7 @@ $('#btn_remark').click(function(){
     	myToast("请选中一条数据");
     }else{
     	$("#remark_orderId").val(rowData[0].orderId);
-    	$("#remark_userPhone").val(rowData[0].userPhone);
+    	$("#remark_loginName").val(rowData[0].loginName);
     	$("#remark_receiveName").val(rowData[0].receiveName);
     	$("#remark_receivePhone").val(rowData[0].receivePhone);
     	$("#remark_receiveAddress").val(rowData[0].receiveAddress);
@@ -336,6 +349,7 @@ $('#btn_remark').click(function(){
 		}else{
 			$("input[name='remark_receiveState'][value='']").attr("checked",true);
 		}
+    	$("#remark_remark").val(rowData[0].remark); //备注赋值
     	$("#remarkModal").modal("show");//js 控制显示模态框
     	
     	//表单验证
@@ -502,6 +516,20 @@ $("#btn_export").click(function(){
         	                	ex_receiveState="---"
         	                	break;
         	                }
+        	                
+        	                var seckillState1 = data[i].seckillState;
+        	                var ex_seckillState="";
+        	                switch(seckillState1){ ////状态：0秒杀1普通
+        	                case "0":
+        	                	ex_seckillState="秒杀订单"
+        	                	break;
+        	                case "1":
+        	                	ex_seckillState="普通订单"
+        	                	break;
+        	                default:
+        	                	ex_state="---"
+        	                	break;
+        	                }
         	                var ex_receiveName= isNull(data[i].receiveName);
         	                var ex_receivePhone= isNull(data[i].receivePhone);
         	                var ex_receiveAddress= isNull(data[i].receiveAddress);
@@ -517,6 +545,7 @@ $("#btn_export").click(function(){
         	        					+"<td>"+[i+1+(pageNumber-1)*10]+"</td>"
         	        					+"<td>"+ex_userPhone+"&nbsp;</td>"
         	        					+"<td>"+ex_orderId+"&nbsp;</td>"
+        	        					+"<td>"+ex_seckillState+"&nbsp;</td>"
         	        					+"<td>"+ex_detail_name+"</td>"
         	        					+"<td>"+ex_orderPrice+"&nbsp;</td>"
         	        					+"<td>"+ex_redMoney+"&nbsp;</td>"

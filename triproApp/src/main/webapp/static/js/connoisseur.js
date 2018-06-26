@@ -77,13 +77,13 @@ var TableInit = function() {
 	            	  
 			},  {
 				  field: 'loginName', // 返回json数据中的name
-	              title: '账户昵称', // 表格表头显示文字
+	              title: '微信昵称', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	            	  
 			},{
-				  field: 'phoneBelong', // 返回json数据中的name
-	              title: '归属地', // 表格表头显示文字
+				  field: 'token', // 返回json数据中的name
+	              title: '唯一识别ID', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle' // 上下居中
 			}, {
@@ -193,7 +193,8 @@ $("#btn_redMoney").click(function(){
 //批量红包确认按钮绑定 
 $("#activeButton").click(function () {
 			
-	 		var Data= $("#t_table").bootstrapTable('getData'); 
+//	 		var Data= $("#t_table").bootstrapTable('getData');//选中所有 
+			var Data =$("#t_table").bootstrapTable('getSelections'); 
 			var strIds = "";
 			for (var i = 0; i < Data.length; i++) {
 				strIds += Data[i].userId + ",";

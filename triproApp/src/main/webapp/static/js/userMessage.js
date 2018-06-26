@@ -15,7 +15,7 @@ var TableInit = function() {
 	
 	oTableInit.Init = function() {
 		$('#t_table').bootstrapTable({
-			url : '../admin/activeRed/findByPage.json', // 请求后台的URL（*）
+			url : '../admin/message/findByPage.json', // 请求后台的URL（*）
 			method : 'post', // 请求方式（*）
 			data :[],
 			dataType: 'json',
@@ -42,7 +42,7 @@ var TableInit = function() {
 			clickToSelect : true, // 是否启用点击选中行
 			height : 500, // 行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
 			undefinedText : '---', //未定义时显示
-			uniqueId : "activeid", // 每一行的唯一标识，一般为主键列
+			uniqueId : "id", // 每一行的唯一标识，一般为主键列
 			showToggle : true, // 是否显示详细视图和列表视图的切换按钮
 			cardView : false, // 是否显示详细视图
 			detailView : false, // 是否显示父子表
@@ -63,7 +63,7 @@ var TableInit = function() {
 	                return pageSize * (pageNumber - 1) + index + 1;    //返回每条的序号： 每页条数 * （当前页 - 1 ）+ 序号
 	            }
 	        },{
-				  field: 'activeid', // 返回json数据中的name
+				  field: 'id', // 返回json数据中的name
 	              title: 'ID', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
@@ -76,35 +76,65 @@ var TableInit = function() {
 	            	  
 			},{
 				  field: 'orderId', // 返回json数据中的name
-	              title: '相关订单号', // 表格表头显示文字
+	              title: '订单号', // 表格表头显示文字
+	              align: 'center', // 左右居中
+	              valign: 'middle', // 上下居中
+	            	  
+			}, {
+				  field: 'money', // 返回json数据中的name
+	              title: '总金额', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	            	  
 			},{
-				  field: 'redMoney', // 返回json数据中的name
-	              title: '红包金额', // 表格表头显示文字
+				  field: 'title', // 返回json数据中的name
+	              title: '消息标题', // 表格表头显示文字
 	              align: 'center', // 左右居中
-	              valign: 'middle' // 上下居中
-			}, {
-				  field: 'redState', // 返回json数据中的name
-	              title: '使用状态', // 表格表头显示文字
+	              valign: 'middle', // 上下居中
+	            	  
+			},{
+				  field: 'content', // 返回json数据中的name
+	              title: '消息内容', // 表格表头显示文字
+	              align: 'center', // 左右居中
+	              valign: 'middle', // 上下居中
+	            	  
+			},{
+				  field: 'type', // 返回json数据中的name
+	              title: '消息类别', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle',// 上下居中
 	              formatter : function(value, row, index) { 
 //            		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
-                      if (value == 0) { //0 未使用1 已使用 2已过期
-                          return "未使用";
+                      if (value == 0) { //0私有 1公共 2订单
+                          return "用户消息";
                       } 
                       if (value == 1) {
-                          return "已使用";
+                          return "公告消息";
                       } 
                       if (value == 2) {
-                          return "已过期";
+                          return "订单消息";
+                      } 
+                  }
+			}, {
+				  field: 'state', // 返回json数据中的name
+	              title: '消息状态', // 表格表头显示文字
+	              align: 'center', // 左右居中
+	              valign: 'middle',// 上下居中
+	              formatter : function(value, row, index) { 
+//            		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
+                      if (value == 0) { //0未读1已读2跟进
+                          return "未读";
+                      } 
+                      if (value == 1) {
+                          return "已读";
+                      } 
+                      if (value == 2) {
+                          return "处理中";
                       } 
                   }
 			},{
 				  field: 'addTime', // 返回json数据中的name
-	              title: '发送时间', // 表格表头显示文字
+	              title: '发布时间', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	              formatter : function(value, row, index) { 
@@ -133,10 +163,9 @@ var TableInit = function() {
 			currentPage : params.pageNumber, // //页码  
 */			pageSize: params.pageSize, // 页面大小 多少条记录
 			currentPage : params.pageNumber, // //页码  
-			loginName : $("#loginName").val(),
-			orderId : $("#orderId").val(),
 			startTime : $("#startTime").val(),
 			endTime : $("#endTime").val(),
+			type: 0, //消息类型 0私有 1公共 2订单
 			search:params.search //服务端分页需要加上此参数
 		};
 		return temp;
@@ -146,7 +175,7 @@ var TableInit = function() {
 	
 	  //查询按钮事件
     $('#btn_query').click(function(){
-        $('#t_table').bootstrapTable('refresh', {url: '../admin/activeRed/findByPage.json'});
+        $('#t_table').bootstrapTable('refresh', {url: '../admin/message/findByPage.json'});
        /* 
         再点击查询按钮时 
         （分页后重新搜素问题） 
@@ -157,9 +186,7 @@ var TableInit = function() {
 $("#btn_reset").off().on("click",function(){ 
 	$("#startTime").val("");  
     $("#endTime").val("");  
-    $("#loginName").val(""); 
-    $("#orderId").val("");  
-    $('#t_table').bootstrapTable('refresh', {url: '../admin/activeRed/findByPage.json'});
+    $('#t_table').bootstrapTable('refresh', {url: '../admin/message/findByPage.json'});
    
 });
 

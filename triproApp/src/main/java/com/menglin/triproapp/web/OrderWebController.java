@@ -1,4 +1,4 @@
-package com.menglin.triproapp.web;
+ package com.menglin.triproapp.web;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -37,6 +37,7 @@ import com.menglin.triproapp.service.IPayWxService;
 import com.menglin.triproapp.service.IShoppingService;
 import com.menglin.triproapp.service.IUserService;
 import com.menglin.triproapp.util.CheckData;
+import com.menglin.triproapp.util.Format;
 import com.menglin.triproapp.util.OrderUtils;
 import com.menglin.triproapp.util.PhoneUtils;
 import com.menglin.triproapp.util.Result;
@@ -166,7 +167,11 @@ public class OrderWebController {
 				if (CheckData.isNotNullOrEmpty(activeid)) {
 					ActiveRed  activeRed=activeRedService.get(activeid);
 					if (CheckData.isNotNullOrEmpty(activeRed.getActiveid()) && activeRed.getRedState()==0) { //0 未使用1 已使用 2已过期
-						model.setOrderPrice(OrderPrice-activeRed.getRedMoney());//使用红包 金额减少
+						if (Format.sub(OrderPrice,activeRed.getRedMoney())>0.00) {
+							model.setOrderPrice(OrderPrice-activeRed.getRedMoney());//使用红包 金额减少
+						}else{
+							model.setOrderPrice(0.01);//如果红包金额大于订单金额，默认支付0.01元
+						}
 						model.setRedMoney(activeRed.getRedMoney());//订单中的红包金额
 						//红包状态修改
 						activeRed.setOrderId(autOrderId);
@@ -332,7 +337,7 @@ public class OrderWebController {
 						return vn;
 					}
 				}else{
-					vn.setResult(Result.fal("秒杀活动已结束,快去逛逛首页吧~"));
+					vn.setResult(Result.fal("秒杀活动未开始或已结束,快去逛逛首页吧~"));
 					return vn;
 				}
 				
@@ -452,6 +457,23 @@ public class OrderWebController {
 		return orderList;
 	}
 	
+	
+	/**
+	 * 订单  单表多字段 -模糊查询
+	 * @author CGS
+	 * @time 2018年6月26日上午10:25:30
+	 * @param uid
+	 * @param field
+	 * @return
+	 */
+	@RequestMapping(value="/toOrderByfield.json",method = {RequestMethod.POST})
+	public @ResponseBody ResultOrderList toOrderByfield(Integer uid,String field ){
+		 
+		ResultOrderList	orderList=orderService.selectOrderListByfield(uid,field);
+		
+		return orderList;
+	}
+	
 	/**
 	 * 根据订单查询物流
 	 * @author CGS
@@ -508,7 +530,7 @@ public class OrderWebController {
 		Order order=  orderService.get(orderId);
 	if (null!=order) {
 		
-		if (order.getState()==1 && order.getReceiveState() == 0) { //状态：0待付款1已付款2取消订单3已失效
+		if (order.getState()==1 && order.getReceiveState() == 1) { //状态：0待付款1已付款2取消订单3已失效
 			order.setReceiveState(2);//订单状态0待发货1配送中2已签收
 			orderService.update(order);
 			vn.setResult(Result.suc("确认收货成功!"));
@@ -525,7 +547,7 @@ public class OrderWebController {
 	}
 	
 	/**
-	 * 用户取消订单
+	 * 用户取消订单 只有待付款的能取消
 	 * @author CGS
 	 * @time 2018年3月12日下午3:25:26
 	 * @param uid
@@ -534,12 +556,9 @@ public class OrderWebController {
 	 */
 	@RequestMapping(value="/doCancellOrder.json",method = {RequestMethod.POST})
 	public @ResponseBody ResultVN doCancellOrder(Integer uid,String  orderId ){
-		
 		ResultVN vn = new ResultVN();
 		Order order=  orderService.get(orderId);
 		if (CheckData.allfieldIsNotNUll(order)) {
-			
-			
 			if (order.getState()==0) { //状态：0待付款1已付款2取消订单3已失效
 				order.setState(2);//状态：0待付款1已付款2取消订单3已失效
 				orderService.update(order);
@@ -554,7 +573,7 @@ public class OrderWebController {
 					    	commodityService.update(commodity);
 						}
 					}
-				}else{ //秒杀商品回复
+				}else{ //秒杀商品恢复
 					List<OrderItem> items =orderItemService.findListByOrderId(orderId);
 			    	if (CheckData.isNotEmpty(items)) {
 						for (int i = 0; i < items.size(); i++) {
@@ -569,7 +588,7 @@ public class OrderWebController {
 				vn.setResult(Result.suc("订单取消成功!"));
 				return vn;
 			}else{
-				vn.setResult(Result.fal("操作有误!!"));
+				vn.setResult(Result.fal("订单暂无法取消!!"));
 				return vn;
 			}
 		}else{

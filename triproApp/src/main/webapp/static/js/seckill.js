@@ -199,7 +199,7 @@ var TableInit = function() {
 	              valign: 'middle', // 上下居中
 	              formatter : function(value, row, index) { 
 //	       		  value:代表当前单元格中的值，row：代表当前行, index:代表当前行的下标,
-	           	  if (value == 1) { //商品状态1上架0下架
+	           	  if (value == 0) { //商品状态0上架1下架
 	                       return "销售中";
 	                   } else if (value == 1) {
 	                       return "已下架";
@@ -484,6 +484,7 @@ $("#addButton").click(function () {
 		var bootstrapValidator = $("#form_data").data('bootstrapValidator');
 	    bootstrapValidator.validate();
 	  if ($("#form_data").data('bootstrapValidator').isValid()) {//获取验证结果，如果成功，执行下面代码 
+		  $("#loadingModal").modal("show");//js 控制隐藏模态框
     	   var formData=new FormData($('#form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
     	   formData.append('commodityseckillName', $("input[name='add_commodityseckillName']").val());
     	   formData.append('seckillClassify', $("#add_seckillClassify").val());
@@ -506,6 +507,7 @@ $("#addButton").click(function () {
     		      processData: false,//必须有
     	          contentType: false,//必须有
     		      success: function (data) {
+    		    	  $("#loadingModal").modal("hide");//js 控制隐藏模态框
     		    	  if(data.result.status==0){
     		    		  $('#form_data').bootstrapValidator('resetForm', true);//重置表单
     		    		  $("#imgPre").attr('src',"../static/img/noimage.png"); //图片回复默认
@@ -795,6 +797,7 @@ $("#updateButton").click(function () {
 	   var bootstrapValidator = $("#update_form_data").data('bootstrapValidator');
 	   bootstrapValidator.validate();
 	  if (($("#update_form_data").data('bootstrapValidator')).isValid()) {//获取验证结果，如果成功，执行下面代码 
+		  $("#loadingModal").modal("show");//js 控制隐藏模态框
   	   var formData1=new FormData($('#update_form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
   	     formData1.append('commodityseckillId', $("input[name='update_commodityseckillId']").val());
   	   	 formData1.append('commodityseckillName', $("input[name='update_commodityseckillName']").val());
@@ -819,6 +822,7 @@ $("#updateButton").click(function () {
   		      processData: false,//必须有
   	          contentType: false,//必须有
   		      success: function (data) {
+  		    	$("#loadingModal").modal("hide");//js 控制隐藏模态框
   		    	  if(data.result.status==0){
   		    		  $('#update_form_data').bootstrapValidator('resetForm', true);//重置表单
   		    		  $("#update_imgPre").attr('src',"../static/img/noimage.png"); //图片回复默认
@@ -1027,6 +1031,7 @@ $("#detailImgButton").click(function () {
 	   var bootstrapValidator = $("#detailImg_form_data").data('bootstrapValidator');
 	   bootstrapValidator.validate();
 	  if (($("#detailImg_form_data").data('bootstrapValidator')).isValid()) {//获取验证结果，如果成功，执行下面代码 
+	   $("#loadingModal").modal("show");//js 控制隐藏模态框
   	   var formData=new FormData($('#detailImg_form_data'));//使用FormData提交表单并上传文件  var formData=new FormData($('#form_data')[0]);
   	   formData.append('seckillId', $("input[name='detailImg_commodityseckillId']").val());//商品ID
   	   formData.append('detailsid', $("input[name='detailImg_detailsId']").val());//商品详情图ID
@@ -1070,6 +1075,7 @@ $("#detailImgButton").click(function () {
   		      processData: false,//必须有
   	          contentType: false,//必须有
   		      success: function (data) {
+  		    	$("#loadingModal").modal("hide");//js 控制隐藏模态框
   		    	  if(data.result.status==0){
   		    		 $('#detailImg_form_data').bootstrapValidator('resetForm', true);//重置表单
   		    		 $("#detailImg_imgPre01").attr('src',"../static/img/noimage.png"); //图片回复默认
@@ -1096,6 +1102,93 @@ $("#detailImgButton").click(function () {
 	  }		
       
 }); 
+
+//关闭秒杀按钮事件
+$('#btn_close').click(function(){
+    var rowData= $("#t_table").bootstrapTable('getSelections'); 
+    alert(rowData.length);
+    if(rowData.length<=0 || rowData.length>1){
+    	myToast("请选中一条数据");
+    }else if (rowData[0].seckillState==1){//商品秒杀状态0开启1关闭
+    	myToast("此商品秒杀活动已结束!!");
+    }else{
+    	$("#close_commodityseckillId").val(rowData[0].commodityseckillId);
+    	$("#close_commodityseckillName").html(rowData[0].commodityseckillName);
+    	$("#closeModal").modal("show");//js 控制显示模态框}
+    }
+	
+   });
+
+
+//关闭秒杀确认按钮 信息修改
+$("#closeButton").click(function () {
+    	   var formData = new FormData();
+    		formData.append("commodityseckillId", $("#close_commodityseckillId").val());
+    		formData.append("seckillState", 1);//商品秒杀状态0开启1关闭
+    		$.ajax({
+    		      type: "post",
+    		      dataType: "json",
+    		      url : "../admin/commoditySeckill/closeAndStartCommoditySeckill.json",
+    		      data:formData,
+    		      processData: false,//必须有
+    	          contentType: false,//必须有
+    		      success: function (data) {
+    		    	  if(data.result.status==0){
+    		    		  $("#closeModal").modal("hide");//js 控制隐藏模态框
+    		    		  setTimeout(myToast(data.result.msg),10000);
+    		    		  $('#t_table').bootstrapTable('refresh', {url: '../admin/commoditySeckill/findByPage.json'});//数据刷新
+    		    	  }else{
+    		    		  setTimeout(myToast(data.result.msg),10000);
+    		    	  }
+    		      },
+    		       error : function() {  
+    		    	   console.log("数据加载失败");
+    	}  
+    		});
+        
+   }); 
+
+//开启秒杀按钮事件
+$('#btn_start').click(function(){
+    var rowData= $("#t_table").bootstrapTable('getSelections'); 
+    if(rowData.length<=0 || rowData.length>1){
+    	myToast("请选中一条数据");
+    }else if (rowData[0].seckillState==0){//商品秒杀状态0开启1关闭
+    	myToast("此商品秒杀活动正进行中!!");
+    }else{
+    	$("#start_commodityseckillId").val(rowData[0].commodityseckillId);
+    	$("#start_commodityseckillName").html(rowData[0].commodityseckillName);
+    	$("#startModal").modal("show");//js 控制显示模态框}
+    }
+	
+   });
+//开启秒杀单确认按钮
+$("#startButton").click(function () {
+    	   var formData = new FormData();
+    	   formData.append("commodityseckillId", $("#start_commodityseckillId").val());
+   		   formData.append("seckillState", 0);//商品秒杀状态0开启1关闭
+    		$.ajax({
+    		      type: "post",
+    		      dataType: "json",
+    		      url : "../admin/commoditySeckill/closeAndStartCommoditySeckill.json",
+    		      data:formData,
+    		      processData: false,//必须有
+    	          contentType: false,//必须有
+    		      success: function (data) {
+    		    	  if(data.result.status==0){
+    		    		  $("#startModal").modal("hide");//js 控制隐藏模态框
+    		    		  setTimeout(myToast(data.result.msg),10000);
+    		    		  $('#t_table').bootstrapTable('refresh', {url: '../admin/commoditySeckill/findByPage.json'});//数据刷新
+    		    	  }else{
+    		    		  setTimeout(myToast(data.result.msg),10000);
+    		    	  }
+    		      },
+    		       error : function() {  
+    		    	   console.log("数据加载失败");
+    	}  
+    		});
+        
+   }); 
 
 
 	return oTableInit;

@@ -17,11 +17,11 @@ public class Message {
 
     private Integer state;
 
-    private Date addtime;
+    private Date addTime;
+
+    private Integer type;
     
-    private Integer identity;
-    
-    private String userPhone;
+    private String loginName;
 
     public Integer getId() {
         return id;
@@ -79,28 +79,28 @@ public class Message {
         this.state = state;
     }
 
-    public Date getAddtime() {
-        return addtime;
+    public Date getAddTime() {
+        return addTime;
     }
 
-    public void setAddtime(Date addtime) {
-        this.addtime = addtime;
+    public void setAddTime(Date addTime) {
+        this.addTime = addTime;
     }
 
-	public Integer getIdentity() {
-		return identity;
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+	public String getLoginName() {
+		return loginName;
 	}
 
-	public void setIdentity(Integer identity) {
-		this.identity = identity;
-	}
-
-	public String getUserPhone() {
-		return userPhone;
-	}
-
-	public void setUserPhone(String userPhone) {
-		this.userPhone = userPhone;
+	public void setLoginName(String loginName) {
+		this.loginName = loginName;
 	}
     
 }

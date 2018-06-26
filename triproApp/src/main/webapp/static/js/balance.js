@@ -69,8 +69,8 @@ var TableInit = function() {
 	              valign: 'middle', // 上下居中
 	              visible: false //不可见，隐藏
 			}, {
-				  field: 'userPhone', // 返回json数据中的name
-	              title: '账户手机', // 表格表头显示文字
+				  field: 'loginName', // 返回json数据中的name
+	              title: '微信昵称', // 表格表头显示文字
 	              align: 'center', // 左右居中
 	              valign: 'middle', // 上下居中
 	            	  
@@ -136,7 +136,7 @@ var TableInit = function() {
 			currentPage : params.pageNumber, // //页码  
 */			pageSize: params.pageSize, // 页面大小 多少条记录
 			currentPage : params.pageNumber, // //页码  
-			userPhone : $("#userPhone").val(),
+			loginName : $("#loginName").val(),
 			startTime : $("#startTime").val(),
 			endTime : $("#endTime").val(),
 			outTradeNo :$("#orderId").val(),
@@ -159,7 +159,7 @@ var TableInit = function() {
 $("#btn_reset").off().on("click",function(){ 
 	$("#startTime").val("");  
     $("#endTime").val("");  
-    $("#userPhone").val("");  
+    $("#loginName").val("");  
     $("#orderId").val(""),
     $('#t_table').bootstrapTable('refresh', {url: '../admin/wxpay/findByPage.json'});
    
@@ -167,7 +167,7 @@ $("#btn_reset").off().on("click",function(){
 
 //导出查询内容为excel
 $("#btn_export").click(function(){
-	var userPhone=$("#userPhone").val();
+	var loginName=$("#loginName").val();
 	var startTime=$("#startTime").val();
 	var endTime=$("#endTime").val();
 	var orderId = $("#orderId").val();
@@ -177,13 +177,13 @@ $("#btn_export").click(function(){
         	      type: "post",
         	      dataType: "json",
         	      url : "../admin/wxpay/outExport.json",
-        	      data:{"userPhone":userPhone,"startTime":startTime,"endTime":endTime,"outTradeNo":orderId},
+        	      data:{"loginName":loginName,"startTime":startTime,"endTime":endTime,"outTradeNo":orderId},
         	     
         	      success: function (data) {
         	    	// 循环
         	          $.each(data,function(i){
         	        	var ex_wxId =data[i].id;
-      	        	  	var ex_userPhone = data[i].userPhone;
+      	        	  	var ex_loginName = data[i].loginName;
       	                var ex_outTradeNo = data[i].outTradeNo;
       	                var ex_transactionId = data[i].transactionId;
       	                var ex_bankType= isNull(data[i].bankType);
@@ -194,7 +194,7 @@ $("#btn_export").click(function(){
       	                
       	                	  str+="<tr>+"
       	        					+"<td>"+[i+1+(pageNumber-1)*10]+"</td>"
-      	        					+"<td>"+ex_userPhone+"&nbsp;</td>"
+      	        					+"<td>"+ex_loginName+"&nbsp;</td>"
       	        					+"<td>"+ex_outTradeNo+"&nbsp;</td>"
       	        					+"<td>"+ex_transactionId+"&nbsp;</td>"
       	        					+"<td>"+ex_bankType+"</td>"

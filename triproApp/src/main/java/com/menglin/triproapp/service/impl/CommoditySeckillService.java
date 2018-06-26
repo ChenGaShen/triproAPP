@@ -149,11 +149,17 @@ public class CommoditySeckillService implements ICommoditySeckillService {
 			vo.setStartTime(commoditySeckill.getStartTime());
 			vo.setEndTime(commoditySeckill.getEndTime());
 			vo.setSeckillDescription(commoditySeckill.getSeckillDescription());
-			Date nowDate= new Date();
-			long startInterval =nowDate.getTime() - vo.getStartTime().getTime();//距离开始时间
-			long endInterval =vo.getEndTime().getTime() -nowDate.getTime() ;//距离结束时间
-			vo.setEndMseconds(endInterval);
-			vo.setStartMseconds(startInterval);
+			if((commoditySeckill.getSeckillOnsale()==0 && commoditySeckill.getSeckillState()==0) || commoditySeckill.getSeckillOnsale()==0 && commoditySeckill.getSeckillState()==1 ){
+				Date nowDate= new Date();
+				long startInterval =nowDate.getTime() - vo.getStartTime().getTime();//距离开始时间
+				long endInterval =vo.getEndTime().getTime() -nowDate.getTime() ;//距离结束时间
+				vo.setEndMseconds(endInterval);
+				vo.setStartMseconds(startInterval);	
+			}else{
+				vo.setEndMseconds(-1);
+				vo.setStartMseconds(-1);	
+			}
+			
 		}
 		return vo;
 	}

@@ -65,7 +65,7 @@ public class PayWxService implements IPayWxService {
 		}
 		//封装每页显示的数据
         HashMap<String,Object> map1 = new HashMap<String,Object>();
-        map1.put("userPhone", model.getUserPhone());
+        map1.put("loginName", model.getLoginName());
         map1.put("outTradeNo", model.getOutTradeNo());
         map1.put("startTime", startTime);
         map1.put("endTime", endTime);
@@ -85,7 +85,7 @@ public class PayWxService implements IPayWxService {
     	
         map.put("start",(currentPage-1)*pageSize);
         map.put("size", pageSize);
-        map.put("userPhone",  model.getUserPhone());
+        map.put("loginName", model.getLoginName());
         map.put("outTradeNo", model.getOutTradeNo());
         map.put("startTime", startTime);
         map.put("endTime", endTime);
@@ -112,7 +112,7 @@ public class PayWxService implements IPayWxService {
         //封装每页显示的数据
         HashMap<String,Object> map = new HashMap<String,Object>();
         
-        map.put("userPhone",  model.getUserPhone());
+        map.put("loginName", model.getLoginName());
         map.put("startTime", startTime);
         map.put("endTime", endTime);
         map.put("outTradeNo", model.getOutTradeNo());
@@ -122,7 +122,7 @@ public class PayWxService implements IPayWxService {
         			PayWxVO vo =new PayWxVO();
         			vo.setId(lists.get(i).getId());
         			vo.setUid(lists.get(i).getUid());
-        			vo.setUserPhone(lists.get(i).getUserPhone());
+        			vo.setLoginName(lists.get(i).getLoginName());
         			vo.setOutTradeNo(lists.get(i).getOutTradeNo());
         			vo.setTransactionId(lists.get(i).getTransactionId());
         			vo.setTotalFee(lists.get(i).getTotalFee());

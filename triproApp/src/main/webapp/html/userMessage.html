@@ -15,9 +15,8 @@
 <script type="text/javascript" src="../static/bootstrap/js/bootstrapValidator.min.js"></script>
 <script src="../static/js/jquery.cxcalendar.min.js"></script>
 <script src="../static/js/jquery.cxcalendar.languages.js"></script>
-<script type="text/javascript" src="../static/js/jquery.table2excel.js"></script>
 <script type="text/javascript" src="../static/js/util.js"></script>
-<script type="text/javascript" src="../static/js/messages.js"></script>
+<script type="text/javascript" src="../static/js/userMessage.js"></script>
 </head> 
 <body>
 	<div class="panel-body" style="padding-bottom:0px;">
@@ -59,23 +58,6 @@
         	
         	</thead>
         
-        </table>
-        <!-- 导出数据的table -->
-        <table  class="tb" border="1" cellspacing="0" cellpadding="0" style="visibility: hidden;"  id="exportTable">
-        		<caption style="font-family:sans-serif;font-size: 14px; font-weight: bold;align:center;">表格标题</caption>
-					<thead>
-						<tr id="tr_td" style="font-family:sans-serif;font-size: 14px; font-weight: bold">
-							<td width="66px" >序号</td>
-							<td width="145px" >账户昵称</td>
-							<td width="145px" >账户状态</td>
-							<td width="140px" >特别备注</td>
-							<td width="220px" >最近登录</td>
-							<td width="220px" >注册时间</td>
-						</tr>
-					</thead>
-					<tbody id="export_body">
-						<!-- js 循环遍历插入数据 -->
-						</tbody>
         </table>
         
 <!-- 发送红包模态框（Modal） -->

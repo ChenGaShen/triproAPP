@@ -20,7 +20,9 @@ public interface IActiveRedService {
 
     void update(ActiveRed record);
     
-    List<ActiveRed> activeRedList(Integer uid);
+    List<ActiveRed> activeRedList(Integer uid,Integer redState);
+    
+    public int selectActiveRedCount(Integer uid);
     
 	PageBean<ActiveRed> findByPage(Integer currentPage,Integer pageSize,ActiveRed model);
 }

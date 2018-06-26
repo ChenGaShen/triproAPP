@@ -25,7 +25,7 @@ public class QuartzJob1 {
 		 List<CommoditySeckill> list=commoditySeckillService.selectAllCommoditySeckill();
 		    if(CheckData.isNotNullOrEmpty(list)){
 		    	
-		    	for (int i = 0; i < list.size(); i++) {
+		    	for (int i = 0; i < list.size(); i++) {//商品秒杀状态0开启1关闭
 		    		if (list.get(i).getSeckillState()==1 && list.get(i).getSeckillOnsale()==0) { //商品状态0上架1下架
 		    		System.out.println(Format.formatTest1(list.get(i).getStartTime(),1));
 		    		if(Format.formatTest1(list.get(i).getStartTime(),1)){
